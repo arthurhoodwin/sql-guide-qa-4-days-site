@@ -385,6 +385,11 @@ h1 {
   color: #34554b;
 }
 
+.task-note {
+  font-size: .9rem;
+  color: #496173;
+}
+
 #sql-input {
   width: 100%;
   min-height: 190px;
