@@ -1,31 +1,215 @@
-﻿const TOTAL_DAYS = 4;
-const STORAGE_KEY = "sql-guide-progress-v1";
-const TASK_STORAGE_KEY = "sql-guide-task-progress-v1";
-const DRAFT_STORAGE_KEY = "sql-guide-drafts-v1";
+﻿const STORAGE_KEY = "vk-qa-day-progress-v1";
+const QUIZ_STATE_KEY = "vk-qa-quiz-state-v1";
+const SQL_TASK_STATE_KEY = "vk-qa-sql-task-state-v1";
+const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
 
-const dayMeta = {
-  1: "Установка, база данных, CREATE/INSERT/SELECT",
-  2: "WHERE, фильтры, сортировка, LIMIT, DISTINCT",
-  3: "Агрегация, GROUP BY, HAVING, JOIN",
-  4: "Сложные запросы и подготовка к собеседованию"
+const DAYS = [
+  { id: 1, mode: "quiz", title: "Теория тестирования", subtitle: "Виды тестирования, smoke/sanity/retest/regression" },
+  { id: 2, mode: "quiz", title: "Тест-дизайн", subtitle: "Эквивалентность, границы, decision table, state transition" },
+  { id: 3, mode: "quiz", title: "SDLC и Agile", subtitle: "Процессы, роли, сущности, артефакты" },
+  { id: 4, mode: "quiz", title: "Клиент-сервер и API", subtitle: "HTTP, коды, контракты, проверки API" },
+  { id: 5, mode: "quiz", title: "Тест-документация", subtitle: "Test case/checklist/bug report/RTM" },
+  { id: 6, mode: "sql", title: "SQL лайвкодинг I", subtitle: "Базовые SELECT/WHERE/ORDER BY/LIMIT" },
+  { id: 7, mode: "sql", title: "SQL лайвкодинг II", subtitle: "JOIN/GROUP BY/HAVING/поиск аномалий" },
+  { id: 8, mode: "quiz", title: "Репетиция собеса", subtitle: "Финальный микс вопросов и стратегии ответа" }
+];
+
+const DAY_MAP = Object.fromEntries(DAYS.map((d) => [d.id, d]));
+const TOTAL_DAYS = DAYS.length;
+
+const QUIZ_BANK = {
+  1: [
+    {
+      id: "d1_q1",
+      question: "Чем retest отличается от regression?",
+      options: [
+        "Retest проверяет конкретно фикс, regression проверяет что остальное не сломали",
+        "Retest это то же самое что regression",
+        "Retest всегда автоматизированный, regression всегда ручной",
+        "Retest делают только перед релизом"
+      ],
+      correct: 0,
+      explain: "Retest = проверка исправленного дефекта. Regression = проверка смежной функциональности на побочки."
+    },
+    {
+      id: "d1_q2",
+      question: "Что обычно включает smoke-тест после деплоя?",
+      options: [
+        "Только критические end-to-end пути системы",
+        "Полный регресс всех модулей",
+        "Только UI-проверки без API",
+        "Только нагрузочные тесты"
+      ],
+      correct: 0,
+      explain: "Smoke должен быстро ответить на вопрос: система вообще жива и можно ли продолжать тестирование."
+    },
+    {
+      id: "d1_q3",
+      question: "Какой вид тестирования в первую очередь про производительность?",
+      options: ["Функциональное", "Usability", "Performance", "Compatibility"],
+      correct: 2,
+      explain: "Performance-тестирование покрывает скорость, стабильность под нагрузкой и деградации."
+    }
+  ],
+  2: [
+    {
+      id: "d2_q1",
+      question: "Для диапазона 1..100 какие значения наиболее важны по BVA?",
+      options: ["1, 100, 0, 101", "50, 51, 52", "10, 20, 30", "2, 99"],
+      correct: 0,
+      explain: "Границы и ближайшие значения вокруг них чаще всего дают дефекты."
+    },
+    {
+      id: "d2_q2",
+      question: "Когда лучше использовать decision table?",
+      options: [
+        "Когда много комбинаций условий и бизнес-правил",
+        "Когда один input и один output",
+        "Только для UI верстки",
+        "Только для SQL"
+      ],
+      correct: 0,
+      explain: "Decision table помогает системно покрыть комбинации условий/правил."
+    },
+    {
+      id: "d2_q3",
+      question: "Что такое эквивалентные классы?",
+      options: [
+        "Группы значений, которые система обрабатывает одинаково",
+        "Список всех возможных значений поля",
+        "Только граничные значения",
+        "Только невалидные значения"
+      ],
+      correct: 0,
+      explain: "Техника нужна, чтобы сократить набор тестов без потери покрытия логики."
+    }
+  ],
+  3: [
+    {
+      id: "d3_q1",
+      question: "Что из этого относится к Scrum-ритуалам?",
+      options: ["Daily, Sprint Planning, Review, Retro", "Only Kanban Board", "Only Bug Triage", "Only Release Meeting"],
+      correct: 0,
+      explain: "Это базовый набор регулярных scrum-событий."
+    },
+    {
+      id: "d3_q2",
+      question: "Что такое Definition of Done (DoD)?",
+      options: [
+        "Критерии, при которых задача считается завершенной командой",
+        "То же самое что acceptance criteria",
+        "Список багов в спринте",
+        "Только инструкция для QA"
+      ],
+      correct: 0,
+      explain: "DoD про готовность инкремента в целом, а AC про конкретную user story."
+    },
+    {
+      id: "d3_q3",
+      question: "Главная идея Kanban?",
+      options: ["Фиксированные 2-недельные спринты", "Непрерывный поток + WIP-лимиты", "Без приоритизации", "Только для поддержки"],
+      correct: 1,
+      explain: "Kanban оптимизирует поток доставки и ограничивает параллельную работу."
+    }
+  ],
+  4: [
+    {
+      id: "d4_q1",
+      question: "Какой HTTP-метод обычно используют для частичного обновления ресурса?",
+      options: ["GET", "POST", "PATCH", "DELETE"],
+      correct: 2,
+      explain: "PATCH применяют для частичного обновления; PUT обычно про полную замену ресурса."
+    },
+    {
+      id: "d4_q2",
+      question: "Какой код ответа означает неавторизованный запрос?",
+      options: ["200", "401", "404", "500"],
+      correct: 1,
+      explain: "401 = Unauthorized. 403 = Forbidden (авторизован, но нет прав)."
+    },
+    {
+      id: "d4_q3",
+      question: "Что в API тестах означает " + '"контракт"' + "?",
+      options: [
+        "Согласованная схема/формат запроса и ответа",
+        "Только URL endpoint",
+        "Только структура БД",
+        "Только swagger-док"
+      ],
+      correct: 0,
+      explain: "Контракт — это договор о структуре и поведении API между клиентом и сервером."
+    }
+  ],
+  5: [
+    {
+      id: "d5_q1",
+      question: "Когда лучше checklist вместо детальных test cases?",
+      options: [
+        "Когда проверка типовая/быстрая и нужны краткие контрольные пункты",
+        "Никогда",
+        "Только для автоматизации",
+        "Только для API"
+      ],
+      correct: 0,
+      explain: "Checklist быстрее в поддержке, но для сложной логики часто нужны подробные test cases."
+    },
+    {
+      id: "d5_q2",
+      question: "Что обязательно должно быть в bug report?",
+      options: ["Только скрин", "Шаги + expected/actual + окружение", "Только severity", "Только ссылку на таску"],
+      correct: 1,
+      explain: "Без шагов/результатов/окружения баг сложно воспроизвести и качественно починить."
+    },
+    {
+      id: "d5_q3",
+      question: "Для чего RTM (traceability matrix)?",
+      options: [
+        "Связать требования с тестами и контролировать покрытие",
+        "Планировать релизы",
+        "Хранить логи сервера",
+        "Считать velocity"
+      ],
+      correct: 0,
+      explain: "RTM помогает увидеть, какие требования не покрыты тестами."
+    }
+  ],
+  8: [
+    {
+      id: "d8_q1",
+      question: "Если не знаешь ответ на вопрос интервьюера, лучший ход?",
+      options: [
+        "Честно сказать и предложить структурированную гипотезу",
+        "Импровизировать уверенно любой ценой",
+        "Перевести тему",
+        "Сказать " + '"не знаю"' + " и молчать"
+      ],
+      correct: 0,
+      explain: "Прозрачность + логика рассуждения лучше, чем уверенная выдумка."
+    },
+    {
+      id: "d8_q2",
+      question: "Какая структура ответа на техничке обычно самая сильная?",
+      options: [
+        "Определение → когда применяю → пример → риски/trade-off",
+        "Сразу длинная история",
+        "Только термин без примера",
+        "Только пример без термина"
+      ],
+      correct: 0,
+      explain: "Структурный ответ показывает системность и практичность мышления QA."
+    },
+    {
+      id: "d8_q3",
+      question: "Что важно в SQL-лайвкодинге кроме синтаксиса?",
+      options: ["Молчать и быстро печатать", "Озвучивать ход мысли и проверять результат", "Сразу писать подзапросы", "Игнорировать edge cases"],
+      correct: 1,
+      explain: "Интервьюер оценивает не только код, но и твой инженерный процесс."
+    }
+  ]
 };
 
-const DAY_SEEDS = {
-  1: `
-    DROP TABLE IF EXISTS users;
-    CREATE TABLE users (
-      id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL,
-      email TEXT UNIQUE,
-      age INTEGER,
-      registration_date DATE DEFAULT CURRENT_DATE
-    );
-    INSERT INTO users (id, name, email, age, registration_date) VALUES
-      (1, 'Иван Петров', 'ivan@test.ru', 25, '2024-01-01'),
-      (2, 'Мария Сидорова', 'maria@test.ru', 30, '2024-01-05'),
-      (3, 'Петр Иванов', 'petr@test.ru', 28, '2024-01-10');
-  `,
-  2: `
+const SQL_SEEDS = {
+  6: `
     DROP TABLE IF EXISTS products;
     CREATE TABLE products (
       product_id INTEGER PRIMARY KEY,
@@ -39,327 +223,98 @@ const DAY_SEEDS = {
       (2, 'Samsung Galaxy S23', 'Электроника', 69990, 20),
       (3, 'Ноутбук ASUS', 'Электроника', 54990, 8),
       (4, 'Наушники Sony', 'Аксессуары', 5990, 50),
-      (5, 'Чехол для телефона', 'Аксессуары', 499, 100),
-      (6, 'Зарядное устройство', 'Аксессуары', 1290, 75),
-      (7, 'Apple Watch', 'Электроника', 39990, 12),
-      (8, 'Клавиатура Logitech', 'Периферия', 3499, 30),
-      (9, 'Мышь Razer', 'Периферия', 2999, 40),
-      (10, 'Веб-камера', 'Периферия', 4999, 25);
+      (5, 'Клавиатура Logitech', 'Периферия', 3499, 30),
+      (6, 'Мышь Razer', 'Периферия', 2999, 40);
   `,
-  3: `
-    DROP TABLE IF EXISTS customers;
-    DROP TABLE IF EXISTS customer_orders;
-    CREATE TABLE customers (
-      customer_id INTEGER PRIMARY KEY,
-      name TEXT NOT NULL,
-      city TEXT
-    );
-    CREATE TABLE customer_orders (
-      order_id INTEGER PRIMARY KEY,
-      customer_id INTEGER,
-      product TEXT,
-      amount REAL,
-      order_date DATE
-    );
-    INSERT INTO customers (customer_id, name, city) VALUES
-      (1, 'Иван', 'Москва'),
-      (2, 'Мария', 'Казань'),
-      (3, 'Анна', 'Москва'),
-      (4, 'Дмитрий', 'Самара'),
-      (5, 'Олег', 'Казань');
-    INSERT INTO customer_orders (order_id, customer_id, product, amount, order_date) VALUES
-      (1, 1, 'Ноутбук', 50000, '2024-01-10'),
-      (2, 1, 'Мышь', 3000, '2024-01-12'),
-      (3, 2, 'Смартфон', 30000, '2024-01-11'),
-      (4, 3, 'Наушники', 5000, '2024-01-13'),
-      (5, 2, 'Клавиатура', 3500, '2024-01-14');
-  `,
-  4: `
+  7: `
     DROP TABLE IF EXISTS users;
-    DROP TABLE IF EXISTS categories;
-    DROP TABLE IF EXISTS products;
     DROP TABLE IF EXISTS orders;
-    DROP TABLE IF EXISTS order_items;
-
     CREATE TABLE users (
       user_id INTEGER PRIMARY KEY,
-      username TEXT UNIQUE NOT NULL,
-      email TEXT UNIQUE,
-      registration_date DATE
+      username TEXT NOT NULL,
+      city TEXT
     );
-
-    CREATE TABLE categories (
-      category_id INTEGER PRIMARY KEY,
-      category_name TEXT NOT NULL
-    );
-
-    CREATE TABLE products (
-      product_id INTEGER PRIMARY KEY,
-      product_name TEXT NOT NULL,
-      category_id INTEGER,
-      price REAL NOT NULL,
-      stock_quantity INTEGER DEFAULT 0
-    );
-
     CREATE TABLE orders (
       order_id INTEGER PRIMARY KEY,
       user_id INTEGER,
-      order_date DATE,
-      total_amount REAL,
-      status TEXT CHECK(status IN ('pending', 'processing', 'shipped', 'delivered', 'cancelled'))
+      amount REAL,
+      status TEXT
     );
-
-    CREATE TABLE order_items (
-      item_id INTEGER PRIMARY KEY,
-      order_id INTEGER,
-      product_id INTEGER,
-      quantity INTEGER,
-      unit_price REAL
-    );
-
-    INSERT INTO users (user_id, username, email, registration_date) VALUES
-      (1, 'ivan_petrov', 'ivan@test.ru', '2024-01-01'),
-      (2, 'maria_s', 'maria@test.ru', '2024-01-05'),
-      (3, 'petr_ivanov', 'petr@test.ru', '2024-01-10'),
-      (4, 'anna_smith', 'anna@test.ru', '2024-01-15'),
-      (5, 'test_user', NULL, '2024-01-20');
-
-    INSERT INTO categories (category_id, category_name) VALUES
-      (1, 'Электроника'),
-      (2, 'Одежда'),
-      (3, 'Книги');
-
-    INSERT INTO products (product_id, product_name, category_id, price, stock_quantity) VALUES
-      (1, 'Ноутбук', 1, 50000, 10),
-      (2, 'Смартфон', 1, 30000, 25),
-      (3, 'Наушники', 1, 5000, 50),
-      (4, 'Футболка', 2, 1000, 100),
-      (5, 'Джинсы', 2, 3000, 40),
-      (6, 'Роман Война и мир', 3, 800, 20),
-      (7, 'Учебник SQL', 3, 1500, 15),
-      (8, 'Пальто', 2, 9000, 6);
-
-    INSERT INTO orders (order_id, user_id, order_date, total_amount, status) VALUES
-      (1, 1, '2024-01-16', 51000, 'delivered'),
-      (2, 2, '2024-01-17', 30000, 'delivered'),
-      (3, 1, '2024-01-18', 5000, 'shipped'),
-      (4, 3, '2024-01-19', 4500, 'cancelled'),
-      (5, 4, '2024-01-20', 85000, 'processing'),
-      (6, 1, '2024-01-21', 1500, 'pending');
-
-    INSERT INTO order_items (item_id, order_id, product_id, quantity, unit_price) VALUES
-      (1, 1, 1, 1, 50000),
-      (2, 1, 4, 1, 1000),
-      (3, 2, 2, 1, 30000),
-      (4, 3, 3, 1, 5000),
-      (5, 4, 5, 1, 3000),
-      (6, 4, 4, 1, 1000),
-      (7, 5, 1, 1, 50000),
-      (8, 5, 2, 1, 30000),
-      (9, 5, 3, 1, 5000),
-      (10, 6, 7, 1, 1500);
+    INSERT INTO users (user_id, username, city) VALUES
+      (1, 'ivan', 'Москва'),
+      (2, 'maria', 'Казань'),
+      (3, 'anna', 'Москва'),
+      (4, 'oleg', 'Самара');
+    INSERT INTO orders (order_id, user_id, amount, status) VALUES
+      (1, 1, 5000, 'paid'),
+      (2, 1, 2500, 'paid'),
+      (3, 2, 3000, 'cancelled'),
+      (4, 2, 4200, 'paid'),
+      (5, 3, 1500, 'paid');
   `
 };
 
-const DAY_TASKS = {
-  1: [
+const SQL_TASKS = {
+  6: [
     {
-      id: "d1_t1",
-      title: "Создай таблицу products",
-      prompt: "Создай таблицу products с полями: product_id (PK), product_name (NOT NULL), category, price, in_stock.",
-      starter: "-- Дополни ограничение NOT NULL для product_name\nCREATE TABLE products (\n  product_id INTEGER PRIMARY KEY,\n  product_name TEXT,\n  category TEXT,\n  price REAL,\n  in_stock INTEGER\n);",
-      validate: ({ db }) => {
-        const r = db.exec("PRAGMA table_info(products);");
-        if (!r.length || !r[0].values.length) return { ok: false, message: "Таблица products не найдена." };
-        const rows = r[0].values;
-        const names = rows.map((v) => String(v[1]));
-        const needed = ["product_id", "product_name", "category", "price", "in_stock"];
-        const missing = needed.filter((n) => !names.includes(n));
-        if (missing.length) return { ok: false, message: `Не хватает колонок: ${missing.join(", ")}` };
-        const pk = rows.find((v) => String(v[1]) === "product_id");
-        if (!pk || Number(pk[5]) !== 1) return { ok: false, message: "product_id должен быть PRIMARY KEY." };
-        return { ok: true, message: "Отлично: структура таблицы верная." };
-      }
-    },
-    {
-      id: "d1_t2",
-      title: "Добавь минимум 5 товаров",
-      prompt: "Вставь минимум 5 строк в products через INSERT.",
-      starter: "-- Добавь минимум 5 товаров (можно мульти-вставкой)\nINSERT INTO products (product_id, product_name, category, price, in_stock) VALUES\n  (101, 'TODO_PRODUCT', 'TODO_CATEGORY', 1000, 1);",
-      validate: ({ db }) => {
-        const r = db.exec("SELECT COUNT(*) as c FROM products;");
-        const count = Number(r[0].values[0][0]);
-        if (count < 5) return { ok: false, message: `Сейчас в products только ${count} строк.` };
-        return { ok: true, message: `Готово: добавлено ${count} строк.` };
-      }
-    },
-    {
-      id: "d1_t3",
-      title: "SELECT с фильтром",
-      prompt: "Выведи товары дороже 10000 рублей.",
-      starter: "-- Измени условие так, чтобы остались товары дороже 10000\nSELECT product_name, price\nFROM products\nWHERE price > 0;",
+      id: "d6_t1",
+      title: "Товары дороже 10000",
+      prompt: "Выведи product_name и price для товаров дороже 10000.",
+      starter: "SELECT product_name, price\nFROM products\nWHERE price > 0;",
       validate: ({ lastResult }) => {
-        if (!lastResult) return { ok: false, message: "Запрос должен возвращать результат SELECT." };
-        if (!lastResult.values.length) return { ok: false, message: "Пустой результат, ожидаются строки." };
-        const priceIdx = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
-        if (priceIdx === -1) return { ok: false, message: "В результате должен быть столбец price." };
-        const allGood = lastResult.values.every((row) => Number(row[priceIdx]) > 10000);
-        if (!allGood) return { ok: false, message: "Есть строки с price <= 10000." };
-        return { ok: true, message: "Верно: фильтрация по цене работает." };
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидаются строки результата." };
+        const i = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
+        if (i < 0) return { ok: false, message: "Нужна колонка price." };
+        const ok = lastResult.values.every((r) => Number(r[i]) > 10000);
+        return ok ? { ok: true, message: "Верно." } : { ok: false, message: "Есть строки с price <= 10000." };
+      }
+    },
+    {
+      id: "d6_t2",
+      title: "Топ-3 дорогих",
+      prompt: "Покажи 3 самых дорогих товара.",
+      starter: "SELECT product_name, price\nFROM products\nORDER BY price ASC\nLIMIT 3;",
+      validate: ({ lastResult }) => {
+        if (!lastResult || lastResult.values.length !== 3) return { ok: false, message: "Нужно ровно 3 строки." };
+        const i = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
+        if (i < 0) return { ok: false, message: "Нужна колонка price." };
+        const arr = lastResult.values.map((r) => Number(r[i]));
+        const sorted = [...arr].sort((a, b) => b - a);
+        const ok = arr.every((v, idx) => v === sorted[idx]);
+        return ok ? { ok: true, message: "Отлично." } : { ok: false, message: "Проверь ORDER BY DESC." };
       }
     }
   ],
-  2: [
+  7: [
     {
-      id: "d2_t1",
-      title: "WHERE по категории",
-      prompt: "Выведи все товары категории Электроника.",
-      starter: "-- Поменяй фильтр на нужную категорию\nSELECT *\nFROM products\nWHERE category = 'TODO';",
-      validate: ({ lastResult }) => {
-        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидаются строки с результатом." };
-        const idx = lastResult.columns.findIndex((c) => c.toLowerCase() === "category");
-        if (idx < 0) return { ok: false, message: "Нужен столбец category в результате." };
-        const ok = lastResult.values.every((r) => String(r[idx]) === "Электроника");
-        return ok ? { ok: true, message: "Да, отфильтровано корректно." } : { ok: false, message: "В выдаче есть не-Электроника." };
-      }
-    },
-    {
-      id: "d2_t2",
-      title: "ORDER BY + LIMIT",
-      prompt: "Покажи топ-3 самых дорогих товара.",
-      starter: "-- Сделай сортировку по убыванию и верный лимит\nSELECT product_name, price\nFROM products\nORDER BY price ASC\nLIMIT 5;",
-      validate: ({ lastResult }) => {
-        if (!lastResult || lastResult.values.length !== 3) return { ok: false, message: "Ожидается ровно 3 строки." };
-        const idx = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
-        if (idx < 0) return { ok: false, message: "Нужен столбец price." };
-        const prices = lastResult.values.map((r) => Number(r[idx]));
-        const sorted = [...prices].sort((a, b) => b - a);
-        const same = prices.every((v, i) => v === sorted[i]);
-        return same ? { ok: true, message: "Сортировка и LIMIT верны." } : { ok: false, message: "Проверь порядок DESC." };
-      }
-    },
-    {
-      id: "d2_t3",
-      title: "DISTINCT",
-      prompt: "Выведи все уникальные категории товаров.",
-      starter: "-- Верни только уникальные категории\nSELECT category\nFROM products;",
-      validate: ({ lastResult }) => {
-        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Результат пуст." };
-        const vals = lastResult.values.map((r) => String(r[0]));
-        const uniq = new Set(vals);
-        if (uniq.size !== vals.length) return { ok: false, message: "Есть дубликаты, нужен DISTINCT." };
-        if (uniq.size < 3) return { ok: false, message: "Ожидалось минимум 3 уникальные категории." };
-        return { ok: true, message: "Отлично: уникальные категории получены." };
-      }
-    }
-  ],
-  3: [
-    {
-      id: "d3_t1",
-      title: "GROUP BY",
-      prompt: "Посчитай количество клиентов по городам.",
-      starter: "-- Исправь запрос так, чтобы получить счетчик по каждому городу\nSELECT city, COUNT(*) AS total_customers\nFROM customers;",
-      validate: ({ lastResult }) => {
-        if (!lastResult || lastResult.values.length < 2) return { ok: false, message: "Нужна сгруппированная выдача по городам." };
-        const countIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("count") || c.toLowerCase().includes("total"));
-        if (countIdx < 0) return { ok: false, message: "Нужен агрегат COUNT." };
-        return { ok: true, message: "GROUP BY применен корректно." };
-      }
-    },
-    {
-      id: "d3_t2",
-      title: "INNER JOIN",
-      prompt: "Покажи клиентов и их заказы (name, product, amount) через INNER JOIN.",
-      starter: "-- Здесь нужен INNER JOIN\nSELECT c.name, o.product, o.amount\nFROM customers c\nLEFT JOIN customer_orders o ON c.customer_id = o.customer_id;",
-      validate: ({ lastResult }) => {
-        if (!lastResult || !lastResult.values.length) return { ok: false, message: "JOIN не дал строк, проверь условие ON." };
-        const cols = lastResult.columns.map((c) => c.toLowerCase());
-        const hasName = cols.some((c) => c.includes("name"));
-        const hasProduct = cols.some((c) => c.includes("product"));
-        const productIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("product"));
-        const hasNullProducts = productIdx >= 0 && lastResult.values.some((r) => r[productIdx] === null);
-        if (hasNullProducts) return { ok: false, message: "Похоже, это не INNER JOIN: есть строки без заказа." };
-        return hasName && hasProduct
-          ? { ok: true, message: "JOIN работает, данные склеены." }
-          : { ok: false, message: "Добавь в SELECT имя клиента и товар." };
-      }
-    },
-    {
-      id: "d3_t3",
-      title: "LEFT JOIN + NULL",
-      prompt: "Найди клиентов без заказов (LEFT JOIN + WHERE ... IS NULL).",
-      starter: "-- Добавь условие, чтобы остались только клиенты без заказов\nSELECT c.customer_id, c.name\nFROM customers c\nLEFT JOIN customer_orders o ON c.customer_id = o.customer_id;",
+      id: "d7_t1",
+      title: "Пользователи без заказов",
+      prompt: "Найди пользователей без заказов (LEFT JOIN + IS NULL).",
+      starter: "SELECT u.user_id, u.username\nFROM users u\nLEFT JOIN orders o ON u.user_id = o.user_id\nWHERE o.order_id IS NULL;",
       validate: ({ db, lastResult }) => {
-        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидался хотя бы 1 клиент без заказов." };
-        const expectedRaw = db.exec("SELECT customer_id FROM customers WHERE customer_id NOT IN (SELECT DISTINCT customer_id FROM customer_orders) ORDER BY customer_id;");
-        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => Number(r[0])) : [];
-        const idIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("customer_id"));
-        if (idIdx < 0) return { ok: false, message: "В результате должен быть customer_id." };
-        const actual = [...new Set(lastResult.values.map((r) => Number(r[idIdx])))].sort((a, b) => a - b);
-        const same = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
-        return same
-          ? { ok: true, message: "Верно: найден(ы) клиент(ы) без заказов." }
-          : { ok: false, message: "Список клиентов не совпадает с ожидаемым для задачи." };
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается минимум 1 пользователь." };
+        const idx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("user_id"));
+        if (idx < 0) return { ok: false, message: "В выдаче нужен user_id." };
+        const actual = [...new Set(lastResult.values.map((r) => Number(r[idx])))].sort((a, b) => a - b);
+        const exp = db.exec("SELECT user_id FROM users WHERE user_id NOT IN (SELECT DISTINCT user_id FROM orders) ORDER BY user_id;");
+        const expected = exp.length ? exp[0].values.map((r) => Number(r[0])) : [];
+        const ok = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
+        return ok ? { ok: true, message: "Верно." } : { ok: false, message: "Список пользователей не совпал." };
       }
-    }
-  ],
-  4: [
+    },
     {
-      id: "d4_t1",
-      title: "Подзапрос NOT IN",
-      prompt: "Найди товары, которые никогда не покупали.",
-      starter: "-- Найди товары, которые не встречаются в order_items\nSELECT *\nFROM products\nLIMIT 5;",
-      validate: ({ db, lastResult }) => {
+      id: "d7_t2",
+      title: "Сумма paid-заказов по пользователю",
+      prompt: "Выведи user_id и total_paid только по статусу paid, отсортируй по total_paid убыванию.",
+      starter: "SELECT user_id, SUM(amount) AS total_paid\nFROM orders\nWHERE status = 'paid'\nGROUP BY user_id\nORDER BY total_paid ASC;",
+      validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
-        const idIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("product_id"));
-        if (idIdx < 0) return { ok: false, message: "Нужен product_id в результате." };
-        const actual = [...new Set(lastResult.values.map((r) => Number(r[idIdx])))].sort((a, b) => a - b);
-        const expectedRaw = db.exec("SELECT product_id FROM products WHERE product_id NOT IN (SELECT DISTINCT product_id FROM order_items) ORDER BY product_id;");
-        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => Number(r[0])) : [];
-        const same = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
-        return same
-          ? { ok: true, message: "Супер: подзапрос решает задачу." }
-          : { ok: false, message: "Результат не совпадает: нужны только товары, которые никогда не покупали." };
-      }
-    },
-    {
-      id: "d4_t2",
-      title: "Топ-3 товара",
-      prompt: "Выведи топ-3 самых продаваемых товара по количеству.",
-      starter: "-- Построй топ-3 по количеству проданных единиц\nSELECT p.product_name, SUM(oi.quantity) AS total_sold\nFROM products p\nJOIN order_items oi ON p.product_id = oi.product_id\nGROUP BY p.product_id\nORDER BY total_sold ASC\nLIMIT 3;",
-      validate: ({ lastResult }) => {
-        if (!lastResult || lastResult.values.length !== 3) return { ok: false, message: "Ожидаются ровно 3 строки." };
         const idx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("total"));
-        if (idx < 0) return { ok: false, message: "Нужна агрегированная колонка total_sold." };
-        const vals = lastResult.values.map((r) => Number(r[idx]));
-        const sorted = [...vals].sort((a, b) => b - a);
-        const ok = vals.every((v, i) => v === sorted[i]);
-        return ok ? { ok: true, message: "Топ построен корректно." } : { ok: false, message: "Проверь сортировку DESC." };
-      }
-    },
-    {
-      id: "d4_t3",
-      title: "Проверка целостности сумм",
-      prompt: "Найди заказы, где total_amount не равен сумме order_items.",
-      starter: "-- Оставь только заказы с расхождением total_amount и суммы позиций\nSELECT o.order_id, o.total_amount, SUM(oi.quantity * oi.unit_price) AS calculated_total\nFROM orders o\nLEFT JOIN order_items oi ON o.order_id = oi.order_id\nGROUP BY o.order_id;",
-      validate: ({ db, lastResult }) => {
-        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидался минимум один проблемный заказ." };
-        const idIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("order_id"));
-        if (idIdx < 0) return { ok: false, message: "В результате должен быть order_id." };
-        const actual = [...new Set(lastResult.values.map((r) => Number(r[idIdx])))].sort((a, b) => a - b);
-        const expectedRaw = db.exec(`
-          SELECT o.order_id
-          FROM orders o
-          LEFT JOIN order_items oi ON o.order_id = oi.order_id
-          GROUP BY o.order_id
-          HAVING ABS(o.total_amount - SUM(oi.quantity * oi.unit_price)) > 0.01
-          ORDER BY o.order_id;
-        `);
-        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => Number(r[0])) : [];
-        const same = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
-        return same
-          ? { ok: true, message: "Отлично: найдено расхождение totals." }
-          : { ok: false, message: "Выдача должна содержать только заказы с расхождением total_amount." };
+        if (idx < 0) return { ok: false, message: "Нужна колонка total_paid." };
+        const arr = lastResult.values.map((r) => Number(r[idx]));
+        const sorted = [...arr].sort((a, b) => b - a);
+        const ok = arr.every((v, i) => v === sorted[i]);
+        return ok ? { ok: true, message: "Отлично." } : { ok: false, message: "Проверь ORDER BY ... DESC." };
       }
     }
   ]
@@ -367,46 +322,28 @@ const DAY_TASKS = {
 
 let sqlJsPromise = null;
 
-function loadProgress() {
+function loadJson(key, fallback) {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    const parsed = raw ? JSON.parse(raw) : {};
-    const days = {};
-    for (let i = 1; i <= TOTAL_DAYS; i++) days[i] = Boolean(parsed[i]);
-    return days;
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
   } catch {
-    return { 1: false, 2: false, 3: false, 4: false };
+    return fallback;
   }
+}
+
+function saveJson(key, value) {
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+function loadProgress() {
+  const saved = loadJson(STORAGE_KEY, {});
+  const result = {};
+  DAYS.forEach((d) => { result[d.id] = Boolean(saved[d.id]); });
+  return result;
 }
 
 function saveProgress(progress) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-}
-
-function loadTaskProgress() {
-  try {
-    const raw = localStorage.getItem(TASK_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveTaskProgress(progress) {
-  localStorage.setItem(TASK_STORAGE_KEY, JSON.stringify(progress));
-}
-
-function loadDrafts() {
-  try {
-    const raw = localStorage.getItem(DRAFT_STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch {
-    return {};
-  }
-}
-
-function saveDrafts(drafts) {
-  localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(drafts));
+  saveJson(STORAGE_KEY, progress);
 }
 
 function escapeHtml(value) {
@@ -418,43 +355,6 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
-function buildDayCard(day, progress) {
-  const done = progress[day];
-  return `
-    <article class="panel day-card">
-      <div class="day-badge">День ${day}</div>
-      <h3 class="day-title">${dayMeta[day]}</h3>
-      <p class="day-sub">Теория + интерактивные SQL-задачи с автопроверкой.</p>
-      <div class="day-actions">
-        <a class="btn primary" href="day${day}.html">Открыть</a>
-        <button class="btn ghost" data-day-toggle="${day}" type="button">${done ? "Сбросить" : "Готово"}</button>
-        <span class="status">${done ? "Пройдено" : "В процессе"}</span>
-      </div>
-    </article>`;
-}
-
-function renderIndex() {
-  const progress = loadProgress();
-  const daysGrid = document.getElementById("days-grid");
-  const totalDone = Object.values(progress).filter(Boolean).length;
-
-  daysGrid.innerHTML = [1, 2, 3, 4].map((d) => buildDayCard(d, progress)).join("");
-
-  const progressText = document.getElementById("overall-progress");
-  const progressFill = document.getElementById("progress-fill");
-  progressText.textContent = `${totalDone} из ${TOTAL_DAYS} дней отмечено как пройдено`;
-  progressFill.style.width = `${(totalDone / TOTAL_DAYS) * 100}%`;
-
-  daysGrid.querySelectorAll("[data-day-toggle]").forEach((button) => {
-    button.addEventListener("click", () => {
-      const day = Number(button.getAttribute("data-day-toggle"));
-      progress[day] = !progress[day];
-      saveProgress(progress);
-      renderIndex();
-    });
-  });
-}
-
 function slugify(text) {
   return text
     .toLowerCase()
@@ -464,45 +364,152 @@ function slugify(text) {
     .replace(/-+/g, "-");
 }
 
-function buildDayPagination(day) {
-  const wrap = document.getElementById("day-nav");
-  const prev = day > 1 ? `<a class="btn ghost" href="day${day - 1}.html">← День ${day - 1}</a>` : `<span></span>`;
-  const next = day < TOTAL_DAYS ? `<a class="btn primary" href="day${day + 1}.html">День ${day + 1} →</a>` : `<a class="btn primary" href="index.html">Ко всем дням</a>`;
-  wrap.innerHTML = prev + next;
+function setDayCompleted(dayId, toggleBtn) {
+  const p = loadProgress();
+  p[dayId] = true;
+  saveProgress(p);
+  if (toggleBtn) toggleBtn.textContent = "Убрать отметку о прохождении";
 }
 
-function renderResult(resultHost, runData) {
-  if (!runData.lastResult) {
-    resultHost.innerHTML = `<p class="sql-message">${escapeHtml(runData.summary)}</p>`;
+function buildDayCard(day, progress) {
+  const done = progress[day.id];
+  return `
+    <article class="panel day-card">
+      <div class="day-badge">День ${day.id}</div>
+      <h3 class="day-title">${escapeHtml(day.title)}</h3>
+      <p class="day-sub">${escapeHtml(day.subtitle)}</p>
+      <div class="day-actions">
+        <a class="btn primary" href="day${day.id}.html">Открыть</a>
+        <button class="btn ghost" data-day-toggle="${day.id}" type="button">${done ? "Сбросить" : "Готово"}</button>
+        <span class="status">${done ? "Пройдено" : "В процессе"}</span>
+      </div>
+    </article>`;
+}
+
+function renderIndex() {
+  const progress = loadProgress();
+  const grid = document.getElementById("days-grid");
+  const done = Object.values(progress).filter(Boolean).length;
+  grid.innerHTML = DAYS.map((d) => buildDayCard(d, progress)).join("");
+
+  const txt = document.getElementById("overall-progress");
+  const fill = document.getElementById("progress-fill");
+  txt.textContent = `${done} из ${TOTAL_DAYS} модулей отмечено как пройдено`;
+  fill.style.width = `${(done / TOTAL_DAYS) * 100}%`;
+
+  grid.querySelectorAll("[data-day-toggle]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const dayId = Number(btn.getAttribute("data-day-toggle"));
+      progress[dayId] = !progress[dayId];
+      saveProgress(progress);
+      renderIndex();
+    });
+  });
+}
+
+function buildDayPagination(dayId) {
+  const wrap = document.getElementById("day-nav");
+  const idx = DAYS.findIndex((d) => d.id === dayId);
+  const prev = idx > 0 ? DAYS[idx - 1] : null;
+  const next = idx < DAYS.length - 1 ? DAYS[idx + 1] : null;
+  wrap.innerHTML = `${prev ? `<a class="btn ghost" href="day${prev.id}.html">← День ${prev.id}</a>` : "<span></span>"}${next ? `<a class="btn primary" href="day${next.id}.html">День ${next.id} →</a>` : `<a class="btn primary" href="index.html">К модулям</a>`}`;
+}
+
+function renderMarkdownContent(contentEl, tocEl, md) {
+  marked.setOptions({ gfm: true, breaks: false });
+  contentEl.innerHTML = marked.parse(md);
+  const headers = contentEl.querySelectorAll("h2, h3");
+  tocEl.innerHTML = "";
+  headers.forEach((header) => {
+    const id = slugify(header.textContent || "section") || `section-${Math.random().toString(36).slice(2, 7)}`;
+    header.id = id;
+    const a = document.createElement("a");
+    a.href = `#${id}`;
+    a.textContent = header.textContent || "Раздел";
+    tocEl.appendChild(a);
+  });
+  if (!headers.length) tocEl.innerHTML = "<p>Разделы не найдены</p>";
+}
+
+function renderQuiz(dayId, toggleBtn) {
+  const panel = document.getElementById("practice-panel");
+  const questions = QUIZ_BANK[dayId] || [];
+  if (!questions.length) {
+    panel.innerHTML = "<p>Квиз для этого дня еще не добавлен.</p>";
     return;
   }
-  const cols = runData.lastResult.columns;
-  const rows = runData.lastResult.values;
-  const header = cols.map((c) => `<th>${escapeHtml(c)}</th>`).join("");
-  const body = rows
-    .map((r) => `<tr>${r.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`)
-    .join("");
-  resultHost.innerHTML = `
-    <p class="sql-message">${escapeHtml(runData.summary)}</p>
-    <div class="result-scroll">
-      <table class="result-table">
-        <thead><tr>${header}</tr></thead>
-        <tbody>${body || `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`}</tbody>
-      </table>
-    </div>`;
-}
 
-function executeSql(db, sql) {
-  const clean = sql.trim();
-  if (!clean) throw new Error("SQL-запрос пуст");
-  const before = db.getRowsModified();
-  const resultSets = db.exec(clean);
-  const changed = db.getRowsModified() - before;
-  const lastResult = resultSets.length ? resultSets[resultSets.length - 1] : null;
-  const summary = lastResult
-    ? `OK: ${lastResult.values.length} строк(и)`
-    : `OK: изменено строк ${Math.max(changed, 0)}`;
-  return { lastResult, summary };
+  const state = loadJson(QUIZ_STATE_KEY, {});
+  if (!state[dayId]) state[dayId] = {};
+
+  panel.innerHTML = `
+    <div class="practice-head">
+      <h2>Интерактив: Квиз</h2>
+      <p>Отвечай на вопросы. Состояние сохраняется. День засчитывается автоматически при всех верных ответах.</p>
+    </div>
+    <div id="quiz-root" class="quiz-root"></div>
+  `;
+
+  const root = panel.querySelector("#quiz-root");
+
+  function calcSummary() {
+    let correct = 0;
+    let answered = 0;
+    questions.forEach((q) => {
+      const selected = state[dayId][q.id];
+      if (typeof selected === "number") {
+        answered += 1;
+        if (selected === q.correct) correct += 1;
+      }
+    });
+    return { correct, answered };
+  }
+
+  function renderQuizCards() {
+    const summary = calcSummary();
+    root.innerHTML = `
+      <div class="quiz-summary panel">
+        <strong>Прогресс: ${summary.correct}/${questions.length} верно</strong>
+        <span>Отвечено: ${summary.answered}/${questions.length}</span>
+      </div>
+      ${questions.map((q, idx) => {
+        const selected = state[dayId][q.id];
+        const isAnswered = typeof selected === "number";
+        const isCorrect = isAnswered && selected === q.correct;
+        const resultClass = isAnswered ? (isCorrect ? "ok" : "fail") : "";
+
+        return `
+          <section class="panel quiz-card ${resultClass}">
+            <h3>${idx + 1}. ${escapeHtml(q.question)}</h3>
+            <div class="quiz-options">
+              ${q.options.map((opt, i) => {
+                const active = selected === i ? "active" : "";
+                return `<button class="quiz-option ${active}" data-qid="${q.id}" data-opt="${i}" type="button">${escapeHtml(opt)}</button>`;
+              }).join("")}
+            </div>
+            ${isAnswered ? `<p class="quiz-explain ${isCorrect ? "ok" : "fail"}">${escapeHtml(q.explain)}</p>` : ""}
+          </section>
+        `;
+      }).join("")}
+    `;
+
+    root.querySelectorAll(".quiz-option").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const qid = btn.getAttribute("data-qid");
+        const opt = Number(btn.getAttribute("data-opt"));
+        state[dayId][qid] = opt;
+        saveJson(QUIZ_STATE_KEY, state);
+        renderQuizCards();
+      });
+    });
+
+    const after = calcSummary();
+    if (after.correct === questions.length) {
+      setDayCompleted(dayId, toggleBtn);
+    }
+  }
+
+  renderQuizCards();
 }
 
 async function getSqlJs() {
@@ -514,38 +521,87 @@ async function getSqlJs() {
   return sqlJsPromise;
 }
 
-async function buildDatabaseForDay(day) {
+async function buildSqlDb(dayId) {
   const SQL = await getSqlJs();
   const db = new SQL.Database();
-  db.run(DAY_SEEDS[day] || "");
+  db.run(SQL_SEEDS[dayId] || "");
   return db;
 }
 
-async function cloneDatabase(sourceDb) {
+async function cloneSqlDb(source) {
   const SQL = await getSqlJs();
-  return new SQL.Database(sourceDb.export());
+  return new SQL.Database(source.export());
 }
 
-function getTaskState(day) {
-  const state = loadTaskProgress();
-  if (!state[day]) state[day] = {};
-  return state;
+function runSql(db, sql) {
+  const clean = sql.trim();
+  if (!clean) throw new Error("SQL-запрос пуст.");
+  const before = db.getRowsModified();
+  const sets = db.exec(clean);
+  const changed = db.getRowsModified() - before;
+  const last = sets.length ? sets[sets.length - 1] : null;
+  const summary = last ? `OK: ${last.values.length} строк(и)` : `OK: изменено строк ${Math.max(changed, 0)}`;
+  return { lastResult: last, summary };
 }
 
-async function renderPractice(day) {
+function renderSqlResult(host, runData) {
+  if (!runData.lastResult) {
+    host.innerHTML = `<p class="sql-message">${escapeHtml(runData.summary)}</p>`;
+    return;
+  }
+  const cols = runData.lastResult.columns;
+  const rows = runData.lastResult.values;
+  host.innerHTML = `
+    <p class="sql-message">${escapeHtml(runData.summary)}</p>
+    <div class="result-scroll">
+      <table class="result-table">
+        <thead><tr>${cols.map((c) => `<th>${escapeHtml(c)}</th>`).join("")}</tr></thead>
+        <tbody>${rows.length ? rows.map((r) => `<tr>${r.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderSchema(db, host) {
+  const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;");
+  if (!tables.length || !tables[0].values.length) {
+    host.innerHTML = "<p class='sql-message'>Таблиц нет.</p>";
+    return;
+  }
+  const names = tables[0].values.map((r) => String(r[0]));
+  const blocks = names.map((name) => {
+    const info = db.exec(`PRAGMA table_info(${name});`);
+    const rows = info.length ? info[0].values : [];
+    return `
+      <h4>${escapeHtml(name)}</h4>
+      <table class="result-table">
+        <thead><tr><th>column</th><th>type</th><th>constraints</th><th>key</th></tr></thead>
+        <tbody>
+          ${rows.map((r) => `<tr><td>${escapeHtml(r[1])}</td><td>${escapeHtml(r[2])}</td><td>${Number(r[3]) ? "NOT NULL" : ""}</td><td>${Number(r[5]) ? "PK" : ""}</td></tr>`).join("")}
+        </tbody>
+      </table>
+    `;
+  }).join("");
+  host.innerHTML = `<p class='sql-message'>Схема текущей БД</p>${blocks}`;
+}
+
+async function renderSqlPractice(dayId, toggleBtn) {
   const panel = document.getElementById("practice-panel");
-  if (!panel) return;
-
-  const tasks = DAY_TASKS[day] || [];
+  const tasks = SQL_TASKS[dayId] || [];
   if (!tasks.length) {
-    panel.innerHTML = "<p>Для этого дня интерактив пока не подготовлен.</p>";
+    panel.innerHTML = "<p>SQL-практика для этого дня еще не добавлена.</p>";
     return;
   }
 
+  const taskState = loadJson(SQL_TASK_STATE_KEY, {});
+  if (!taskState[dayId]) taskState[dayId] = {};
+  const drafts = loadJson(SQL_DRAFT_KEY, {});
+  if (!drafts[dayId]) drafts[dayId] = {};
+
   panel.innerHTML = `
     <div class="practice-head">
-      <h2>Интерактивная Практика</h2>
-      <p>Выполняй SQL прямо на странице. Проверка идет по реальному результату запроса.</p>
+      <h2>Интерактив: SQL Лайвкодинг</h2>
+      <p>Run SQL меняет учебную БД. Проверка задачи запускается в изолированной копии БД.</p>
     </div>
     <div class="practice-grid">
       <aside class="task-list" id="task-list"></aside>
@@ -554,7 +610,6 @@ async function renderPractice(day) {
           <h3 id="task-title"></h3>
           <p id="task-prompt"></p>
           <p class="task-progress" id="task-progress"></p>
-          <p class="task-note">Run SQL меняет учебную БД. Проверка запускается в изолированной копии и не портит текущее состояние.</p>
         </div>
         <textarea id="sql-input" spellcheck="false"></textarea>
         <div class="workbench-actions">
@@ -569,112 +624,95 @@ async function renderPractice(day) {
     </div>
   `;
 
-  const taskState = getTaskState(day);
-  const drafts = loadDrafts();
-  if (!drafts[day]) drafts[day] = {};
-  let activeTask = 0;
-  let db = await buildDatabaseForDay(day);
-
-  const taskList = panel.querySelector("#task-list");
+  const list = panel.querySelector("#task-list");
   const title = panel.querySelector("#task-title");
   const prompt = panel.querySelector("#task-prompt");
-  const progress = panel.querySelector("#task-progress");
+  const progressEl = panel.querySelector("#task-progress");
   const input = panel.querySelector("#sql-input");
   const runBtn = panel.querySelector("#run-sql");
   const checkBtn = panel.querySelector("#check-sql");
   const schemaBtn = panel.querySelector("#show-schema");
   const resetBtn = panel.querySelector("#reset-db");
-  const checkStatus = panel.querySelector("#check-status");
+  const status = panel.querySelector("#check-status");
   const result = panel.querySelector("#sql-result");
 
-  function refreshHeaderProgress() {
-    const done = tasks.filter((t) => Boolean(taskState[day][t.id])).length;
-    progress.textContent = `Решено: ${done}/${tasks.length}`;
+  let active = 0;
+  let db = await buildSqlDb(dayId);
 
-    if (done === tasks.length) {
-      const dayProgress = loadProgress();
-      dayProgress[day] = true;
-      saveProgress(dayProgress);
-      const toggle = document.getElementById("toggle-complete");
-      if (toggle) toggle.textContent = "Убрать отметку о прохождении";
-    }
+  function updateHeaderProgress() {
+    const solved = tasks.filter((t) => Boolean(taskState[dayId][t.id])).length;
+    progressEl.textContent = `Решено: ${solved}/${tasks.length}`;
+    if (solved === tasks.length) setDayCompleted(dayId, toggleBtn);
   }
 
   function renderTaskButtons() {
-    taskList.innerHTML = tasks
-      .map((task, i) => {
-        const done = Boolean(taskState[day][task.id]);
-        const active = i === activeTask;
-        return `<button class="task-btn ${active ? "active" : ""}" data-task-index="${i}" type="button">
-          <span>${escapeHtml(task.title)}</span>
-          <strong>${done ? "✓" : "•"}</strong>
-        </button>`;
-      })
-      .join("");
+    list.innerHTML = tasks.map((t, i) => {
+      const done = Boolean(taskState[dayId][t.id]);
+      return `<button class="task-btn ${i === active ? "active" : ""}" data-task="${i}" type="button"><span>${escapeHtml(t.title)}</span><strong>${done ? "✓" : "•"}</strong></button>`;
+    }).join("");
 
-    taskList.querySelectorAll("[data-task-index]").forEach((btn) => {
+    list.querySelectorAll("[data-task]").forEach((btn) => {
       btn.addEventListener("click", () => {
-        activeTask = Number(btn.getAttribute("data-task-index"));
+        active = Number(btn.getAttribute("data-task"));
         loadTask();
       });
     });
   }
 
   function loadTask() {
-    const task = tasks[activeTask];
-    title.textContent = task.title;
-    prompt.textContent = task.prompt;
-    input.value = drafts[day][task.id] || task.starter;
-    checkStatus.textContent = "";
-    checkStatus.className = "check-status";
+    const t = tasks[active];
+    title.textContent = t.title;
+    prompt.textContent = t.prompt;
+    input.value = drafts[dayId][t.id] || t.starter;
+    status.textContent = "";
+    status.className = "check-status";
     result.innerHTML = "";
     renderTaskButtons();
-    refreshHeaderProgress();
+    updateHeaderProgress();
   }
 
   input.addEventListener("input", () => {
-    const task = tasks[activeTask];
-    drafts[day][task.id] = input.value;
-    saveDrafts(drafts);
+    const t = tasks[active];
+    drafts[dayId][t.id] = input.value;
+    saveJson(SQL_DRAFT_KEY, drafts);
   });
 
   runBtn.addEventListener("click", () => {
-    checkStatus.textContent = "";
-    checkStatus.className = "check-status";
     try {
-      const runData = executeSql(db, input.value);
-      renderResult(result, runData);
-      checkStatus.textContent = "SQL выполнен в учебной БД.";
-    } catch (error) {
+      status.className = "check-status";
+      const runData = runSql(db, input.value);
+      renderSqlResult(result, runData);
+      status.textContent = "SQL выполнен в учебной БД.";
+    } catch (e) {
       result.innerHTML = "";
-      checkStatus.textContent = `Ошибка: ${error.message}`;
-      checkStatus.className = "check-status fail";
+      status.className = "check-status fail";
+      status.textContent = `Ошибка: ${e.message}`;
     }
   });
 
   checkBtn.addEventListener("click", async () => {
-    const task = tasks[activeTask];
+    const t = tasks[active];
     let checkDb = null;
     try {
-      checkDb = await cloneDatabase(db);
-      const runData = executeSql(checkDb, input.value);
-      renderResult(result, runData);
-      const verdict = task.validate({ db: checkDb, lastResult: runData.lastResult });
+      checkDb = await cloneSqlDb(db);
+      const runData = runSql(checkDb, input.value);
+      renderSqlResult(result, runData);
+      const verdict = t.validate({ db: checkDb, lastResult: runData.lastResult });
       if (verdict.ok) {
-        taskState[day][task.id] = true;
-        saveTaskProgress(taskState);
-        checkStatus.textContent = verdict.message;
-        checkStatus.className = "check-status ok";
+        taskState[dayId][t.id] = true;
+        saveJson(SQL_TASK_STATE_KEY, taskState);
+        status.className = "check-status ok";
+        status.textContent = verdict.message;
       } else {
-        checkStatus.textContent = verdict.message;
-        checkStatus.className = "check-status fail";
+        status.className = "check-status fail";
+        status.textContent = verdict.message;
       }
       renderTaskButtons();
-      refreshHeaderProgress();
-    } catch (error) {
+      updateHeaderProgress();
+    } catch (e) {
       result.innerHTML = "";
-      checkStatus.textContent = `Ошибка: ${error.message}`;
-      checkStatus.className = "check-status fail";
+      status.className = "check-status fail";
+      status.textContent = `Ошибка: ${e.message}`;
     } finally {
       if (checkDb) checkDb.close();
     }
@@ -682,84 +720,64 @@ async function renderPractice(day) {
 
   schemaBtn.addEventListener("click", () => {
     try {
-      const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;");
-      if (!tables.length || !tables[0].values.length) {
-        result.innerHTML = "<p class=\"sql-message\">Таблицы не найдены.</p>";
-        return;
-      }
-      const names = tables[0].values.map((r) => String(r[0]));
-      const blocks = names.map((tableName) => {
-        const info = db.exec(`PRAGMA table_info(${tableName});`);
-        const rows = info.length ? info[0].values : [];
-        const body = rows
-          .map((r) => `<tr><td>${escapeHtml(r[1])}</td><td>${escapeHtml(r[2])}</td><td>${Number(r[3]) ? "NOT NULL" : ""}</td><td>${Number(r[5]) ? "PK" : ""}</td></tr>`)
-          .join("");
-        return `<h4>${escapeHtml(tableName)}</h4><table class=\"result-table\"><thead><tr><th>column</th><th>type</th><th>constraints</th><th>key</th></tr></thead><tbody>${body}</tbody></table>`;
-      }).join("");
-      result.innerHTML = `<p class=\"sql-message\">Структура текущей учебной БД</p>${blocks}`;
-      checkStatus.textContent = "";
-      checkStatus.className = "check-status";
-    } catch (error) {
-      checkStatus.textContent = `Ошибка: ${error.message}`;
-      checkStatus.className = "check-status fail";
+      status.textContent = "";
+      status.className = "check-status";
+      renderSchema(db, result);
+    } catch (e) {
+      status.className = "check-status fail";
+      status.textContent = `Ошибка: ${e.message}`;
     }
   });
 
   resetBtn.addEventListener("click", async () => {
     db.close();
-    db = await buildDatabaseForDay(day);
+    db = await buildSqlDb(dayId);
     result.innerHTML = "";
-    checkStatus.textContent = "База сброшена к начальному состоянию дня.";
-    checkStatus.className = "check-status";
+    status.className = "check-status";
+    status.textContent = "База дня сброшена к начальному состоянию.";
   });
 
   loadTask();
 }
 
 async function renderDay() {
-  const day = Number(document.body.dataset.day);
+  const dayId = Number(document.body.dataset.day);
+  const day = DAY_MAP[dayId];
   const content = document.getElementById("content");
   const toc = document.getElementById("toc");
   const toggle = document.getElementById("toggle-complete");
-  const progress = loadProgress();
 
+  if (!day) {
+    content.innerHTML = "<p>День не найден.</p>";
+    return;
+  }
+
+  const progress = loadProgress();
   const updateToggleLabel = () => {
-    toggle.textContent = progress[day] ? "Убрать отметку о прохождении" : "Отметить день пройденным";
+    toggle.textContent = progress[dayId] ? "Убрать отметку о прохождении" : "Отметить день пройденным";
   };
   updateToggleLabel();
 
   toggle.addEventListener("click", () => {
-    progress[day] = !progress[day];
-    saveProgress(progress);
+    const p = loadProgress();
+    p[dayId] = !p[dayId];
+    saveProgress(p);
+    progress[dayId] = p[dayId];
     updateToggleLabel();
   });
 
   try {
-    const res = await fetch(`content/day${day}.md`);
-    if (!res.ok) throw new Error("Не удалось загрузить markdown");
+    const res = await fetch(`content/day${dayId}.md`);
+    if (!res.ok) throw new Error("Не удалось загрузить контент дня");
     const md = await res.text();
-    marked.setOptions({ gfm: true, breaks: false });
-    content.innerHTML = marked.parse(md);
-
-    const headers = content.querySelectorAll("h2, h3");
-    toc.innerHTML = "";
-    headers.forEach((header) => {
-      const base = slugify(header.textContent || "section");
-      const id = base || `section-${Math.random().toString(36).slice(2, 7)}`;
-      header.id = id;
-      const link = document.createElement("a");
-      link.href = `#${id}`;
-      link.textContent = header.textContent || "Раздел";
-      toc.appendChild(link);
-    });
-
-    if (!headers.length) toc.innerHTML = "<p>Разделы не найдены</p>";
-  } catch (error) {
-    content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(error.message)}</p>`;
+    renderMarkdownContent(content, toc, md);
+  } catch (e) {
+    content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
   }
 
-  buildDayPagination(day);
-  await renderPractice(day);
+  buildDayPagination(dayId);
+  if (day.mode === "quiz") renderQuiz(dayId, toggle);
+  if (day.mode === "sql") await renderSqlPractice(dayId, toggle);
 }
 
 function main() {
