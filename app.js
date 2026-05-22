@@ -166,7 +166,7 @@ const DAY_TASKS = {
       id: "d1_t1",
       title: "Создай таблицу products",
       prompt: "Создай таблицу products с полями: product_id (PK), product_name (NOT NULL), category, price, in_stock.",
-      starter: "CREATE TABLE products (\n  product_id INTEGER PRIMARY KEY,\n  product_name TEXT NOT NULL,\n  category TEXT,\n  price REAL,\n  in_stock INTEGER\n);",
+      starter: "-- Создай таблицу products\nCREATE TABLE products (\n  product_id INTEGER PRIMARY KEY,\n  product_name TEXT NOT NULL,\n  category TEXT,\n  price REAL,\n  in_stock INTEGER\n);",
       validate: ({ db }) => {
         const r = db.exec("PRAGMA table_info(products);");
         if (!r.length || !r[0].values.length) return { ok: false, message: "Таблица products не найдена." };
@@ -184,7 +184,7 @@ const DAY_TASKS = {
       id: "d1_t2",
       title: "Добавь минимум 5 товаров",
       prompt: "Вставь минимум 5 строк в products через INSERT.",
-      starter: "INSERT INTO products (product_id, product_name, category, price, in_stock) VALUES\n  (1, 'iPhone 14', 'Электроника', 79990, 15),\n  (2, 'Samsung Galaxy S23', 'Электроника', 69990, 20),\n  (3, 'Наушники Sony', 'Аксессуары', 5990, 50),\n  (4, 'Мышь Razer', 'Периферия', 2999, 40),\n  (5, 'Веб-камера', 'Периферия', 4999, 25);",
+      starter: "-- Добавь минимум 5 товаров\nINSERT INTO products (product_id, product_name, category, price, in_stock) VALUES\n  -- (1, 'Название', 'Категория', 1000, 10)\n;",
       validate: ({ db }) => {
         const r = db.exec("SELECT COUNT(*) as c FROM products;");
         const count = Number(r[0].values[0][0]);
@@ -196,7 +196,7 @@ const DAY_TASKS = {
       id: "d1_t3",
       title: "SELECT с фильтром",
       prompt: "Выведи товары дороже 10000 рублей.",
-      starter: "SELECT product_name, price\nFROM products\nWHERE price > 10000;",
+      starter: "-- Выведи товары дороже 10000\nSELECT\nFROM\nWHERE ;",
       validate: ({ lastResult }) => {
         if (!lastResult) return { ok: false, message: "Запрос должен возвращать результат SELECT." };
         if (!lastResult.values.length) return { ok: false, message: "Пустой результат, ожидаются строки." };
@@ -213,7 +213,7 @@ const DAY_TASKS = {
       id: "d2_t1",
       title: "WHERE по категории",
       prompt: "Выведи все товары категории Электроника.",
-      starter: "SELECT *\nFROM products\nWHERE category = 'Электроника';",
+      starter: "-- Выведи все товары категории Электроника\nSELECT\nFROM\nWHERE ;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидаются строки с результатом." };
         const idx = lastResult.columns.findIndex((c) => c.toLowerCase() === "category");
@@ -226,7 +226,7 @@ const DAY_TASKS = {
       id: "d2_t2",
       title: "ORDER BY + LIMIT",
       prompt: "Покажи топ-3 самых дорогих товара.",
-      starter: "SELECT product_name, price\nFROM products\nORDER BY price DESC\nLIMIT 3;",
+      starter: "-- Топ-3 самых дорогих товара\nSELECT\nFROM\nORDER BY\nLIMIT ;",
       validate: ({ lastResult }) => {
         if (!lastResult || lastResult.values.length !== 3) return { ok: false, message: "Ожидается ровно 3 строки." };
         const idx = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
@@ -241,7 +241,7 @@ const DAY_TASKS = {
       id: "d2_t3",
       title: "DISTINCT",
       prompt: "Выведи все уникальные категории товаров.",
-      starter: "SELECT DISTINCT category\nFROM products;",
+      starter: "-- Уникальные категории\nSELECT DISTINCT\nFROM ;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Результат пуст." };
         const vals = lastResult.values.map((r) => String(r[0]));
@@ -257,7 +257,7 @@ const DAY_TASKS = {
       id: "d3_t1",
       title: "GROUP BY",
       prompt: "Посчитай количество клиентов по городам.",
-      starter: "SELECT city, COUNT(*) AS total_customers\nFROM customers\nGROUP BY city;",
+      starter: "-- Количество клиентов по городам\nSELECT\nFROM\nGROUP BY ;",
       validate: ({ lastResult }) => {
         if (!lastResult || lastResult.values.length < 2) return { ok: false, message: "Нужна сгруппированная выдача по городам." };
         const countIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("count") || c.toLowerCase().includes("total"));
@@ -269,7 +269,7 @@ const DAY_TASKS = {
       id: "d3_t2",
       title: "INNER JOIN",
       prompt: "Покажи клиентов и их заказы (name, product, amount) через INNER JOIN.",
-      starter: "SELECT c.name, o.product, o.amount\nFROM customers c\nINNER JOIN customer_orders o ON c.customer_id = o.customer_id;",
+      starter: "-- Клиенты и их заказы через INNER JOIN\nSELECT\nFROM customers c\nINNER JOIN customer_orders o ON ;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "JOIN не дал строк, проверь условие ON." };
         const cols = lastResult.columns.map((c) => c.toLowerCase());
@@ -284,7 +284,7 @@ const DAY_TASKS = {
       id: "d3_t3",
       title: "LEFT JOIN + NULL",
       prompt: "Найди клиентов без заказов (LEFT JOIN + WHERE ... IS NULL).",
-      starter: "SELECT c.customer_id, c.name\nFROM customers c\nLEFT JOIN customer_orders o ON c.customer_id = o.customer_id\nWHERE o.order_id IS NULL;",
+      starter: "-- Клиенты без заказов\nSELECT\nFROM customers c\nLEFT JOIN customer_orders o ON\nWHERE ;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидался хотя бы 1 клиент без заказов." };
         return { ok: true, message: "Верно: найден(ы) клиент(ы) без заказов." };
@@ -296,7 +296,7 @@ const DAY_TASKS = {
       id: "d4_t1",
       title: "Подзапрос NOT IN",
       prompt: "Найди товары, которые никогда не покупали.",
-      starter: "SELECT *\nFROM products\nWHERE product_id NOT IN (\n  SELECT DISTINCT product_id FROM order_items\n);",
+      starter: "-- Товары, которые не покупали\nSELECT\nFROM products\nWHERE product_id NOT IN (\n  SELECT\n  FROM\n);",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
         const idIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("product_id"));
@@ -310,7 +310,7 @@ const DAY_TASKS = {
       id: "d4_t2",
       title: "Топ-3 товара",
       prompt: "Выведи топ-3 самых продаваемых товара по количеству.",
-      starter: "SELECT p.product_name, SUM(oi.quantity) AS total_sold\nFROM products p\nJOIN order_items oi ON p.product_id = oi.product_id\nGROUP BY p.product_id\nORDER BY total_sold DESC\nLIMIT 3;",
+      starter: "-- Топ-3 по продажам\nSELECT\nFROM products p\nJOIN order_items oi ON\nGROUP BY\nORDER BY\nLIMIT ;",
       validate: ({ lastResult }) => {
         if (!lastResult || lastResult.values.length !== 3) return { ok: false, message: "Ожидаются ровно 3 строки." };
         const idx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("total"));
@@ -325,7 +325,7 @@ const DAY_TASKS = {
       id: "d4_t3",
       title: "Проверка целостности сумм",
       prompt: "Найди заказы, где total_amount не равен сумме order_items.",
-      starter: "SELECT\n  o.order_id,\n  o.total_amount,\n  SUM(oi.quantity * oi.unit_price) AS calculated_total\nFROM orders o\nLEFT JOIN order_items oi ON o.order_id = oi.order_id\nGROUP BY o.order_id\nHAVING ABS(o.total_amount - SUM(oi.quantity * oi.unit_price)) > 0.01;",
+      starter: "-- Заказы с некорректной total_amount\nSELECT\nFROM orders o\nLEFT JOIN order_items oi ON\nGROUP BY\nHAVING ;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидался минимум один проблемный заказ." };
         const idIdx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("order_id"));
