@@ -1,5 +1,6 @@
 ﻿const STORAGE_KEY = "vk-qa-day-progress-v1";
-const QUIZ_STATE_KEY = "vk-qa-quiz-state-v1";
+const THEORY_QUIZ_STATE_KEY = "vk-qa-theory-quiz-state-v2";
+const SQL_QUIZ_STATE_KEY = "vk-qa-sql-quiz-state-v1";
 const SQL_TASK_STATE_KEY = "vk-qa-sql-task-state-v1";
 const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
 
@@ -471,6 +472,273 @@ const QUIZ_BANK = {
   ]
 };
 
+const SQL_QUIZ_BANK = {
+  1: [
+    {
+      id: "sd1_q1",
+      question: "Какой запрос корректно выбирает все колонки из таблицы products?",
+      options: ["SELECT * FROM products;", "GET ALL FROM products;", "SHOW products *;", "SELECT products;"],
+      correct: 0,
+      explain: "В SQL стандартный синтаксис выборки: SELECT <columns> FROM <table>."
+    },
+    {
+      id: "sd1_q2",
+      question: "Что делает WHERE в запросе?",
+      options: [
+        "Фильтрует строки по условию",
+        "Сортирует строки",
+        "Группирует строки",
+        "Удаляет таблицу"
+      ],
+      correct: 0,
+      explain: "WHERE определяет предикат отбора строк до группировки/сортировки."
+    },
+    {
+      id: "sd1_q3",
+      question: "Чем `ORDER BY price DESC` отличается от `ORDER BY price ASC`?",
+      options: [
+        "DESC сортирует по убыванию, ASC по возрастанию",
+        "DESC работает только с числами",
+        "ASC и DESC одинаковы",
+        "DESC сортирует только текст"
+      ],
+      correct: 0,
+      explain: "DESC = от большего к меньшему, ASC = от меньшего к большему."
+    },
+    {
+      id: "sd1_q4",
+      question: "Как ограничить результат первыми 5 строками в SQLite?",
+      options: ["LIMIT 5", "TOP 5", "ROWNUM 5", "TAKE 5"],
+      correct: 0,
+      explain: "Для SQLite и Postgres используется LIMIT."
+    },
+    {
+      id: "sd1_q5",
+      question: "Что возвращает COUNT(*)?",
+      options: [
+        "Количество строк в выборке",
+        "Сумму значений первого столбца",
+        "Количество таблиц в БД",
+        "Количество уникальных значений"
+      ],
+      correct: 0,
+      explain: "COUNT(*) считает все строки результата."
+    },
+    {
+      id: "sd1_q6",
+      question: "Как записывается проверка на NULL?",
+      options: ["IS NULL", "= NULL", "== NULL", "IN NULL"],
+      correct: 0,
+      explain: "NULL сравнивается через IS NULL / IS NOT NULL."
+    },
+    {
+      id: "sd1_q7",
+      question: "Для чего нужен DISTINCT?",
+      options: [
+        "Убирает дубликаты строк/значений",
+        "Переименовывает колонки",
+        "Удаляет данные из таблицы",
+        "Объединяет таблицы"
+      ],
+      correct: 0,
+      explain: "DISTINCT оставляет только уникальные комбинации выбранных колонок."
+    },
+    {
+      id: "sd1_q8",
+      question: "Какая часть запроса обычно выполняется раньше логически: WHERE или ORDER BY?",
+      options: ["WHERE", "ORDER BY", "Они одновременно", "Сначала LIMIT"],
+      correct: 0,
+      explain: "Сначала фильтрация WHERE, потом сортировка ORDER BY."
+    }
+  ],
+  2: [
+    {
+      id: "sd2_q1",
+      question: "Что делает INNER JOIN?",
+      options: [
+        "Возвращает только совпавшие строки из обеих таблиц",
+        "Возвращает все строки из левой таблицы",
+        "Возвращает все строки из правой таблицы",
+        "Удаляет несовпавшие строки физически"
+      ],
+      correct: 0,
+      explain: "INNER JOIN оставляет только строки с совпадением по условию ON."
+    },
+    {
+      id: "sd2_q2",
+      question: "Для поиска записей без пары в правой таблице чаще используют...",
+      options: [
+        "LEFT JOIN + WHERE right_col IS NULL",
+        "INNER JOIN + WHERE right_col IS NULL",
+        "UNION",
+        "TRUNCATE"
+      ],
+      correct: 0,
+      explain: "Классический анти-join: LEFT JOIN + фильтрация NULL справа."
+    },
+    {
+      id: "sd2_q3",
+      question: "Когда нужен GROUP BY?",
+      options: [
+        "Когда рассчитываются агрегаты по группам",
+        "Только при сортировке",
+        "Только при удалении дублей",
+        "Он обязателен в каждом SELECT"
+      ],
+      correct: 0,
+      explain: "GROUP BY нужен для агрегаций на уровне групп."
+    },
+    {
+      id: "sd2_q4",
+      question: "Где правильно фильтровать агрегаты?",
+      options: ["HAVING", "WHERE", "ORDER BY", "LIMIT"],
+      correct: 0,
+      explain: "WHERE работает до агрегации, HAVING после агрегации."
+    },
+    {
+      id: "sd2_q5",
+      question: "Как посчитать число заказов на пользователя?",
+      options: [
+        "GROUP BY user_id + COUNT(*)",
+        "ORDER BY user_id + SUM(*)",
+        "WHERE user_id + COUNT",
+        "LIMIT 1"
+      ],
+      correct: 0,
+      explain: "Базовый паттерн: SELECT user_id, COUNT(*) FROM ... GROUP BY user_id."
+    },
+    {
+      id: "sd2_q6",
+      question: "Что лучше для читаемости сложного запроса?",
+      options: [
+        "Алиасы таблиц и понятные имена вычисляемых полей",
+        "Запрос в одну строку без отступов",
+        "Минимум пробелов",
+        "Только подзапросы без JOIN"
+      ],
+      correct: 0,
+      explain: "На лайвкодинге читаемость = быстрее отладка и легче объяснение."
+    },
+    {
+      id: "sd2_q7",
+      question: "В чем типичная ошибка при JOIN?",
+      options: [
+        "Неполное условие ON, которое создает лишние дубли",
+        "Использование SELECT",
+        "Применение ORDER BY",
+        "Наличие LIMIT"
+      ],
+      correct: 0,
+      explain: "Если ON задан неверно, количество строк может резко вырасти."
+    },
+    {
+      id: "sd2_q8",
+      question: "Как правильно отсортировать пользователей по общей сумме оплат по убыванию?",
+      options: [
+        "ORDER BY total_paid DESC",
+        "ORDER BY total_paid ASC",
+        "WHERE total_paid DESC",
+        "HAVING total_paid DESC"
+      ],
+      correct: 0,
+      explain: "Сортировка по агрегату обычно идет после вычисления алиаса."
+    }
+  ],
+  3: [
+    {
+      id: "sd3_q1",
+      question: "Что делать первым делом на SQL лайвкодинге, если условие не до конца ясно?",
+      options: [
+        "Уточнить допущения и проговорить трактовку задачи",
+        "Сразу писать длинный запрос",
+        "Отказаться решать",
+        "Спросить правильный ответ"
+      ],
+      correct: 0,
+      explain: "Уточнение допущений показывает зрелый инженерный подход."
+    },
+    {
+      id: "sd3_q2",
+      question: "Как чаще всего находят n-й максимум без оконных функций?",
+      options: [
+        "ORDER BY DESC + LIMIT 1 OFFSET n-1",
+        "WHERE MAX() = n",
+        "GROUP BY без агрегатов",
+        "JOIN таблицы сама на себя без условий"
+      ],
+      correct: 0,
+      explain: "Для простых задач LIMIT/OFFSET обычно достаточно."
+    },
+    {
+      id: "sd3_q3",
+      question: "Как проверить, что total заказа совпадает с суммой items?",
+      options: [
+        "Сгруппировать items по order_id и сравнить агрегат с total",
+        "Проверить только одну строку вручную",
+        "Сделать SELECT * без условий",
+        "Использовать только ORDER BY"
+      ],
+      correct: 0,
+      explain: "Это классическая задача на data quality/consistency."
+    },
+    {
+      id: "sd3_q4",
+      question: "Что лучше на интервью: идеальный, но необъяснимый запрос или чуть проще, но с ясной логикой?",
+      options: [
+        "Чуть проще, но полностью объяснимый",
+        "Необъяснимый, но длинный",
+        "Любой, если много строк",
+        "Только с CTE"
+      ],
+      correct: 0,
+      explain: "Интервью оценивает прозрачность мышления, не только финальный текст SQL."
+    },
+    {
+      id: "sd3_q5",
+      question: "Как безопасно отлаживать запрос с ошибкой?",
+      options: [
+        "Разбить на этапы: FROM/JOIN, затем WHERE, затем агрегаты и сортировку",
+        "Сразу переписать с нуля",
+        "Менять все части одновременно",
+        "Удалить WHERE и оставить как есть"
+      ],
+      correct: 0,
+      explain: "Пошаговая отладка резко ускоряет поиск причины ошибки."
+    },
+    {
+      id: "sd3_q6",
+      question: "Почему полезно проверять количество строк после JOIN?",
+      options: [
+        "Чтобы заметить неожиданные дубли/потери данных",
+        "Это не нужно",
+        "Только для больших БД",
+        "Только при UPDATE"
+      ],
+      correct: 0,
+      explain: "Контроль кардинальности защищает от логических ошибок в отчете."
+    },
+    {
+      id: "sd3_q7",
+      question: "Как обычно задают алиас вычисляемому полю?",
+      options: ["AS alias_name", "TO alias_name", "ALIAS alias_name", "NAME alias_name"],
+      correct: 0,
+      explain: "Стандарт: SUM(amount) AS total_amount."
+    },
+    {
+      id: "sd3_q8",
+      question: "Что из этого верно про SQL собеседование QA?",
+      options: [
+        "Чаще спрашивают базовые запросы и логику проверки данных, а не сложные оптимизации",
+        "Всегда дают только оконные функции и рекурсию",
+        "SQL не спрашивают у QA вообще",
+        "Нужно знать только синтаксис CREATE TABLE"
+      ],
+      correct: 0,
+      explain: "Обычно это практичные задачи на выборку, join и проверку консистентности."
+    }
+  ]
+};
+
 const SQL_SEEDS = {
   1: `
     DROP TABLE IF EXISTS products;
@@ -787,10 +1055,10 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
   if (!headers.length) tocEl.innerHTML = "<p>Разделы не найдены</p>";
 }
 
-function getQuizStats(dayId) {
-  const questions = QUIZ_BANK[dayId] || [];
-  const state = loadJson(QUIZ_STATE_KEY, {});
-  const answers = state[dayId] || {};
+function getQuizStats(dayId, bank, stateKey) {
+  const questions = bank[dayId] || [];
+  const state = loadJson(stateKey, {});
+  const answers = state[String(dayId)] || {};
   let answered = 0;
   let correct = 0;
   questions.forEach((q) => {
@@ -803,26 +1071,27 @@ function getQuizStats(dayId) {
   return { total: questions.length, answered, correct };
 }
 
-function getSqlStats(dayId) {
+function getSqlTaskStats(dayId) {
   const tasks = SQL_TASKS[dayId] || [];
   const state = loadJson(SQL_TASK_STATE_KEY, {});
-  const solvedState = state[dayId] || {};
+  const solvedState = state[String(dayId)] || {};
   const solved = tasks.filter((t) => Boolean(solvedState[t.id])).length;
   return { total: tasks.length, solved };
 }
 
-function renderQuizInto(dayId, container, onProgress) {
-  const questions = QUIZ_BANK[dayId] || [];
-  const allState = loadJson(QUIZ_STATE_KEY, {});
-  if (!allState[dayId]) allState[dayId] = {};
+function renderQuizInto(dayId, container, options) {
+  const { bank, stateKey, title, onProgress } = options;
+  const questions = bank[dayId] || [];
+  const allState = loadJson(stateKey, {});
+  if (!allState[String(dayId)]) allState[String(dayId)] = {};
 
   function draw() {
-    const answers = allState[dayId];
-    const stats = getQuizStats(dayId);
+    const answers = allState[String(dayId)];
+    const stats = getQuizStats(dayId, bank, stateKey);
 
     container.innerHTML = `
       <div class="quiz-summary panel">
-        <strong>Теория: ${stats.correct}/${stats.total} верно</strong>
+        <strong>${escapeHtml(title)}: ${stats.correct}/${stats.total} верно</strong>
         <span>Отвечено: ${stats.answered}/${stats.total}</span>
       </div>
       ${questions.map((q, idx) => {
@@ -846,8 +1115,8 @@ function renderQuizInto(dayId, container, onProgress) {
       btn.addEventListener("click", () => {
         const qid = btn.getAttribute("data-qid");
         const opt = Number(btn.getAttribute("data-opt"));
-        allState[dayId][qid] = opt;
-        saveJson(QUIZ_STATE_KEY, allState);
+        allState[String(dayId)][qid] = opt;
+        saveJson(stateKey, allState);
         draw();
         onProgress();
       });
@@ -934,8 +1203,8 @@ async function renderSqlInto(dayId, container, onProgress) {
   const tasks = SQL_TASKS[dayId] || [];
   const allState = loadJson(SQL_TASK_STATE_KEY, {});
   const allDrafts = loadJson(SQL_DRAFT_KEY, {});
-  if (!allState[dayId]) allState[dayId] = {};
-  if (!allDrafts[dayId]) allDrafts[dayId] = {};
+  if (!allState[String(dayId)]) allState[String(dayId)] = {};
+  if (!allDrafts[String(dayId)]) allDrafts[String(dayId)] = {};
 
   let active = 0;
   let db = await buildDb(dayId);
@@ -976,7 +1245,7 @@ async function renderSqlInto(dayId, container, onProgress) {
 
   function redrawTaskList() {
     list.innerHTML = tasks.map((task, index) => {
-      const solved = Boolean(allState[dayId][task.id]);
+      const solved = Boolean(allState[String(dayId)][task.id]);
       return `<button class="task-btn ${index === active ? "active" : ""}" data-task="${index}" type="button"><span>${escapeHtml(task.title)}</span><strong>${solved ? "✓" : "•"}</strong></button>`;
     }).join("");
 
@@ -989,7 +1258,7 @@ async function renderSqlInto(dayId, container, onProgress) {
   }
 
   function updateProgressText() {
-    const solved = tasks.filter((t) => Boolean(allState[dayId][t.id])).length;
+    const solved = tasks.filter((t) => Boolean(allState[String(dayId)][t.id])).length;
     progressEl.textContent = `SQL-прогресс: ${solved}/${tasks.length}`;
   }
 
@@ -997,7 +1266,7 @@ async function renderSqlInto(dayId, container, onProgress) {
     const task = tasks[active];
     title.textContent = task.title;
     prompt.textContent = task.prompt;
-    input.value = allDrafts[dayId][task.id] || task.starter;
+    input.value = allDrafts[String(dayId)][task.id] || task.starter;
     status.textContent = "";
     status.className = "check-status";
     result.innerHTML = "";
@@ -1007,7 +1276,7 @@ async function renderSqlInto(dayId, container, onProgress) {
 
   input.addEventListener("input", () => {
     const task = tasks[active];
-    allDrafts[dayId][task.id] = input.value;
+    allDrafts[String(dayId)][task.id] = input.value;
     saveJson(SQL_DRAFT_KEY, allDrafts);
   });
 
@@ -1033,7 +1302,7 @@ async function renderSqlInto(dayId, container, onProgress) {
       renderSqlResult(result, runData);
       const verdict = task.validate({ db: checkDb, lastResult: runData.lastResult });
       if (verdict.ok) {
-        allState[dayId][task.id] = true;
+        allState[String(dayId)][task.id] = true;
         saveJson(SQL_TASK_STATE_KEY, allState);
         status.className = "check-status ok";
         status.textContent = verdict.message;
@@ -1075,68 +1344,91 @@ async function renderSqlInto(dayId, container, onProgress) {
   loadTask();
 }
 
-async function renderHybridPractice(dayId, toggleBtn, defaultView = "theory", onViewChange = () => {}) {
+function contentPath(trackId, dayId) {
+  const safeTrack = trackId === "sql" ? "sql" : "theory";
+  return `content/${safeTrack}-day${dayId}.md`;
+}
+
+async function renderTheoryPractice(dayId, toggleBtn) {
   const panel = document.getElementById("practice-panel");
   panel.innerHTML = `
     <div class="practice-cockpit">
       <div class="cockpit-head">
         <div>
           <p class="eyebrow">Практический тренажер</p>
-          <h2>День ${dayId}: Theory + SQL</h2>
+          <h2>Теория: День ${dayId}</h2>
         </div>
         <div class="cockpit-chips" id="cockpit-chips"></div>
       </div>
-
-      <div class="practice-switch" role="tablist" aria-label="Переключение режима практики">
-        <button class="switch-btn active" data-view="theory" type="button">Теория (квиз)</button>
-        <button class="switch-btn" data-view="sql" type="button">SQL лайвкодинг</button>
-      </div>
-
-      <section class="practice-view active" id="view-theory"></section>
-      <section class="practice-view" id="view-sql"></section>
+      <section class="practice-view active" id="theory-quiz-view"></section>
     </div>
   `;
 
   const chips = panel.querySelector("#cockpit-chips");
-  const theoryView = panel.querySelector("#view-theory");
-  const sqlView = panel.querySelector("#view-sql");
-  const switchButtons = panel.querySelectorAll(".switch-btn");
-  let activeView = defaultView === "sql" ? "sql" : "theory";
+  const quizView = panel.querySelector("#theory-quiz-view");
 
-  function setActiveView(view) {
-    activeView = view === "sql" ? "sql" : "theory";
-    switchButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-view") === view));
-    theoryView.classList.toggle("active", view === "theory");
-    sqlView.classList.toggle("active", view === "sql");
-    onViewChange(activeView);
-  }
-
-  function refreshDayCompletion() {
-    const quizStats = getQuizStats(dayId);
-    const sqlStats = getSqlStats(dayId);
+  const refresh = () => {
+    const stats = getQuizStats(dayId, QUIZ_BANK, THEORY_QUIZ_STATE_KEY);
 
     chips.innerHTML = `
-      <span class="chip">Теория: ${quizStats.correct}/${quizStats.total}</span>
-      <span class="chip">SQL: ${sqlStats.solved}/${sqlStats.total}</span>
-      <span class="chip ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "chip-ok" : ""}">Статус дня: ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "Готов" : "В процессе"}</span>
+      <span class="chip">Квиз: ${stats.correct}/${stats.total}</span>
+      <span class="chip ${stats.correct === stats.total ? "chip-ok" : ""}">Статус: ${stats.correct === stats.total ? "Готов" : "В процессе"}</span>
     `;
 
-    if (quizStats.correct === quizStats.total) setModuleCompleted(dayId, "theory", activeView === "theory" ? toggleBtn : null);
-    if (sqlStats.solved === sqlStats.total) setModuleCompleted(dayId, "sql", activeView === "sql" ? toggleBtn : null);
-    onViewChange(activeView);
-  }
+    if (stats.total > 0 && stats.correct === stats.total) setModuleCompleted(dayId, "theory", toggleBtn);
+  };
 
-  switchButtons.forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const view = btn.getAttribute("data-view");
-      setActiveView(view);
-    });
+  renderQuizInto(dayId, quizView, {
+    bank: QUIZ_BANK,
+    stateKey: THEORY_QUIZ_STATE_KEY,
+    title: "Теория",
+    onProgress: refresh
   });
+  refresh();
+}
 
-  renderQuizInto(dayId, theoryView, refreshDayCompletion);
-  await renderSqlInto(dayId, sqlView, refreshDayCompletion);
-  setActiveView(activeView);
-  refreshDayCompletion();
+async function renderSqlPractice(dayId, toggleBtn) {
+  const panel = document.getElementById("practice-panel");
+  panel.innerHTML = `
+    <div class="practice-cockpit">
+      <div class="cockpit-head">
+        <div>
+          <p class="eyebrow">Практический тренажер</p>
+          <h2>SQL: День ${dayId}</h2>
+        </div>
+        <div class="cockpit-chips" id="cockpit-chips"></div>
+      </div>
+      <section class="practice-view active" id="sql-quiz-view"></section>
+      <section class="practice-view active" id="sql-live-view"></section>
+    </div>
+  `;
+
+  const chips = panel.querySelector("#cockpit-chips");
+  const quizView = panel.querySelector("#sql-quiz-view");
+  const liveView = panel.querySelector("#sql-live-view");
+
+  const refresh = () => {
+    const quizStats = getQuizStats(dayId, SQL_QUIZ_BANK, SQL_QUIZ_STATE_KEY);
+    const sqlStats = getSqlTaskStats(dayId);
+    const done = quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total;
+
+    chips.innerHTML = `
+      <span class="chip">SQL-квиз: ${quizStats.correct}/${quizStats.total}</span>
+      <span class="chip">SQL-задачи: ${sqlStats.solved}/${sqlStats.total}</span>
+      <span class="chip ${done ? "chip-ok" : ""}">Статус: ${done ? "Готов" : "В процессе"}</span>
+    `;
+
+    if (done) setModuleCompleted(dayId, "sql", toggleBtn);
+  };
+
+  renderQuizInto(dayId, quizView, {
+    bank: SQL_QUIZ_BANK,
+    stateKey: SQL_QUIZ_STATE_KEY,
+    title: "SQL-квиз",
+    onProgress: refresh
+  });
+  await renderSqlInto(dayId, liveView, refresh);
+  refresh();
 }
 
 async function renderDay() {
@@ -1146,7 +1438,7 @@ async function renderDay() {
   const toc = document.getElementById("toc");
   const toggle = document.getElementById("toggle-complete");
   const params = new URLSearchParams(window.location.search);
-  let activeTrack = params.get("view") === "sql" ? "sql" : "theory";
+  const activeTrack = params.get("view") === "sql" ? "sql" : "theory";
 
   if (!day) {
     content.innerHTML = "<p>День не найден.</p>";
@@ -1157,6 +1449,7 @@ async function renderDay() {
     const progress = loadProgress();
     const done = Boolean(progress[moduleKey(activeTrack, dayId)]);
     const track = getTrack(activeTrack);
+    document.title = `День ${dayId} — ${track.label} — Подготовка к техничке QA в ВК`;
     toggle.textContent = done ? `Убрать отметку (${track.label})` : `Отметить пройденным (${track.label})`;
   };
   updateToggle();
@@ -1170,7 +1463,7 @@ async function renderDay() {
   });
 
   try {
-    const res = await fetch(`content/day${dayId}.md`);
+    const res = await fetch(contentPath(activeTrack, dayId));
     if (!res.ok) throw new Error("Не удалось загрузить контент дня");
     const md = await res.text();
     renderMarkdown(content, toc, md);
@@ -1179,11 +1472,8 @@ async function renderDay() {
   }
 
   buildDayPagination(dayId, activeTrack);
-  await renderHybridPractice(dayId, toggle, activeTrack, (nextView) => {
-    activeTrack = nextView;
-    updateToggle();
-    buildDayPagination(dayId, activeTrack);
-  });
+  if (activeTrack === "sql") await renderSqlPractice(dayId, toggle);
+  else await renderTheoryPractice(dayId, toggle);
 }
 
 function main() {
