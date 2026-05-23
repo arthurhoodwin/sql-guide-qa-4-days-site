@@ -86,6 +86,7 @@ const SEARCH_SYNONYM_GROUPS = [
 let lessonSearchIndexPromise = null;
 let searchSynonymLookup = null;
 let lessonSearchUiBound = false;
+const SEARCH_FREQ_TIE_TOLERANCE = 1;
 
 const QUIZ_BANK = {
   1: [
@@ -1793,6 +1794,7 @@ function parseMarkdownSectionsForSearch(markdownText, source) {
   const lines = String(markdownText || "").replace(/\r/g, "").split("\n");
   const sections = [];
   const usedIds = new Set();
+  let sectionOrder = 0;
 
   const uniqueHeadingId = (text, fallback = "section") => {
     const base = slugify(text || fallback) || fallback;
@@ -1820,11 +1822,14 @@ function parseMarkdownSectionsForSearch(markdownText, source) {
     const sectionTitle = currentH3 || currentH2 || source.title;
     const sectionPath = currentH3 ? `${currentH2} → ${currentH3}` : currentH2;
     const anchorId = currentH3Id || currentH2Id;
+    sectionOrder += 1;
     sections.push({
       sourceTitle: source.title,
       href: `${source.href}${anchorId ? `#${anchorId}` : ""}`,
       sectionTitle,
       sectionPath,
+      sourceOrder: Number(source.sourceOrder || 0),
+      sectionOrder,
       body: cleaned,
       headingSearch: normalizeSearchText(`${sectionTitle} ${sectionPath}`)
     });
@@ -1858,11 +1863,20 @@ function parseMarkdownSectionsForSearch(markdownText, source) {
   return sections.map((section) => {
     const searchText = normalizeSearchText(`${section.sectionTitle} ${section.sectionPath} ${section.body}`);
     const tokens = tokenizeSearch(searchText);
+    const stems = tokens.map(stemSearchToken);
+    const tokenFreq = new Map();
+    const stemFreq = new Map();
+    tokens.forEach((token) => tokenFreq.set(token, (tokenFreq.get(token) || 0) + 1));
+    stems.forEach((stem) => stemFreq.set(stem, (stemFreq.get(stem) || 0) + 1));
     return {
       ...section,
       searchText,
+      tokens,
+      stems,
+      tokenFreq,
+      stemFreq,
       tokenSet: new Set(tokens),
-      stemSet: new Set(tokens.map(stemSearchToken))
+      stemSet: new Set(stems)
     };
   });
 }
@@ -1870,12 +1884,12 @@ function parseMarkdownSectionsForSearch(markdownText, source) {
 async function buildLessonSearchIndex() {
   if (lessonSearchIndexPromise) return lessonSearchIndexPromise;
   lessonSearchIndexPromise = Promise.all(
-    LESSON_SEARCH_SOURCES.map(async (source) => {
+    LESSON_SEARCH_SOURCES.map(async (source, sourceOrder) => {
       try {
         const response = await fetch(source.path);
         if (!response.ok) return [];
         const markdown = await response.text();
-        return parseMarkdownSectionsForSearch(markdown, source);
+        return parseMarkdownSectionsForSearch(markdown, { ...source, sourceOrder });
       } catch {
         return [];
       }
@@ -1884,11 +1898,40 @@ async function buildLessonSearchIndex() {
   return lessonSearchIndexPromise;
 }
 
-function scoreSearchSection(section, rawQuery, expandedTokens) {
+function getSectionKeywordFrequency(section, queryTokens, expandedTokens) {
+  const queryUnique = [...new Set(queryTokens.map(normalizeSearchText).filter(Boolean))];
+  const expandedUnique = [...new Set(expandedTokens.map(normalizeSearchText).filter(Boolean))];
+  let queryHits = 0;
+  let expandedHits = 0;
+
+  queryUnique.forEach((token) => {
+    const exact = section.tokenFreq.get(token) || 0;
+    if (exact > 0) {
+      queryHits += exact;
+      return;
+    }
+    const stem = stemSearchToken(token);
+    queryHits += section.stemFreq.get(stem) || 0;
+  });
+
+  expandedUnique.forEach((token) => {
+    if (queryUnique.includes(token)) return;
+    expandedHits += section.tokenFreq.get(token) || 0;
+  });
+
+  return {
+    queryHits,
+    expandedHits,
+    total: (queryHits * 3) + expandedHits
+  };
+}
+
+function scoreSearchSection(section, rawQuery, queryTokens, expandedTokens) {
   if (!expandedTokens.length) return 0;
   let score = 0;
   let hits = 0;
   const normalizedQuery = normalizeSearchText(rawQuery);
+  const freq = getSectionKeywordFrequency(section, queryTokens, expandedTokens);
 
   if (normalizedQuery && section.searchText.includes(normalizedQuery)) score += 10;
 
@@ -1910,9 +1953,10 @@ function scoreSearchSection(section, rawQuery, expandedTokens) {
     }
   });
 
-  if (hits === 0 && !(normalizedQuery && section.searchText.includes(normalizedQuery))) return 0;
+  if (freq.total > 0) score += freq.total * 12;
+  if (hits === 0 && !(normalizedQuery && section.searchText.includes(normalizedQuery)) && freq.total === 0) return 0;
   if (section.headingSearch.includes(normalizedQuery)) score += 6;
-  return score;
+  return { score, freq };
 }
 
 function extractSearchSnippet(section, queryTokens) {
@@ -1933,16 +1977,33 @@ function performLessonSearch(index, query) {
   const expanded = expandSearchTokens(queryTokens);
 
   return index
-    .map((section) => ({
-      section,
-      score: scoreSearchSection(section, query, expanded)
-    }))
-    .filter((item) => item.score > 0)
-    .sort((a, b) => b.score - a.score)
+    .map((section) => {
+      const scoring = scoreSearchSection(section, query, queryTokens, expanded);
+      return {
+        section,
+        score: typeof scoring === "number" ? scoring : scoring.score,
+        freq: typeof scoring === "number" ? 0 : scoring.freq.total,
+        queryHits: typeof scoring === "number" ? 0 : scoring.freq.queryHits
+      };
+    })
+    .filter((item) => item.score > 0 || item.freq > 0)
+    .sort((a, b) => {
+      const freqDiff = b.freq - a.freq;
+      if (Math.abs(freqDiff) > SEARCH_FREQ_TIE_TOLERANCE) return freqDiff;
+
+      // При близкой частоте отдаём приоритет тому, что раньше в программе.
+      const sourceDiff = (a.section.sourceOrder || 0) - (b.section.sourceOrder || 0);
+      if (sourceDiff !== 0) return sourceDiff;
+      const sectionDiff = (a.section.sectionOrder || 0) - (b.section.sectionOrder || 0);
+      if (sectionDiff !== 0) return sectionDiff;
+
+      return b.score - a.score;
+    })
     .slice(0, 12)
     .map((item) => ({
       ...item.section,
       score: item.score,
+      freq: item.freq,
       snippet: extractSearchSnippet(item.section, queryTokens)
     }));
 }
