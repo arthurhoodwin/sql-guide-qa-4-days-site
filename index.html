@@ -51,6 +51,24 @@
       <div class="progress-bar"><span id="progress-fill"></span></div>
     </section>
 
+    <section class="panel smart-search-section" id="lesson-search-panel">
+      <h2>Поиск по всем урокам</h2>
+      <p>Ищи по ключевым словам и близким терминам: покажу конкретные подпункты, где это упоминается.</p>
+      <div class="smart-search-controls">
+        <input id="lesson-search-input" type="search" placeholder="Например: регресс, 401, scrum, баг-репорт, join" />
+        <button class="btn ghost" id="lesson-search-clear" type="button">Очистить</button>
+      </div>
+      <div class="smart-search-chips">
+        <button class="btn ghost" type="button" data-search-chip="тест-дизайн">Тест-дизайн</button>
+        <button class="btn ghost" type="button" data-search-chip="api">API</button>
+        <button class="btn ghost" type="button" data-search-chip="agile">Agile</button>
+        <button class="btn ghost" type="button" data-search-chip="sql join">SQL JOIN</button>
+        <button class="btn ghost" type="button" data-search-chip="баг-репорт">Баг-репорт</button>
+      </div>
+      <p class="smart-search-status" id="lesson-search-status">Введи запрос, чтобы найти нужные куски теории и практики.</p>
+      <div class="smart-search-results" id="lesson-search-results"></div>
+    </section>
+
     <section class="panel track-section">
       <h2>Раздел 1: Теоретический блок (3 дня)</h2>
       <p>Только теоретический режим: тестирование, процессы, API, документация.</p>
@@ -85,7 +103,7 @@
   </main>
 
   <footer class="shell footer">Интенсив: 3 дня до технички QA в ВК</footer>
-  <script src="app.js?v=20260523ux5"></script>
+  <script src="app.js?v=20260523ux6"></script>
 </body>
 </html>
 

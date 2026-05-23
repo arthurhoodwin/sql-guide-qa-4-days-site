@@ -21,14 +21,24 @@
   <main class="shell quizlets-layout">
     <section class="panel quizlets-head">
       <p class="eyebrow">Доп. подготовка</p>
-      <h1>QA Квизлеты (Intern/Junior)</h1>
-      <p>Большой банк карточек для технички: теория тестирования, Agile/SDLC, API/HTTP, документация, SQL-база и логика проверки.</p>
+      <h1>QA-квизлеты (Intern/Junior)</h1>
+      <p>Режим интенсивного повторения: фильтруй темы, помечай сложные карточки, отмечай выученные и добивай слабые места перед собесом.</p>
+      <p class="quizlets-hint">Горячие клавиши: <code>←/→</code> листать, <code>Пробел</code> перевернуть, <code>H</code> сложная, <code>K</code> выучил.</p>
     </section>
 
-    <section class="panel quizlets-controls">
+    <section class="panel quizlets-controls quizlets-controls-main">
       <label>
         Тема
         <select id="quiz-topic"></select>
+      </label>
+      <label>
+        Режим
+        <select id="quiz-mode">
+          <option value="all">Все карточки</option>
+          <option value="hard">Только сложные</option>
+          <option value="known">Только выученные</option>
+          <option value="learning">Только в работе</option>
+        </select>
       </label>
       <label>
         Поиск
@@ -37,17 +47,18 @@
       <div class="quizlets-meta">
         <span id="quiz-count">Карточек: 0</span>
         <span id="quiz-hard-count">Сложных: 0</span>
+        <span id="quiz-known-count">Выучено: 0</span>
         <span id="quiz-progress">0 / 0</span>
       </div>
     </section>
 
-    <section class="panel quizlets-controls">
-      <div class="quizlets-actions">
-        <button class="btn ghost" id="quiz-only-hard" type="button">Режим: все карточки</button>
-      </div>
-    </section>
-
     <section class="panel quiz-card-wrap">
+      <div class="quiz-card-header">
+        <span class="chip" id="card-topic">Тема: —</span>
+        <span class="chip" id="card-level">Уровень: —</span>
+        <span class="chip" id="card-state">Статус: —</span>
+      </div>
+
       <article class="flip-card" id="quiz-card" role="button" tabindex="0" aria-label="Перевернуть карточку">
         <div class="flip-inner">
           <div class="flip-face flip-front">
@@ -62,20 +73,25 @@
       </article>
 
       <div class="quizlets-actions">
-        <button class="btn ghost" id="quiz-prev" type="button">< Предыдущая</button>
+        <button class="btn ghost" id="quiz-prev" type="button">← Предыдущая</button>
         <button class="btn primary" id="quiz-flip" type="button">Показать ответ</button>
-        <button class="btn ghost" id="quiz-next" type="button">Следующая ></button>
+        <button class="btn ghost" id="quiz-next" type="button">Следующая →</button>
         <button class="btn ghost" id="quiz-random" type="button">Случайная</button>
+      </div>
+
+      <div class="quizlets-actions quizlets-study-actions">
         <button class="btn ghost" id="quiz-mark-hard" type="button">Отметить как сложную</button>
+        <button class="btn ghost" id="quiz-mark-known" type="button">Отметить как выученную</button>
+        <button class="btn ghost" id="quiz-reset-card" type="button">Сбросить статус карточки</button>
+      </div>
+
+      <div class="quizlets-progress-line">
+        <span id="quiz-progress-line-fill"></span>
       </div>
     </section>
   </main>
 
   <script src="quizlets-data.js"></script>
-  <script src="quizlets.js?v=20260523qz2"></script>
+  <script src="quizlets.js?v=20260523qz3"></script>
 </body>
 </html>
-
-
-
-

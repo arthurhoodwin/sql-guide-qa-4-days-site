@@ -58,6 +58,34 @@ const TRACKS = [
 
 const DAY_MAP = Object.fromEntries(DAYS.map((d) => [d.id, d]));
 const TOTAL_MODULES = DAYS.length * TRACKS.length;
+const LESSON_SEARCH_SOURCES = [
+  { id: "theory-1", title: "Теория • День 1", path: "content/theory-day1.md", href: "day1.html?view=theory" },
+  { id: "theory-2", title: "Теория • День 2", path: "content/theory-day2.md", href: "day2.html?view=theory" },
+  { id: "theory-3", title: "Теория • День 3", path: "content/theory-day3.md", href: "day3.html?view=theory" },
+  { id: "sql-1", title: "SQL • День 1", path: "content/sql-day1.md", href: "day1.html?view=sql" },
+  { id: "sql-2", title: "SQL • День 2", path: "content/sql-day2.md", href: "day2.html?view=sql" },
+  { id: "sql-3", title: "SQL • День 3", path: "content/sql-day3.md", href: "day3.html?view=sql" },
+  { id: "behavioral-1", title: "Поведенческий • День 1", path: "content/behavioral-day1.md", href: "day1.html?view=behavioral" },
+  { id: "behavioral-2", title: "Поведенческий • День 2", path: "content/behavioral-day2.md", href: "day2.html?view=behavioral" },
+  { id: "behavioral-3", title: "Поведенческий • День 3", path: "content/behavioral-day3.md", href: "day3.html?view=behavioral" },
+  { id: "team-process", title: "Процессы в команде • Теория", path: "content/team-processes-deep.md", href: "team-processes.html" }
+];
+
+const SEARCH_SYNONYM_GROUPS = [
+  ["api", "апи", "rest", "endpoint", "эндпоинт", "ручка", "метод", "http", "запрос", "ответ", "status", "статус", "код"],
+  ["тест", "тестирование", "qa", "qc", "проверка", "валидация", "верификация"],
+  ["баг", "дефект", "ошибка", "issue", "failure", "error"],
+  ["регресс", "регрессия", "retest", "регрессионный"],
+  ["тестдизайн", "тест-дизайн", "эквивалентность", "граничный", "bva", "pairwise", "попарное"],
+  ["жизненныйцикл", "sdlc", "стадий", "этап", "релиз", "release"],
+  ["agile", "scrum", "спринт", "ретро", "стендап", "kanban", "канбан"],
+  ["документация", "чеклист", "чек-лист", "testcase", "test-case", "багрепорт", "баг-репорт"],
+  ["sql", "select", "where", "join", "group", "having", "order", "limit", "агрегация", "подзапрос", "query"]
+];
+
+let lessonSearchIndexPromise = null;
+let searchSynonymLookup = null;
+let lessonSearchUiBound = false;
 
 const QUIZ_BANK = {
   1: [
@@ -1685,6 +1713,321 @@ function escapeHtml(value) {
     .replace(/'/g, "&#039;");
 }
 
+function normalizeSearchText(value) {
+  return String(value || "")
+    .toLowerCase()
+    .replace(/ё/g, "е")
+    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function tokenizeSearch(value) {
+  return normalizeSearchText(value)
+    .split(" ")
+    .map((token) => token.trim())
+    .filter((token) => token.length > 1);
+}
+
+function stemSearchToken(token) {
+  const t = String(token || "");
+  if (t.length <= 4) return t;
+
+  if (/^[a-z]+$/i.test(t)) {
+    return t
+      .replace(/(ations|ation|ments|ment|ingly|edly|ing|ed|ly|es|s)$/i, "")
+      .trim() || t;
+  }
+
+  return t
+    .replace(/(иями|ями|ами|ого|его|ому|ему|ыми|ими|иях|иям|ией|ция|ции|ций|ировать|ного|ными|ный|ная|ное|ные|ать|ить|ешь|ете|ют|ет|ая|яя|ое|ее|ые|ие|ов|ев|ом|ем|ам|ям|ах|ях|а|я|ы|и|о|е|у|ю)$/u, "")
+    .trim() || t;
+}
+
+function stripMarkdownSyntax(value) {
+  return String(value || "")
+    .replace(/`{1,3}[^`]*`{1,3}/g, " ")
+    .replace(/!\[[^\]]*\]\([^\)]*\)/g, " ")
+    .replace(/\[[^\]]*\]\([^\)]*\)/g, " ")
+    .replace(/[*_>#~\-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function buildSearchSynonymLookup() {
+  if (searchSynonymLookup) return searchSynonymLookup;
+  const lookup = new Map();
+  SEARCH_SYNONYM_GROUPS.forEach((group) => {
+    const normalizedGroup = [...new Set(group.map((token) => normalizeSearchText(token)).filter(Boolean))];
+    normalizedGroup.forEach((token) => {
+      lookup.set(token, normalizedGroup);
+      const stem = stemSearchToken(token);
+      if (!lookup.has(stem)) lookup.set(stem, normalizedGroup);
+    });
+  });
+  searchSynonymLookup = lookup;
+  return lookup;
+}
+
+function expandSearchTokens(tokens) {
+  const lookup = buildSearchSynonymLookup();
+  const expanded = new Set();
+  tokens.forEach((token) => {
+    const normalized = normalizeSearchText(token);
+    if (!normalized) return;
+    const stem = stemSearchToken(normalized);
+    expanded.add(normalized);
+    expanded.add(stem);
+    const group = lookup.get(normalized) || lookup.get(stem);
+    if (group) {
+      group.forEach((item) => {
+        expanded.add(item);
+        expanded.add(stemSearchToken(item));
+      });
+    }
+  });
+  return [...expanded].filter(Boolean);
+}
+
+function parseMarkdownSectionsForSearch(markdownText, source) {
+  const lines = String(markdownText || "").replace(/\r/g, "").split("\n");
+  const sections = [];
+  const usedIds = new Set();
+
+  const uniqueHeadingId = (text, fallback = "section") => {
+    const base = slugify(text || fallback) || fallback;
+    let id = base;
+    let seq = 2;
+    while (usedIds.has(id)) {
+      id = `${base}-${seq}`;
+      seq += 1;
+    }
+    usedIds.add(id);
+    return id;
+  };
+
+  let currentH2 = "Введение";
+  let currentH2Id = uniqueHeadingId(currentH2, "intro");
+  let currentH3 = "";
+  let currentH3Id = "";
+  let buffer = [];
+
+  const flush = () => {
+    const cleaned = stripMarkdownSyntax(buffer.join(" "));
+    buffer = [];
+    if (!cleaned) return;
+
+    const sectionTitle = currentH3 || currentH2 || source.title;
+    const sectionPath = currentH3 ? `${currentH2} → ${currentH3}` : currentH2;
+    const anchorId = currentH3Id || currentH2Id;
+    sections.push({
+      sourceTitle: source.title,
+      href: `${source.href}${anchorId ? `#${anchorId}` : ""}`,
+      sectionTitle,
+      sectionPath,
+      body: cleaned,
+      headingSearch: normalizeSearchText(`${sectionTitle} ${sectionPath}`)
+    });
+  };
+
+  lines.forEach((line) => {
+    const h2Match = line.match(/^##\s+(.+)$/);
+    if (h2Match) {
+      flush();
+      currentH2 = stripMarkdownSyntax(h2Match[1]);
+      currentH2Id = uniqueHeadingId(currentH2, "section");
+      currentH3 = "";
+      currentH3Id = "";
+      return;
+    }
+
+    const h3Match = line.match(/^###\s+(.+)$/);
+    if (h3Match) {
+      flush();
+      currentH3 = stripMarkdownSyntax(h3Match[1]);
+      currentH3Id = uniqueHeadingId(currentH3, "subsection");
+      return;
+    }
+
+    if (/^#\s+/.test(line) || /^####\s+/.test(line)) return;
+    buffer.push(line);
+  });
+
+  flush();
+
+  return sections.map((section) => {
+    const searchText = normalizeSearchText(`${section.sectionTitle} ${section.sectionPath} ${section.body}`);
+    const tokens = tokenizeSearch(searchText);
+    return {
+      ...section,
+      searchText,
+      tokenSet: new Set(tokens),
+      stemSet: new Set(tokens.map(stemSearchToken))
+    };
+  });
+}
+
+async function buildLessonSearchIndex() {
+  if (lessonSearchIndexPromise) return lessonSearchIndexPromise;
+  lessonSearchIndexPromise = Promise.all(
+    LESSON_SEARCH_SOURCES.map(async (source) => {
+      try {
+        const response = await fetch(source.path);
+        if (!response.ok) return [];
+        const markdown = await response.text();
+        return parseMarkdownSectionsForSearch(markdown, source);
+      } catch {
+        return [];
+      }
+    })
+  ).then((allSections) => allSections.flat());
+  return lessonSearchIndexPromise;
+}
+
+function scoreSearchSection(section, rawQuery, expandedTokens) {
+  if (!expandedTokens.length) return 0;
+  let score = 0;
+  let hits = 0;
+  const normalizedQuery = normalizeSearchText(rawQuery);
+
+  if (normalizedQuery && section.searchText.includes(normalizedQuery)) score += 10;
+
+  expandedTokens.forEach((token) => {
+    const stem = stemSearchToken(token);
+    if (section.tokenSet.has(token)) {
+      score += 4;
+      hits += 1;
+      return;
+    }
+    if (section.stemSet.has(stem)) {
+      score += 2;
+      hits += 1;
+      return;
+    }
+    if (section.searchText.includes(token)) {
+      score += 1;
+      hits += 1;
+    }
+  });
+
+  if (hits === 0 && !(normalizedQuery && section.searchText.includes(normalizedQuery))) return 0;
+  if (section.headingSearch.includes(normalizedQuery)) score += 6;
+  return score;
+}
+
+function extractSearchSnippet(section, queryTokens) {
+  const body = section.body || "";
+  if (!body) return "";
+  const tokens = queryTokens.map((token) => normalizeSearchText(token)).filter(Boolean);
+  const lines = body.split(/(?<=[.!?])\s+/);
+  const best = lines.find((line) => {
+    const normalized = normalizeSearchText(line);
+    return tokens.some((token) => normalized.includes(token) || normalized.includes(stemSearchToken(token)));
+  }) || lines[0];
+  return best.length > 220 ? `${best.slice(0, 220)}…` : best;
+}
+
+function performLessonSearch(index, query) {
+  const queryTokens = tokenizeSearch(query);
+  if (!queryTokens.length) return [];
+  const expanded = expandSearchTokens(queryTokens);
+
+  return index
+    .map((section) => ({
+      section,
+      score: scoreSearchSection(section, query, expanded)
+    }))
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 12)
+    .map((item) => ({
+      ...item.section,
+      score: item.score,
+      snippet: extractSearchSnippet(item.section, queryTokens)
+    }));
+}
+
+function setupLessonSearch() {
+  if (lessonSearchUiBound) return;
+  const input = document.getElementById("lesson-search-input");
+  const status = document.getElementById("lesson-search-status");
+  const results = document.getElementById("lesson-search-results");
+  const clearBtn = document.getElementById("lesson-search-clear");
+  if (!input || !status || !results) return;
+
+  let index = [];
+  let timerId = null;
+
+  const renderResults = (hits, query) => {
+    if (!query.trim()) {
+      results.innerHTML = "";
+      status.textContent = "Введи запрос, чтобы найти нужные куски теории и практики.";
+      return;
+    }
+
+    if (!hits.length) {
+      results.innerHTML = "";
+      status.textContent = `По запросу "${query}" ничего не найдено. Попробуй переформулировать.`;
+      return;
+    }
+
+    status.textContent = `Найдено совпадений: ${hits.length}. Показаны самые релевантные подпункты.`;
+    results.innerHTML = hits.map((hit) => `
+      <article class="search-hit">
+        <div class="search-hit-top">
+          <strong>${escapeHtml(hit.sourceTitle)} → ${escapeHtml(hit.sectionPath)}</strong>
+          <span class="search-hit-score">релевантность: ${hit.score}</span>
+        </div>
+        <p>${escapeHtml(hit.snippet || hit.body)}</p>
+        <a class="btn ghost" href="${escapeHtml(hit.href)}">Открыть подпункт</a>
+      </article>
+    `).join("");
+    wireLastLessonTracking(results);
+  };
+
+  const runSearch = () => {
+    const query = input.value.trim();
+    if (!query) {
+      renderResults([], "");
+      return;
+    }
+    const hits = performLessonSearch(index, query);
+    renderResults(hits, query);
+  };
+
+  input.addEventListener("input", () => {
+    clearTimeout(timerId);
+    timerId = setTimeout(runSearch, 130);
+  });
+
+  if (clearBtn) {
+    clearBtn.addEventListener("click", () => {
+      input.value = "";
+      renderResults([], "");
+      input.focus();
+    });
+  }
+
+  document.querySelectorAll("[data-search-chip]").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      input.value = chip.getAttribute("data-search-chip") || "";
+      runSearch();
+      input.focus();
+    });
+  });
+
+  status.textContent = "Индексирую уроки для поиска…";
+  buildLessonSearchIndex().then((preparedIndex) => {
+    index = preparedIndex;
+    status.textContent = `Индекс готов: ${index.length} подпунктов из ${LESSON_SEARCH_SOURCES.length} уроков.`;
+    if (input.value.trim()) runSearch();
+  }).catch(() => {
+    status.textContent = "Не удалось подготовить индекс поиска. Обнови страницу.";
+  });
+
+  lessonSearchUiBound = true;
+}
+
 function slugify(text) {
   return text
     .toLowerCase()
@@ -1800,6 +2143,7 @@ function renderIndex() {
   }
 
   wireLastLessonTracking(document);
+  setupLessonSearch();
 }
 
 function buildDayPagination(dayId, view = "theory") {
