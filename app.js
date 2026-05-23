@@ -1150,6 +1150,15 @@ function slugify(text) {
     .replace(/-+/g, "-");
 }
 
+function shuffleArray(items) {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
 function setModuleCompleted(dayId, trackId, toggleBtn) {
   const p = loadProgress();
   p[moduleKey(trackId, dayId)] = true;
@@ -1258,6 +1267,12 @@ function renderQuizInto(dayId, container, options) {
   const questions = bank[dayId] || [];
   const allState = loadJson(stateKey, {});
   if (!allState[String(dayId)]) allState[String(dayId)] = {};
+  const shuffledOptions = Object.fromEntries(
+    questions.map((q) => [
+      q.id,
+      shuffleArray(q.options.map((opt, idx) => ({ text: opt, originalIndex: idx })))
+    ])
+  );
 
   function draw() {
     const answers = allState[String(dayId)];
@@ -1273,11 +1288,12 @@ function renderQuizInto(dayId, container, options) {
         const isAnswered = typeof selected === "number";
         const isCorrect = isAnswered && selected === q.correct;
         const cls = isAnswered ? (isCorrect ? "ok" : "fail") : "";
+        const opts = shuffledOptions[q.id] || q.options.map((opt, i) => ({ text: opt, originalIndex: i }));
         return `
           <section class="panel quiz-card ${cls}">
             <h3>${idx + 1}. ${escapeHtml(q.question)}</h3>
             <div class="quiz-options">
-              ${q.options.map((opt, i) => `<button class="quiz-option ${selected === i ? "active" : ""}" data-qid="${q.id}" data-opt="${i}" type="button">${escapeHtml(opt)}</button>`).join("")}
+              ${opts.map((opt) => `<button class="quiz-option ${selected === opt.originalIndex ? "active" : ""}" data-qid="${q.id}" data-opt="${opt.originalIndex}" type="button">${escapeHtml(opt.text)}</button>`).join("")}
             </div>
             ${isAnswered ? `<p class="quiz-explain ${isCorrect ? "ok" : "fail"}">${escapeHtml(q.explain)}</p>` : ""}
           </section>
