@@ -21,8 +21,29 @@ const DAYS = [
   }
 ];
 
+const TRACKS = [
+  {
+    id: "theory",
+    label: "Теория",
+    cardSubtitleByDay: {
+      1: "Виды тестирования, тест-дизайн, risk-based подход",
+      2: "SDLC/Agile, клиент-сервер, API, жизненный цикл",
+      3: "Тестовая документация, баг-репорты, репетиция технички"
+    }
+  },
+  {
+    id: "sql",
+    label: "SQL",
+    cardSubtitleByDay: {
+      1: "SELECT/WHERE/ORDER BY/LIMIT на базовых таблицах",
+      2: "JOIN/GROUP BY/агрегации на интервью задачах",
+      3: "Контрольные SQL задачи и лайвкодинг под собес"
+    }
+  }
+];
+
 const DAY_MAP = Object.fromEntries(DAYS.map((d) => [d.id, d]));
-const TOTAL_DAYS = DAYS.length;
+const TOTAL_MODULES = DAYS.length * TRACKS.length;
 
 const QUIZ_BANK = {
   1: [
@@ -135,6 +156,30 @@ const QUIZ_BANK = {
       ],
       correct: 0,
       explain: "Risk-based подход снижает шанс пропустить критичный дефект."
+    },
+    {
+      id: "d1_q11",
+      question: "Какая техника тест-дизайна (test design technique — техника проектирования тестов) лучше подходит для большого числа комбинаций параметров?",
+      options: [
+        "Pairwise (попарное тестирование)",
+        "Только random testing",
+        "Только smoke",
+        "Только exploratory"
+      ],
+      correct: 0,
+      explain: "Pairwise уменьшает число кейсов и сохраняет приемлемое покрытие комбинаций."
+    },
+    {
+      id: "d1_q12",
+      question: "Что важнее всего проверить в acceptance criteria (критериях приемки) перед началом тестирования?",
+      options: [
+        "Измеримость и однозначность формулировок",
+        "Только количество пунктов",
+        "Только орфографию",
+        "Только ссылку на макет"
+      ],
+      correct: 0,
+      explain: "Неоднозначные критерии обычно приводят к спорным дефектам и потерям времени."
     }
   ],
   2: [
@@ -252,6 +297,30 @@ const QUIZ_BANK = {
       ],
       correct: 0,
       explain: "Интервьюеру важна практическая применимость процесса, а не теория ради теории."
+    },
+    {
+      id: "d2_q11",
+      question: "Что из перечисленного точнее всего описывает контрактное тестирование API (contract testing — контрактное тестирование)?",
+      options: [
+        "Проверка, что запросы/ответы соответствуют согласованной схеме и правилам",
+        "Только проверка времени ответа",
+        "Только проверка UI после API вызова",
+        "Только проверка логов сервера"
+      ],
+      correct: 0,
+      explain: "Контрактное тестирование снижает риск рассинхронизации между фронтом и бэком."
+    },
+    {
+      id: "d2_q12",
+      question: "Как лучше валидировать pagination (пагинацию) в API?",
+      options: [
+        "Проверить limit/offset, стабильность сортировки и отсутствие дублей между страницами",
+        "Проверить только первую страницу",
+        "Проверить только статус 200",
+        "Проверить только UI-таблицу"
+      ],
+      correct: 0,
+      explain: "Типовая ошибка пагинации проявляется при переходах между страницами и сортировке."
     }
   ],
   3: [
@@ -374,6 +443,30 @@ const QUIZ_BANK = {
       ],
       correct: 0,
       explain: "Для технички важно мышление о рисках и коммуникация, а не только теория."
+    },
+    {
+      id: "d3_q11",
+      question: "Какой ответ на вопрос про severity/priority на собесе считается сильным?",
+      options: [
+        "С примерами, когда severity высокая, а priority может быть ниже, и наоборот",
+        "Просто сказать, что это одно и то же",
+        "Сказать, что эти поля не нужны",
+        "Обсудить только UI баги"
+      ],
+      correct: 0,
+      explain: "Интервьюеры ждут практику, а не заученное определение без контекста."
+    },
+    {
+      id: "d3_q12",
+      question: "Что лучше всего сделать, если на лайвкодинге SQL запрос не работает с первого раза?",
+      options: [
+        "Проверить синтаксис по шагам, сузить выборку и проговорить, что исправляешь",
+        "Сразу переписать всё с нуля молча",
+        "Прекратить попытки",
+        "Сказать, что задача некорректная"
+      ],
+      correct: 0,
+      explain: "Спокойная отладка и прозрачность мышления на интервью ценятся выше скорости."
     }
   ]
 };
@@ -572,10 +665,24 @@ function saveJson(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
+function moduleKey(trackId, dayId) {
+  return `${trackId}-${dayId}`;
+}
+
+function getTrack(trackId) {
+  return TRACKS.find((track) => track.id === trackId) || TRACKS[0];
+}
+
 function loadProgress() {
   const data = loadJson(STORAGE_KEY, {});
   const p = {};
-  DAYS.forEach((d) => { p[d.id] = Boolean(data[d.id]); });
+  DAYS.forEach((d) => {
+    TRACKS.forEach((track) => {
+      const key = moduleKey(track.id, d.id);
+      // Legacy migration: old format stored one shared status by day id.
+      p[key] = Boolean(data[key] ?? data[d.id]);
+    });
+  });
   return p;
 }
 
@@ -601,23 +708,29 @@ function slugify(text) {
     .replace(/-+/g, "-");
 }
 
-function setDayCompleted(dayId, toggleBtn) {
+function setModuleCompleted(dayId, trackId, toggleBtn) {
   const p = loadProgress();
-  p[dayId] = true;
+  p[moduleKey(trackId, dayId)] = true;
   saveProgress(p);
-  if (toggleBtn) toggleBtn.textContent = "Убрать отметку о прохождении";
+  if (toggleBtn) {
+    const track = getTrack(trackId);
+    toggleBtn.textContent = `Убрать отметку (${track.label})`;
+  }
 }
 
-function buildDayCard(day, progress) {
-  const done = progress[day.id];
+function buildDayCard(day, track, progress) {
+  const key = moduleKey(track.id, day.id);
+  const done = Boolean(progress[key]);
+  const subtitle = track.cardSubtitleByDay[day.id] || day.subtitle;
+  const link = `day${day.id}.html?view=${track.id}`;
   return `
     <article class="panel day-card">
       <div class="day-badge">День ${day.id}</div>
-      <h3 class="day-title">${escapeHtml(day.title)}</h3>
-      <p class="day-sub">${escapeHtml(day.subtitle)}</p>
+      <h3 class="day-title">День ${day.id}: ${escapeHtml(track.label)}</h3>
+      <p class="day-sub">${escapeHtml(subtitle)}</p>
       <div class="day-actions">
-        <a class="btn primary" href="day${day.id}.html">Открыть</a>
-        <button class="btn ghost" data-day-toggle="${day.id}" type="button">${done ? "Сбросить" : "Готово"}</button>
+        <a class="btn primary" href="${link}">Открыть</a>
+        <button class="btn ghost" data-module-toggle="${escapeHtml(key)}" type="button">${done ? "Сбросить" : "Готово"}</button>
         <span class="status">${done ? "Пройдено" : "В процессе"}</span>
       </div>
     </article>`;
@@ -625,41 +738,37 @@ function buildDayCard(day, progress) {
 
 function renderIndex() {
   const progress = loadProgress();
-  const grid = document.getElementById("days-grid");
-  const theoryTrack = document.getElementById("theory-track-days");
-  const sqlTrack = document.getElementById("sql-track-days");
+  const theoryGrid = document.getElementById("theory-grid");
+  const sqlGrid = document.getElementById("sql-grid");
   const done = Object.values(progress).filter(Boolean).length;
+  const theoryTrack = getTrack("theory");
+  const sqlTrack = getTrack("sql");
 
-  grid.innerHTML = DAYS.map((d) => buildDayCard(d, progress)).join("");
+  theoryGrid.innerHTML = DAYS.map((d) => buildDayCard(d, theoryTrack, progress)).join("");
+  sqlGrid.innerHTML = DAYS.map((d) => buildDayCard(d, sqlTrack, progress)).join("");
 
   const text = document.getElementById("overall-progress");
   const fill = document.getElementById("progress-fill");
-  text.textContent = `${done} из ${TOTAL_DAYS} модулей отмечено как пройдено`;
-  fill.style.width = `${(done / TOTAL_DAYS) * 100}%`;
+  text.textContent = `${done} из ${TOTAL_MODULES} модулей отмечено как пройдено`;
+  fill.style.width = `${(done / TOTAL_MODULES) * 100}%`;
 
-  if (theoryTrack) {
-    theoryTrack.innerHTML = [1, 2, 3].map((d) => `<a class="btn ghost track-link" href="day${d}.html?view=theory">Теория: День ${d}</a>`).join("");
-  }
-  if (sqlTrack) {
-    sqlTrack.innerHTML = [1, 2, 3].map((d) => `<a class="btn ghost track-link" href="day${d}.html?view=sql">SQL: День ${d}</a>`).join("");
-  }
-
-  grid.querySelectorAll("[data-day-toggle]").forEach((btn) => {
+  document.querySelectorAll("[data-module-toggle]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const dayId = Number(btn.getAttribute("data-day-toggle"));
-      progress[dayId] = !progress[dayId];
+      const key = btn.getAttribute("data-module-toggle");
+      progress[key] = !progress[key];
       saveProgress(progress);
       renderIndex();
     });
   });
 }
 
-function buildDayPagination(dayId) {
+function buildDayPagination(dayId, view = "theory") {
   const wrap = document.getElementById("day-nav");
   const index = DAYS.findIndex((d) => d.id === dayId);
   const prev = index > 0 ? DAYS[index - 1] : null;
   const next = index < DAYS.length - 1 ? DAYS[index + 1] : null;
-  wrap.innerHTML = `${prev ? `<a class="btn ghost" href="day${prev.id}.html">← День ${prev.id}</a>` : "<span></span>"}${next ? `<a class="btn primary" href="day${next.id}.html">День ${next.id} →</a>` : `<a class="btn primary" href="index.html">К модулям</a>`}`;
+  const suffix = `?view=${view === "sql" ? "sql" : "theory"}`;
+  wrap.innerHTML = `${prev ? `<a class="btn ghost" href="day${prev.id}.html${suffix}">← День ${prev.id}</a>` : "<span></span>"}${next ? `<a class="btn primary" href="day${next.id}.html${suffix}">День ${next.id} →</a>` : `<a class="btn primary" href="index.html">К модулям</a>`}`;
 }
 
 function renderMarkdown(contentEl, tocEl, markdownText) {
@@ -966,7 +1075,7 @@ async function renderSqlInto(dayId, container, onProgress) {
   loadTask();
 }
 
-async function renderHybridPractice(dayId, toggleBtn, defaultView = "theory") {
+async function renderHybridPractice(dayId, toggleBtn, defaultView = "theory", onViewChange = () => {}) {
   const panel = document.getElementById("practice-panel");
   panel.innerHTML = `
     <div class="practice-cockpit">
@@ -992,11 +1101,14 @@ async function renderHybridPractice(dayId, toggleBtn, defaultView = "theory") {
   const theoryView = panel.querySelector("#view-theory");
   const sqlView = panel.querySelector("#view-sql");
   const switchButtons = panel.querySelectorAll(".switch-btn");
+  let activeView = defaultView === "sql" ? "sql" : "theory";
 
   function setActiveView(view) {
+    activeView = view === "sql" ? "sql" : "theory";
     switchButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-view") === view));
     theoryView.classList.toggle("active", view === "theory");
     sqlView.classList.toggle("active", view === "sql");
+    onViewChange(activeView);
   }
 
   function refreshDayCompletion() {
@@ -1006,12 +1118,12 @@ async function renderHybridPractice(dayId, toggleBtn, defaultView = "theory") {
     chips.innerHTML = `
       <span class="chip">Теория: ${quizStats.correct}/${quizStats.total}</span>
       <span class="chip">SQL: ${sqlStats.solved}/${sqlStats.total}</span>
-      <span class="chip ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "chip-ok" : ""}">Статус: ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "Готов" : "В процессе"}</span>
+      <span class="chip ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "chip-ok" : ""}">Статус дня: ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "Готов" : "В процессе"}</span>
     `;
 
-    if (quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total) {
-      setDayCompleted(dayId, toggleBtn);
-    }
+    if (quizStats.correct === quizStats.total) setModuleCompleted(dayId, "theory", activeView === "theory" ? toggleBtn : null);
+    if (sqlStats.solved === sqlStats.total) setModuleCompleted(dayId, "sql", activeView === "sql" ? toggleBtn : null);
+    onViewChange(activeView);
   }
 
   switchButtons.forEach((btn) => {
@@ -1023,7 +1135,7 @@ async function renderHybridPractice(dayId, toggleBtn, defaultView = "theory") {
 
   renderQuizInto(dayId, theoryView, refreshDayCompletion);
   await renderSqlInto(dayId, sqlView, refreshDayCompletion);
-  setActiveView(defaultView === "sql" ? "sql" : "theory");
+  setActiveView(activeView);
   refreshDayCompletion();
 }
 
@@ -1033,23 +1145,27 @@ async function renderDay() {
   const content = document.getElementById("content");
   const toc = document.getElementById("toc");
   const toggle = document.getElementById("toggle-complete");
+  const params = new URLSearchParams(window.location.search);
+  let activeTrack = params.get("view") === "sql" ? "sql" : "theory";
 
   if (!day) {
     content.innerHTML = "<p>День не найден.</p>";
     return;
   }
 
-  const progress = loadProgress();
   const updateToggle = () => {
-    toggle.textContent = progress[dayId] ? "Убрать отметку о прохождении" : "Отметить день пройденным";
+    const progress = loadProgress();
+    const done = Boolean(progress[moduleKey(activeTrack, dayId)]);
+    const track = getTrack(activeTrack);
+    toggle.textContent = done ? `Убрать отметку (${track.label})` : `Отметить пройденным (${track.label})`;
   };
   updateToggle();
 
   toggle.addEventListener("click", () => {
     const p = loadProgress();
-    p[dayId] = !p[dayId];
+    const key = moduleKey(activeTrack, dayId);
+    p[key] = !p[key];
     saveProgress(p);
-    progress[dayId] = p[dayId];
     updateToggle();
   });
 
@@ -1062,10 +1178,12 @@ async function renderDay() {
     content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(error.message)}</p>`;
   }
 
-  buildDayPagination(dayId);
-  const params = new URLSearchParams(window.location.search);
-  const defaultView = params.get("view") === "sql" ? "sql" : "theory";
-  await renderHybridPractice(dayId, toggle, defaultView);
+  buildDayPagination(dayId, activeTrack);
+  await renderHybridPractice(dayId, toggle, activeTrack, (nextView) => {
+    activeTrack = nextView;
+    updateToggle();
+    buildDayPagination(dayId, activeTrack);
+  });
 }
 
 function main() {

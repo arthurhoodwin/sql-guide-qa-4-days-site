@@ -22,27 +22,39 @@
       <a class="btn ghost" href="sandbox.html">SQL-песочница</a>
       <a class="btn ghost" href="#days">К программе</a>
     </div>
+    <div class="hero-split-links">
+      <div class="hero-track-row">
+        <span>Теория:</span>
+        <a href="day1.html?view=theory">День 1</a>
+        <a href="day2.html?view=theory">День 2</a>
+        <a href="day3.html?view=theory">День 3</a>
+      </div>
+      <div class="hero-track-row">
+        <span>SQL:</span>
+        <a href="day1.html?view=sql">День 1</a>
+        <a href="day2.html?view=sql">День 2</a>
+        <a href="day3.html?view=sql">День 3</a>
+      </div>
+    </div>
   </header>
 
   <main class="shell" id="days">
     <section class="panel progress-panel">
       <h2>Твой прогресс</h2>
-      <p id="overall-progress">0 из 3 модулей отмечено как пройдено</p>
+      <p id="overall-progress">0 из 6 модулей отмечено как пройдено</p>
       <div class="progress-bar"><span id="progress-fill"></span></div>
     </section>
 
-    <section class="days-grid" id="days-grid"></section>
-
     <section class="panel track-section">
-      <h2>Параллельный Трек: Теория (3 дня)</h2>
-      <p>Отдельный вход в режим квизов по каждому дню.</p>
-      <div class="track-links" id="theory-track-days"></div>
+      <h2>Раздел 1: Теория + Собес (3 дня)</h2>
+      <p>Только теоретический режим: тестирование, процессы, API, документация.</p>
+      <section class="days-grid" id="theory-grid"></section>
     </section>
 
     <section class="panel track-section">
-      <h2>Параллельный Трек: SQL (3 дня)</h2>
-      <p>Отдельный вход в SQL-режим по каждому дню.</p>
-      <div class="track-links" id="sql-track-days"></div>
+      <h2>Раздел 2: SQL Подготовка (3 дня)</h2>
+      <p>Только SQL режим: лайвкодинг и задачи под собеседование.</p>
+      <section class="days-grid" id="sql-grid"></section>
     </section>
   </main>
 
