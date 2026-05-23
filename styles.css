@@ -343,6 +343,12 @@ p {
   padding: 0.2rem 0.6rem;
 }
 
+.status.status-done {
+  border-color: #8fd8cb;
+  background: #e9faf6;
+  color: #0b6258;
+}
+
 .topbar {
   position: sticky;
   top: 0;
@@ -355,6 +361,20 @@ p {
   border-bottom: 0;
   backdrop-filter: none;
   background: transparent;
+}
+
+body[data-page="sandbox"] .topbar,
+body[data-page="quizlets"] .topbar,
+body[data-page="day"] .topbar,
+body[data-page="team-processes"] .topbar,
+body[data-page="team-processes-quiz"] .topbar {
+  margin-top: 0.72rem;
+  margin-bottom: 0.62rem;
+  padding: 0.62rem 0.72rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(247, 250, 253, 0.96) 0%, rgba(244, 248, 252, 0.92) 100%);
+  backdrop-filter: blur(8px);
 }
 
 .day-layout {

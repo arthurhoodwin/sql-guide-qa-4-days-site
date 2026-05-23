@@ -1,72 +1,72 @@
-п»ї<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QA РљРІРёР·Р»РµС‚С‹ вЂ” РџРѕРґРіРѕС‚РѕРІРєР° Рє С‚РµС…РЅРёС‡РєРµ</title>
+  <title>QA Квизлеты — Подготовка к техничке</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260523d8" />
+  <link rel="stylesheet" href="styles.css?v=20260523d9" />
 </head>
 <body data-page="quizlets">
   <div class="bg-shape bg-shape-1"></div>
   <div class="bg-shape bg-shape-2"></div>
 
   <header class="shell topbar">
-    <a class="btn ghost" href="index.html">в†ђ РќР° РіР»Р°РІРЅСѓСЋ</a>
-    <a class="btn ghost" href="sandbox.html">SQL-РїРµСЃРѕС‡РЅРёС†Р°</a>
+    <a class="btn ghost" href="index.html">< На главную</a>
+    <a class="btn ghost" href="sandbox.html">SQL-песочница</a>
   </header>
 
   <main class="shell quizlets-layout">
     <section class="panel quizlets-head">
-      <p class="eyebrow">Р”РѕРї. РїРѕРґРіРѕС‚РѕРІРєР°</p>
-      <h1>QA РљРІРёР·Р»РµС‚С‹ (Intern/Junior)</h1>
-      <p>Р‘РѕР»СЊС€РѕР№ Р±Р°РЅРє РєР°СЂС‚РѕС‡РµРє РґР»СЏ С‚РµС…РЅРёС‡РєРё: С‚РµРѕСЂРёСЏ С‚РµСЃС‚РёСЂРѕРІР°РЅРёСЏ, Agile/SDLC, API/HTTP, РґРѕРєСѓРјРµРЅС‚Р°С†РёСЏ, SQL-Р±Р°Р·Р° Рё Р»РѕРіРёРєР° РїСЂРѕРІРµСЂРєРё.</p>
+      <p class="eyebrow">Доп. подготовка</p>
+      <h1>QA Квизлеты (Intern/Junior)</h1>
+      <p>Большой банк карточек для технички: теория тестирования, Agile/SDLC, API/HTTP, документация, SQL-база и логика проверки.</p>
     </section>
 
     <section class="panel quizlets-controls">
       <label>
-        РўРµРјР°
+        Тема
         <select id="quiz-topic"></select>
       </label>
       <label>
-        РџРѕРёСЃРє
-        <input id="quiz-search" type="text" placeholder="РќР°РїСЂРёРјРµСЂ: regression, 401, JOIN" />
+        Поиск
+        <input id="quiz-search" type="text" placeholder="Например: regression, 401, JOIN" />
       </label>
       <div class="quizlets-meta">
-        <span id="quiz-count">РљР°СЂС‚РѕС‡РµРє: 0</span>
-        <span id="quiz-hard-count">РЎР»РѕР¶РЅС‹С…: 0</span>
+        <span id="quiz-count">Карточек: 0</span>
+        <span id="quiz-hard-count">Сложных: 0</span>
         <span id="quiz-progress">0 / 0</span>
       </div>
     </section>
 
     <section class="panel quizlets-controls">
       <div class="quizlets-actions">
-        <button class="btn ghost" id="quiz-only-hard" type="button">Р РµР¶РёРј: РІСЃРµ РєР°СЂС‚РѕС‡РєРё</button>
+        <button class="btn ghost" id="quiz-only-hard" type="button">Режим: все карточки</button>
       </div>
     </section>
 
     <section class="panel quiz-card-wrap">
-      <article class="flip-card" id="quiz-card" role="button" tabindex="0" aria-label="РџРµСЂРµРІРµСЂРЅСѓС‚СЊ РєР°СЂС‚РѕС‡РєСѓ">
+      <article class="flip-card" id="quiz-card" role="button" tabindex="0" aria-label="Перевернуть карточку">
         <div class="flip-inner">
           <div class="flip-face flip-front">
-            <h3>Р’РѕРїСЂРѕСЃ</h3>
+            <h3>Вопрос</h3>
             <p id="card-front"></p>
           </div>
           <div class="flip-face flip-back">
-            <h3>РћС‚РІРµС‚</h3>
+            <h3>Ответ</h3>
             <p id="card-back"></p>
           </div>
         </div>
       </article>
 
       <div class="quizlets-actions">
-        <button class="btn ghost" id="quiz-prev" type="button">в†ђ РџСЂРµРґС‹РґСѓС‰Р°СЏ</button>
-        <button class="btn primary" id="quiz-flip" type="button">РџРѕРєР°Р·Р°С‚СЊ РѕС‚РІРµС‚</button>
-        <button class="btn ghost" id="quiz-next" type="button">РЎР»РµРґСѓСЋС‰Р°СЏ в†’</button>
-        <button class="btn ghost" id="quiz-random" type="button">РЎР»СѓС‡Р°Р№РЅР°СЏ</button>
-        <button class="btn ghost" id="quiz-mark-hard" type="button">РћС‚РјРµС‚РёС‚СЊ РєР°Рє СЃР»РѕР¶РЅСѓСЋ</button>
+        <button class="btn ghost" id="quiz-prev" type="button">< Предыдущая</button>
+        <button class="btn primary" id="quiz-flip" type="button">Показать ответ</button>
+        <button class="btn ghost" id="quiz-next" type="button">Следующая ></button>
+        <button class="btn ghost" id="quiz-random" type="button">Случайная</button>
+        <button class="btn ghost" id="quiz-mark-hard" type="button">Отметить как сложную</button>
       </div>
     </section>
   </main>
@@ -75,6 +75,7 @@
   <script src="quizlets.js?v=20260523qz2"></script>
 </body>
 </html>
+
 
 
 

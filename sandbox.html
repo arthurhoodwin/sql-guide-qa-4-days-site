@@ -1,13 +1,13 @@
-п»ї<!doctype html>
+<!doctype html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SQL РџРµСЃРѕС‡РЅРёС†Р° вЂ” QA Р’Рљ Sprint</title>
+  <title>SQL Песочница — QA ВК Sprint</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260523d8" />
+  <link rel="stylesheet" href="styles.css?v=20260523d9" />
   <script src="https://cdn.jsdelivr.net/npm/sql.js@1.11.0/dist/sql-wasm.js"></script>
 </head>
 <body data-page="sandbox">
@@ -15,34 +15,34 @@
   <div class="bg-shape bg-shape-2"></div>
 
   <header class="shell topbar">
-    <a class="btn ghost" href="index.html">в†ђ РќР° РіР»Р°РІРЅСѓСЋ</a>
-    <span class="chip">РЎРІРѕР±РѕРґРЅР°СЏ РїСЂР°РєС‚РёРєР° SQL</span>
+    <a class="btn ghost" href="index.html">< На главную</a>
+    <span class="chip">Свободная практика SQL</span>
   </header>
 
   <main class="shell sandbox3-layout">
     <section class="panel sandbox3-headline">
-      <h1>SQL-РїРµСЃРѕС‡РЅРёС†Р°</h1>
-      <p>Р’С‹Р±РµСЂРё Р·Р°РґР°С‡Сѓ РёР· Р±Р°РЅРєР° РёР»Рё СЂР°Р±РѕС‚Р°Р№ РІ СЃРІРѕР±РѕРґРЅРѕРј СЂРµР¶РёРјРµ.</p>
+      <h1>SQL-песочница</h1>
+      <p>Выбери задачу из банка или работай в свободном режиме.</p>
     </section>
 
     <section class="sandbox3-workspace">
       <section class="panel sandbox3-editor">
         <div class="sandbox3-row">
-          <label class="field-label" for="dataset">Р”Р°С‚Р°СЃРµС‚</label>
+          <label class="field-label" for="dataset">Датасет</label>
           <div class="sandbox3-controls">
             <select id="dataset" class="field-input"></select>
-            <button class="btn ghost" id="load-dataset" type="button">РџРµСЂРµР·Р°РіСЂСѓР·РёС‚СЊ РґР°С‚Р°СЃРµС‚</button>
-            <button class="btn ghost" id="delete-dataset" type="button">РЈРґР°Р»РёС‚СЊ РєР°СЃС‚РѕРјРЅС‹Р№ РґР°С‚Р°СЃРµС‚</button>
+            <button class="btn ghost" id="load-dataset" type="button">Перезагрузить датасет</button>
+            <button class="btn ghost" id="delete-dataset" type="button">Удалить кастомный датасет</button>
           </div>
-          <p class="sandbox3-note" id="dataset-lock-hint" hidden>Р”Р»СЏ Р°РєС‚РёРІРЅРѕР№ Р·Р°РґР°С‡Рё РґР°С‚Р°СЃРµС‚ С„РёРєСЃРёСЂСѓРµС‚СЃСЏ Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё.</p>
+          <p class="sandbox3-note" id="dataset-lock-hint" hidden>Для активной задачи датасет фиксируется автоматически.</p>
         </div>
 
-        <textarea id="sandbox-sql" class="sandbox-sql" spellcheck="false" placeholder="РџРёС€Рё SQL Р·РґРµСЃСЊ... (Ctrl/Cmd + Enter вЂ” РІС‹РїРѕР»РЅРёС‚СЊ)"></textarea>
+        <textarea id="sandbox-sql" class="sandbox-sql" spellcheck="false" placeholder="Пиши SQL здесь... (Ctrl/Cmd + Enter — выполнить)"></textarea>
         <div id="sql-autocomplete-hint" class="sql-autocomplete-hint"></div>
         <div class="workbench-actions">
-          <button class="btn primary" id="run-sql" type="button">Р—Р°РїСѓСЃС‚РёС‚СЊ РєРѕРґ</button>
-          <button class="btn ghost" id="reset-db" type="button">РЎР±СЂРѕСЃРёС‚СЊ Р‘Р”</button>
-          <button class="btn ghost" id="show-schema" type="button">РџРѕРєР°Р·Р°С‚СЊ СЃС‚СЂСѓРєС‚СѓСЂСѓ Р‘Р”</button>
+          <button class="btn primary" id="run-sql" type="button">Запустить код</button>
+          <button class="btn ghost" id="reset-db" type="button">Сбросить БД</button>
+          <button class="btn ghost" id="show-schema" type="button">Показать структуру БД</button>
         </div>
 
         <div id="sandbox-status" class="check-status"></div>
@@ -52,29 +52,29 @@
       <aside class="sandbox3-side">
         <section class="panel sandbox3-active-task">
           <div class="sandbox3-task-top">
-            <label class="field-label" for="task-select">РўРµРєСѓС‰Р°СЏ Р·Р°РґР°С‡Р°</label>
+            <label class="field-label" for="task-select">Текущая задача</label>
             <select id="task-select" class="field-input"></select>
             <div class="sandbox3-controls">
-              <button class="btn primary" id="check-task" type="button">РџСЂРѕРІРµСЂРёС‚СЊ СЂРµС€РµРЅРёРµ</button>
-              <button class="btn ghost" id="reset-task-progress" type="button">РЎР±СЂРѕСЃРёС‚СЊ РїСЂРѕРіСЂРµСЃСЃ</button>
+              <button class="btn primary" id="check-task" type="button">Проверить решение</button>
+              <button class="btn ghost" id="reset-task-progress" type="button">Сбросить прогресс</button>
             </div>
           </div>
 
           <article class="sandbox3-task-card" id="active-task-card">
-            <h2>РЎРІРѕР±РѕРґРЅС‹Р№ СЂРµР¶РёРј</h2>
-            <p>Р‘РµР· Р°РєС‚РёРІРЅРѕР№ Р·Р°РґР°С‡Рё: РјРѕР¶РµС€СЊ РїРёСЃР°С‚СЊ Р»СЋР±С‹Рµ Р·Р°РїСЂРѕСЃС‹ РЅР° РІС‹Р±СЂР°РЅРЅРѕРј РґР°С‚Р°СЃРµС‚Рµ.</p>
+            <h2>Свободный режим</h2>
+            <p>Без активной задачи: можешь писать любые запросы на выбранном датасете.</p>
             <div class="sandbox3-task-meta">
-              <span class="chip" id="active-task-dataset">Р”Р°С‚Р°СЃРµС‚: РЅРµ РІС‹Р±СЂР°РЅ</span>
-              <span class="chip" id="active-task-level">РЈСЂРѕРІРµРЅСЊ: вЂ”</span>
-              <span class="chip" id="active-task-state">РЎС‚Р°С‚СѓСЃ: вЂ”</span>
+              <span class="chip" id="active-task-dataset">Датасет: не выбран</span>
+              <span class="chip" id="active-task-level">Уровень: —</span>
+              <span class="chip" id="active-task-state">Статус: —</span>
             </div>
           </article>
         </section>
 
         <section class="panel sandbox3-history">
           <div class="sandbox3-bank-head">
-            <h2>РСЃС‚РѕСЂРёСЏ Р·Р°РїСѓСЃРєРѕРІ</h2>
-            <button class="btn ghost" id="clear-history" type="button">РћС‡РёСЃС‚РёС‚СЊ</button>
+            <h2>История запусков</h2>
+            <button class="btn ghost" id="clear-history" type="button">Очистить</button>
           </div>
           <div id="history-list" class="history-list"></div>
         </section>
@@ -83,16 +83,16 @@
 
     <section class="panel sandbox3-bank">
       <div class="sandbox3-bank-head">
-        <h2>Р‘Р°РЅРє Р·Р°РґР°С‡</h2>
+        <h2>Банк задач</h2>
         <div class="sandbox3-bank-filters">
           <select id="task-dataset-filter" class="field-input sandbox3-filter"></select>
           <select id="task-level-filter" class="field-input sandbox3-filter">
-            <option value="all">Р›СЋР±РѕР№ СѓСЂРѕРІРµРЅСЊ</option>
+            <option value="all">Любой уровень</option>
             <option value="easy">Easy</option>
             <option value="medium">Medium</option>
             <option value="hard">Hard</option>
           </select>
-          <button class="btn ghost" id="task-random" type="button">РЎР»СѓС‡Р°Р№РЅР°СЏ Р·Р°РґР°С‡Р°</button>
+          <button class="btn ghost" id="task-random" type="button">Случайная задача</button>
         </div>
       </div>
       <div id="task-bank-list" class="task-bank-list"></div>
@@ -100,23 +100,23 @@
 
     <section class="panel sandbox3-datasets">
       <details>
-        <summary>РЈРїСЂР°РІР»РµРЅРёРµ РєР°СЃС‚РѕРјРЅС‹РјРё РґР°С‚Р°СЃРµС‚Р°РјРё</summary>
+        <summary>Управление кастомными датасетами</summary>
         <div class="sandbox3-dataset-form">
-          <p class="sandbox3-note">РќСѓР¶РЅРѕ С‚РѕР»СЊРєРѕ РґР»СЏ СЃРІРѕР±РѕРґРЅРѕР№ РїСЂР°РєС‚РёРєРё: РјРѕР¶РµС€СЊ РґРѕР±Р°РІРёС‚СЊ СЃРІРѕР№ SQL-СЃРєСЂРёРїС‚ Рё СЂР°Р±РѕС‚Р°С‚СЊ СЃ РЅРёРј.</p>
+          <p class="sandbox3-note">Нужно только для свободной практики: можешь добавить свой SQL-скрипт и работать с ним.</p>
 
-          <label class="field-label" for="new-dataset-id">ID РґР°С‚Р°СЃРµС‚Р° (Р»Р°С‚РёРЅРёС†Р°/С†РёС„СЂС‹/_)</label>
-          <input id="new-dataset-id" class="field-input" placeholder="РЅР°РїСЂРёРјРµСЂ: fintech" />
+          <label class="field-label" for="new-dataset-id">ID датасета (латиница/цифры/_)</label>
+          <input id="new-dataset-id" class="field-input" placeholder="например: fintech" />
 
-          <label class="field-label" for="new-dataset-name">РќР°Р·РІР°РЅРёРµ</label>
-          <input id="new-dataset-name" class="field-input" placeholder="РЅР°РїСЂРёРјРµСЂ: FinTech РєРµР№СЃ" />
+          <label class="field-label" for="new-dataset-name">Название</label>
+          <input id="new-dataset-name" class="field-input" placeholder="например: FinTech кейс" />
 
-          <label class="field-label" for="new-dataset-sql">SQL-СЃРєСЂРёРїС‚ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё</label>
+          <label class="field-label" for="new-dataset-sql">SQL-скрипт инициализации</label>
           <textarea id="new-dataset-sql" class="field-text" placeholder="CREATE TABLE ...; INSERT INTO ...;"></textarea>
 
           <div class="workbench-actions">
-            <button class="btn primary" id="save-dataset" type="button">РЎРѕС…СЂР°РЅРёС‚СЊ РґР°С‚Р°СЃРµС‚</button>
-            <button class="btn ghost" id="import-datasets" type="button">РРјРїРѕСЂС‚ JSON</button>
-            <button class="btn ghost" id="export-datasets" type="button">Р­РєСЃРїРѕСЂС‚ JSON</button>
+            <button class="btn primary" id="save-dataset" type="button">Сохранить датасет</button>
+            <button class="btn ghost" id="import-datasets" type="button">Импорт JSON</button>
+            <button class="btn ghost" id="export-datasets" type="button">Экспорт JSON</button>
           </div>
           <input id="import-datasets-file" type="file" accept="application/json" hidden />
         </div>
@@ -128,4 +128,5 @@
   <script src="sandbox.js?v=20260523s8"></script>
 </body>
 </html>
+
 

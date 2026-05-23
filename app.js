@@ -5,6 +5,8 @@ const BEHAVIORAL_QUIZ_STATE_KEY = "vk-qa-behavioral-quiz-state-v1";
 const SQL_TASK_STATE_KEY = "vk-qa-sql-task-state-v1";
 const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
 const LAST_OPENED_LESSON_KEY = "vk-qa-last-opened-lesson-v1";
+const TEAM_PROCESS_QUIZ_STATE_KEY = "vk-qa-team-process-quiz-state-v1";
+const EXTRA_PROGRESS_KEY = "vk-qa-extra-progress-v1";
 
 const DAYS = [
   {
@@ -970,6 +972,251 @@ const BEHAVIORAL_QUIZ_BANK = {
   ]
 };
 
+const TEAM_PROCESS_QUIZ_BANK = {
+  1: [
+    {
+      id: "tp_q1",
+      question: "Зачем в Scrum ежедневный стендап (daily stand-up)?",
+      options: [
+        "Синхронизировать команду по прогрессу, плану и блокерам",
+        "Делать подробную техразборку каждого бага",
+        "Оценивать сотрудников по времени",
+        "Заменять планирование спринта"
+      ],
+      correct: 0,
+      explain: "Daily — короткая синхронизация, а не длинная техническая встреча."
+    },
+    {
+      id: "tp_q2",
+      question: "Когда релиз лучше планировать с точки зрения риска?",
+      options: [
+        "В середине недели, чтобы был буфер на фиксы",
+        "Поздно в пятницу вечером",
+        "В выходные без команды on-call",
+        "Только в первый день спринта"
+      ],
+      correct: 0,
+      explain: "Буфер после релиза снижает риск «пятничных пожаров»."
+    },
+    {
+      id: "tp_q3",
+      question: "Что означает 'заморозка release-ветки' (release freeze)?",
+      options: [
+        "В ветку идут только баг-фиксы, новые фичи не вливают",
+        "Нельзя запускать тесты",
+        "Нельзя писать баг-репорты",
+        "Деплой полностью запрещен"
+      ],
+      correct: 0,
+      explain: "Freeze помогает стабилизировать сборку перед выкладкой."
+    },
+    {
+      id: "tp_q4",
+      question: "Для чего QA прогоняет smoke перед релизом?",
+      options: [
+        "Проверить критический путь и базовую жизнеспособность продукта",
+        "Сделать полный регресс всех модулей",
+        "Проверить только UI анимации",
+        "Заменить приемочное тестирование"
+      ],
+      correct: 0,
+      explain: "Smoke быстрый и фокусируется на самых критичных сценариях."
+    },
+    {
+      id: "tp_q5",
+      question: "В bug report что помогает разработчику быстрее всего?",
+      options: [
+        "Четкие шаги, expected/actual и окружение",
+        "Эмоциональное описание проблемы",
+        "Только видео без текста",
+        "Только заголовок"
+      ],
+      correct: 0,
+      explain: "Воспроизводимость — главный критерий полезного баг-репорта."
+    },
+    {
+      id: "tp_q6",
+      question: "Почему полезно иметь стенд с моковыми данными?",
+      options: [
+        "Проще воспроизводить кейсы по ролям и статусам",
+        "Чтобы отказаться от проверки продакшена",
+        "Чтобы не писать тестовую документацию",
+        "Чтобы убрать API-тестирование"
+      ],
+      correct: 0,
+      explain: "Разные роли/статусы сильно ускоряют и стабилизируют проверку."
+    },
+    {
+      id: "tp_q7",
+      question: "Какой формат коммуникации по критичному багу перед релизом наиболее правильный?",
+      options: [
+        "Сразу сообщить в командный канал + оформить тикет с деталями",
+        "Подождать следующего стендапа",
+        "Исправить втихую без записи",
+        "Написать только PM без команды"
+      ],
+      correct: 0,
+      explain: "Критичный баг требует прозрачной и быстрой коммуникации."
+    },
+    {
+      id: "tp_q8",
+      question: "Что такое Definition of Done (DoD)?",
+      options: [
+        "Единые критерии, когда задача действительно готова",
+        "Список всех багов спринта",
+        "Только критерии UI макета",
+        "План релизов на квартал"
+      ],
+      correct: 0,
+      explain: "DoD защищает от «формально готово, но по факту нет»."
+    },
+    {
+      id: "tp_q9",
+      question: "Как QA обосновывает перенос релиза?",
+      options: [
+        "Через риск для пользователей/бизнеса и факты воспроизведения",
+        "Через личное мнение без артефактов",
+        "Через количество комментариев в чате",
+        "Через просьбу одного разработчика"
+      ],
+      correct: 0,
+      explain: "Решение о переносе должно быть аргументировано рисками и фактами."
+    },
+    {
+      id: "tp_q10",
+      question: "Что важно проверить сразу после релиза в прод?",
+      options: [
+        "Пост-релизный smoke по критическим сценариям",
+        "Только логи CI/CD",
+        "Только главную страницу",
+        "Ничего, если pre-prod был зеленый"
+      ],
+      correct: 0,
+      explain: "Post-release smoke позволяет быстро поймать проблемы окружения."
+    },
+    {
+      id: "tp_q11",
+      question: "Кто обычно участвует в приоритизации багов?",
+      options: [
+        "QA, разработка и PM/PO совместно",
+        "Только QA",
+        "Только разработчик",
+        "Только дизайнер"
+      ],
+      correct: 0,
+      explain: "Приоритизация — командное решение с учетом риска и ценности."
+    },
+    {
+      id: "tp_q12",
+      question: "Почему ретроспектива полезна QA-команде?",
+      options: [
+        "Позволяет улучшить процесс и убрать повторяющиеся сбои",
+        "Это просто формальная встреча",
+        "Нужна только менеджеру",
+        "Не связана с качеством"
+      ],
+      correct: 0,
+      explain: "На ретро команда фиксирует, что менять в процессе уже в следующем спринте."
+    },
+    {
+      id: "tp_q13",
+      question: "Какой KPI smoke-теста полезнее всего для команды?",
+      options: [
+        "Время прогона + число блокирующих дефектов",
+        "Количество скриншотов в отчете",
+        "Число комментариев в задаче",
+        "Длина названия тест-кейсов"
+      ],
+      correct: 0,
+      explain: "Smoke должен быть быстрым и давать бинарную картину риска релиза."
+    },
+    {
+      id: "tp_q14",
+      question: "Что делать, если баг плавающий и плохо воспроизводится?",
+      options: [
+        "Фиксировать условия, логи, частоту и паттерн возникновения",
+        "Закрыть как not reproducible сразу",
+        "Игнорировать до следующего релиза",
+        "Оставить только устный комментарий"
+      ],
+      correct: 0,
+      explain: "У плавающих багов главное — собрать контекст и закономерность."
+    },
+    {
+      id: "tp_q15",
+      question: "Для чего preview-сборки в Vercel полезны QA и PM?",
+      options: [
+        "Можно проверить feature-ветку без локального поднятия проекта",
+        "Они заменяют production",
+        "Они нужны только дизайнерам",
+        "Они нужны только для backend API"
+      ],
+      correct: 0,
+      explain: "Preview снижает цикл обратной связи по фичам и багам."
+    },
+    {
+      id: "tp_q16",
+      question: "Как лучше валидировать ролевую модель доступа?",
+      options: [
+        "Проверять матрицу прав по ролям и негативные сценарии доступа",
+        "Проверить только happy path клиента",
+        "Проверять только UI видимость кнопок",
+        "Проверить только API 200"
+      ],
+      correct: 0,
+      explain: "Роли требуют как UI-, так и API-проверок запретов/разрешений."
+    },
+    {
+      id: "tp_q17",
+      question: "Что чаще всего ломает релизы в командах?",
+      options: [
+        "Слабая коммуникация и незафиксированные критерии готовности",
+        "Слишком подробный чек-лист",
+        "Ранний smoke-тест",
+        "Наличие тестовых данных"
+      ],
+      correct: 0,
+      explain: "Процессы и договоренности влияют на релиз не меньше кода."
+    },
+    {
+      id: "tp_q18",
+      question: "Что должен сделать QA после инцидента с релизом?",
+      options: [
+        "Добавить защитную проверку в smoke/checklist и зафиксировать выводы",
+        "Ничего не менять, чтобы не усложнять",
+        "Удалить проблемный тест",
+        "Перенести ответственность на разработку"
+      ],
+      correct: 0,
+      explain: "Инцидент без процессного улучшения почти всегда повторится."
+    },
+    {
+      id: "tp_q19",
+      question: "Какая формулировка зрелой позиции QA в команде наиболее точная?",
+      options: [
+        "QA помогает команде управлять риском качества, а не просто «ищет баги»",
+        "QA отвечает только за тест-кейсы",
+        "QA нужен только в конце спринта",
+        "QA не участвует в обсуждении требований"
+      ],
+      correct: 0,
+      explain: "На собесе часто проверяют именно это процессное понимание роли QA."
+    },
+    {
+      id: "tp_q20",
+      question: "Как действовать, если спор о приоритете бага зашел в тупик?",
+      options: [
+        "Вернуться к impact/risk, данным и критериям релиза, зафиксировать решение",
+        "Выбирать по иерархии без обсуждения",
+        "Откладывать решение до следующего спринта",
+        "Удалить баг из бэклога"
+      ],
+      correct: 0,
+      explain: "Факты и риск-модель помогают выйти из субъективного спора."
+    }
+  ]
+};
+
 const SQL_SEEDS = {
   1: `
     DROP TABLE IF EXISTS products;
@@ -1413,6 +1660,22 @@ function saveProgress(progress) {
   saveJson(STORAGE_KEY, progress);
 }
 
+function loadExtraProgress() {
+  const raw = loadJson(EXTRA_PROGRESS_KEY, {});
+  return {
+    teamTheoryDone: Boolean(raw.teamTheoryDone),
+    teamQuizDone: Boolean(raw.teamQuizDone)
+  };
+}
+
+function saveExtraProgress(nextState) {
+  const prev = loadExtraProgress();
+  saveJson(EXTRA_PROGRESS_KEY, {
+    ...prev,
+    ...nextState
+  });
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -1470,10 +1733,12 @@ function buildDayCard(day, track, progress) {
 
 function renderIndex() {
   const progress = loadProgress();
+  const extra = loadExtraProgress();
   const lastLesson = loadLastOpenedLesson();
   const theoryGrid = document.getElementById("theory-grid");
   const sqlGrid = document.getElementById("sql-grid");
   const behavioralGrid = document.getElementById("behavioral-grid");
+  const teamProcessGrid = document.getElementById("team-process-grid");
   const done = Object.values(progress).filter(Boolean).length;
   const theoryTrack = getTrack("theory");
   const sqlTrack = getTrack("sql");
@@ -1510,6 +1775,29 @@ function renderIndex() {
       renderIndex();
     });
   });
+
+  if (teamProcessGrid) {
+    teamProcessGrid.innerHTML = `
+      <article class="panel day-card">
+        <div class="day-badge">Урок 1</div>
+        <h3 class="day-title">Процессы в команде: суперподробная теория</h3>
+        <p class="day-sub">Scrum, роли, ответственность QA, релизы, дефект-менеджмент, коммуникация в команде, разбор кейса EatFit из твоего опыта.</p>
+        <div class="day-actions">
+          <a class="btn primary" href="team-processes.html">Открыть</a>
+          <span class="status ${extra.teamTheoryDone ? "status-done" : ""}">${extra.teamTheoryDone ? "Пройдено" : "В процессе"}</span>
+        </div>
+      </article>
+      <article class="panel day-card">
+        <div class="day-badge">Урок 2</div>
+        <h3 class="day-title">Процессы в команде: квиз по практике</h3>
+        <p class="day-sub">Только практика: вопросы уровня собеса по твоему реальному QA-опыту, релизам, командным ритуалам и принятию решений.</p>
+        <div class="day-actions">
+          <a class="btn primary" href="team-processes-quiz.html">Открыть квиз</a>
+          <span class="status ${extra.teamQuizDone ? "status-done" : ""}">${extra.teamQuizDone ? "Пройдено" : "В процессе"}</span>
+        </div>
+      </article>
+    `;
+  }
 
   wireLastLessonTracking(document);
 }
@@ -2182,10 +2470,65 @@ async function renderDay() {
   else await renderTheoryPractice(dayId, toggle);
 }
 
+async function renderTeamProcessesTheoryPage() {
+  const content = document.getElementById("content");
+  const toc = document.getElementById("toc");
+  const toggle = document.getElementById("toggle-complete");
+  const extra = loadExtraProgress();
+
+  const updateToggle = () => {
+    const state = loadExtraProgress();
+    toggle.textContent = state.teamTheoryDone ? "Убрать отметку (урок теории)" : "Отметить урок пройденным";
+  };
+  updateToggle();
+
+  toggle.addEventListener("click", () => {
+    const state = loadExtraProgress();
+    saveExtraProgress({ teamTheoryDone: !state.teamTheoryDone });
+    updateToggle();
+  });
+
+  try {
+    const res = await fetch("content/team-processes-deep.md");
+    if (!res.ok) throw new Error("Не удалось загрузить урок по процессам");
+    const md = await res.text();
+    renderMarkdown(content, toc, md);
+  } catch (error) {
+    content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(error.message)}</p>`;
+  }
+
+  document.title = "Процессы в команде — подробный урок";
+}
+
+function renderTeamProcessesQuizPage() {
+  const root = document.getElementById("team-process-quiz-root");
+  const statsEl = document.getElementById("team-process-quiz-stats");
+  const dayId = 1;
+
+  const refresh = () => {
+    const stats = getQuizStats(dayId, TEAM_PROCESS_QUIZ_BANK, TEAM_PROCESS_QUIZ_STATE_KEY);
+    statsEl.textContent = `Верных ответов: ${stats.correct}/${stats.total}`;
+    if (stats.total > 0 && stats.correct === stats.total) {
+      saveExtraProgress({ teamQuizDone: true });
+    }
+  };
+
+  renderQuizInto(dayId, root, {
+    bank: TEAM_PROCESS_QUIZ_BANK,
+    stateKey: TEAM_PROCESS_QUIZ_STATE_KEY,
+    title: "Процессы в команде: квиз",
+    onProgress: refresh
+  });
+  refresh();
+  document.title = "Процессы в команде — квиз";
+}
+
 function main() {
   const page = document.body.dataset.page;
   if (page === "index") renderIndex();
   if (page === "day") renderDay();
+  if (page === "team-processes") renderTeamProcessesTheoryPage();
+  if (page === "team-processes-quiz") renderTeamProcessesQuizPage();
 }
 
 main();
