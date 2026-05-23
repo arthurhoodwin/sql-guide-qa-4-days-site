@@ -1,139 +1,302 @@
-﻿const TASKS_KEY = "vk-qa-sandbox-custom-tasks-v2";
-const HISTORY_KEY = "vk-qa-sandbox-history-v1";
-const STATE_KEY = "vk-qa-sandbox-state-v1";
+const CUSTOM_DATASETS_KEY = "vk-qa-sandbox-custom-datasets-v1";
+const HISTORY_KEY = "vk-qa-sandbox-history-v2";
+const STATE_KEY = "vk-qa-sandbox-state-v2";
 
-const DATASETS = {
-  shop: `
-    DROP TABLE IF EXISTS products;
-    DROP TABLE IF EXISTS orders;
-    CREATE TABLE products (
-      product_id INTEGER PRIMARY KEY,
-      product_name TEXT,
-      category TEXT,
-      price REAL
-    );
-    CREATE TABLE orders (
-      order_id INTEGER PRIMARY KEY,
-      product_id INTEGER,
-      quantity INTEGER,
-      status TEXT
-    );
-    INSERT INTO products VALUES
-      (1, 'Phone', 'Electronics', 70000),
-      (2, 'Headphones', 'Accessories', 5000),
-      (3, 'Keyboard', 'Peripherals', 3500),
-      (4, 'Laptop', 'Electronics', 90000),
-      (5, 'Mouse', 'Peripherals', 2500);
-    INSERT INTO orders VALUES
-      (1, 1, 1, 'paid'),
-      (2, 2, 2, 'paid'),
-      (3, 4, 1, 'cancelled'),
-      (4, 3, 3, 'paid'),
-      (5, 5, 4, 'paid');
-  `,
-  users: `
-    DROP TABLE IF EXISTS users;
-    DROP TABLE IF EXISTS orders;
-    CREATE TABLE users (
-      user_id INTEGER PRIMARY KEY,
-      username TEXT,
-      city TEXT
-    );
-    CREATE TABLE orders (
-      order_id INTEGER PRIMARY KEY,
-      user_id INTEGER,
-      amount REAL,
-      status TEXT
-    );
-    INSERT INTO users VALUES
-      (1, 'ivan', 'Moscow'),
-      (2, 'maria', 'Kazan'),
-      (3, 'anna', 'Moscow'),
-      (4, 'oleg', 'Samara'),
-      (5, 'nina', 'Kazan');
-    INSERT INTO orders VALUES
-      (1, 1, 5000, 'paid'),
-      (2, 1, 2500, 'paid'),
-      (3, 2, 3000, 'cancelled'),
-      (4, 3, 1500, 'paid'),
-      (5, 3, 1800, 'paid'),
-      (6, 5, 4200, 'paid');
-  `,
-  qa: `
-    DROP TABLE IF EXISTS orders;
-    DROP TABLE IF EXISTS order_items;
-    CREATE TABLE orders (
-      order_id INTEGER PRIMARY KEY,
-      total_amount REAL
-    );
-    CREATE TABLE order_items (
-      item_id INTEGER PRIMARY KEY,
-      order_id INTEGER,
-      quantity INTEGER,
-      unit_price REAL
-    );
-    INSERT INTO orders VALUES
-      (1, 51000),
-      (2, 30000),
-      (3, 5000),
-      (4, 4500),
-      (5, 18000);
-    INSERT INTO order_items VALUES
-      (1, 1, 1, 50000),
-      (2, 1, 1, 1000),
-      (3, 2, 1, 30000),
-      (4, 3, 1, 5000),
-      (5, 4, 1, 3000),
-      (6, 4, 1, 1000),
-      (7, 5, 3, 6000);
-  `,
-  support: `
-    DROP TABLE IF EXISTS tickets;
-    DROP TABLE IF EXISTS comments;
-    DROP TABLE IF EXISTS agents;
-    CREATE TABLE agents (
-      agent_id INTEGER PRIMARY KEY,
-      agent_name TEXT,
-      team TEXT
-    );
-    CREATE TABLE tickets (
-      ticket_id INTEGER PRIMARY KEY,
-      title TEXT,
-      severity TEXT,
-      status TEXT,
-      agent_id INTEGER,
-      created_at TEXT
-    );
-    CREATE TABLE comments (
-      comment_id INTEGER PRIMARY KEY,
-      ticket_id INTEGER,
-      author_type TEXT,
-      message TEXT
-    );
-    INSERT INTO agents VALUES
-      (1, 'Ilya', 'Core'),
-      (2, 'Nora', 'Payments'),
-      (3, 'Pavel', 'Core');
-    INSERT INTO tickets VALUES
-      (101, 'Login 500', 'high', 'open', 1, '2026-05-20'),
-      (102, 'Wrong price in cart', 'medium', 'in_progress', 2, '2026-05-21'),
-      (103, 'Push notifications delayed', 'low', 'closed', 3, '2026-05-21'),
-      (104, 'Order cannot be cancelled', 'critical', 'open', 2, '2026-05-22');
-    INSERT INTO comments VALUES
-      (1, 101, 'user', 'Cannot login for 30 minutes'),
-      (2, 101, 'agent', 'Investigating logs'),
-      (3, 102, 'user', 'Price is doubled after refresh'),
-      (4, 104, 'user', 'Cancellation fails with 409'),
-      (5, 104, 'agent', 'Escalated to backend team');
-  `
+const BUILTIN_DATASETS = {
+  shop: {
+    label: "Магазин (products/orders)",
+    seed: `
+      DROP TABLE IF EXISTS products;
+      DROP TABLE IF EXISTS orders;
+      CREATE TABLE products (
+        product_id INTEGER PRIMARY KEY,
+        product_name TEXT,
+        category TEXT,
+        price REAL
+      );
+      CREATE TABLE orders (
+        order_id INTEGER PRIMARY KEY,
+        product_id INTEGER,
+        quantity INTEGER,
+        status TEXT
+      );
+      INSERT INTO products VALUES
+        (1, 'Phone', 'Electronics', 70000),
+        (2, 'Headphones', 'Accessories', 5000),
+        (3, 'Keyboard', 'Peripherals', 3500),
+        (4, 'Laptop', 'Electronics', 90000),
+        (5, 'Mouse', 'Peripherals', 2500);
+      INSERT INTO orders VALUES
+        (1, 1, 1, 'paid'),
+        (2, 2, 2, 'paid'),
+        (3, 4, 1, 'cancelled'),
+        (4, 3, 3, 'paid'),
+        (5, 5, 4, 'paid');
+    `
+  },
+  users: {
+    label: "Пользователи и заказы (users/orders)",
+    seed: `
+      DROP TABLE IF EXISTS users;
+      DROP TABLE IF EXISTS orders;
+      CREATE TABLE users (
+        user_id INTEGER PRIMARY KEY,
+        username TEXT,
+        city TEXT
+      );
+      CREATE TABLE orders (
+        order_id INTEGER PRIMARY KEY,
+        user_id INTEGER,
+        amount REAL,
+        status TEXT,
+        created_at TEXT
+      );
+      INSERT INTO users VALUES
+        (1, 'ivan', 'Moscow'),
+        (2, 'maria', 'Kazan'),
+        (3, 'anna', 'Moscow'),
+        (4, 'oleg', 'Samara'),
+        (5, 'nina', 'Kazan');
+      INSERT INTO orders VALUES
+        (1, 1, 5000, 'paid', '2026-05-20'),
+        (2, 1, 2500, 'paid', '2026-05-21'),
+        (3, 2, 3000, 'cancelled', '2026-05-22'),
+        (4, 3, 1500, 'paid', '2026-05-22'),
+        (5, 3, 1800, 'paid', '2026-05-23'),
+        (6, 5, 4200, 'paid', '2026-05-23');
+    `
+  },
+  qa: {
+    label: "QA кейс (orders/order_items)",
+    seed: `
+      DROP TABLE IF EXISTS orders;
+      DROP TABLE IF EXISTS order_items;
+      CREATE TABLE orders (
+        order_id INTEGER PRIMARY KEY,
+        total_amount REAL,
+        status TEXT
+      );
+      CREATE TABLE order_items (
+        item_id INTEGER PRIMARY KEY,
+        order_id INTEGER,
+        quantity INTEGER,
+        unit_price REAL,
+        product_group TEXT
+      );
+      INSERT INTO orders VALUES
+        (1, 51000, 'paid'),
+        (2, 30000, 'paid'),
+        (3, 5000, 'cancelled'),
+        (4, 4500, 'paid'),
+        (5, 18000, 'paid');
+      INSERT INTO order_items VALUES
+        (1, 1, 1, 50000, 'phones'),
+        (2, 1, 1, 1000, 'accessories'),
+        (3, 2, 1, 30000, 'laptops'),
+        (4, 3, 1, 5000, 'accessories'),
+        (5, 4, 1, 3000, 'peripherals'),
+        (6, 4, 1, 1000, 'accessories'),
+        (7, 5, 3, 6000, 'tablets');
+    `
+  },
+  support: {
+    label: "Support кейс (tickets/comments/agents)",
+    seed: `
+      DROP TABLE IF EXISTS tickets;
+      DROP TABLE IF EXISTS comments;
+      DROP TABLE IF EXISTS agents;
+      CREATE TABLE agents (
+        agent_id INTEGER PRIMARY KEY,
+        agent_name TEXT,
+        team TEXT
+      );
+      CREATE TABLE tickets (
+        ticket_id INTEGER PRIMARY KEY,
+        title TEXT,
+        severity TEXT,
+        status TEXT,
+        agent_id INTEGER,
+        created_at TEXT
+      );
+      CREATE TABLE comments (
+        comment_id INTEGER PRIMARY KEY,
+        ticket_id INTEGER,
+        author_type TEXT,
+        message TEXT,
+        created_at TEXT
+      );
+      INSERT INTO agents VALUES
+        (1, 'Ilya', 'Core'),
+        (2, 'Nora', 'Payments'),
+        (3, 'Pavel', 'Core');
+      INSERT INTO tickets VALUES
+        (101, 'Login 500', 'high', 'open', 1, '2026-05-20'),
+        (102, 'Wrong price in cart', 'medium', 'in_progress', 2, '2026-05-21'),
+        (103, 'Push notifications delayed', 'low', 'closed', 3, '2026-05-21'),
+        (104, 'Order cannot be cancelled', 'critical', 'open', 2, '2026-05-22');
+      INSERT INTO comments VALUES
+        (1, 101, 'user', 'Cannot login for 30 minutes', '2026-05-20'),
+        (2, 101, 'agent', 'Investigating logs', '2026-05-20'),
+        (3, 102, 'user', 'Price is doubled after refresh', '2026-05-21'),
+        (4, 104, 'user', 'Cancellation fails with 409', '2026-05-22'),
+        (5, 104, 'agent', 'Escalated to backend team', '2026-05-22');
+    `
+  }
 };
 
 const SNIPPETS = [
-  { label: "SELECT + LIMIT", sql: "SELECT *\nFROM products\nLIMIT 5;" },
-  { label: "WHERE + ORDER BY", sql: "SELECT *\nFROM orders\nWHERE status = 'paid'\nORDER BY order_id DESC;" },
-  { label: "JOIN", sql: "SELECT u.username, o.amount\nFROM users u\nJOIN orders o ON o.user_id = u.user_id\nWHERE o.status = 'paid';" },
-  { label: "GROUP BY + HAVING", sql: "SELECT user_id, COUNT(*) AS order_count\nFROM orders\nGROUP BY user_id\nHAVING COUNT(*) >= 2;" },
-  { label: "LEFT JOIN anti", sql: "SELECT u.user_id, u.username\nFROM users u\nLEFT JOIN orders o ON o.user_id = u.user_id\nWHERE o.order_id IS NULL;" }
+  { label: "CREATE TABLE", sql: "CREATE TABLE demo (\\n  id INTEGER PRIMARY KEY,\\n  name TEXT\\n);" },
+  { label: "INSERT INTO", sql: "INSERT INTO demo (id, name) VALUES\\n  (1, 'Alice'),\\n  (2, 'Bob');" },
+  { label: "SELECT + FILTER", sql: "SELECT *\\nFROM demo\\nWHERE id >= 1\\nORDER BY id;" },
+  { label: "JOIN skeleton", sql: "SELECT a.id, b.value\\nFROM table_a a\\nJOIN table_b b ON b.a_id = a.id;" },
+  { label: "GROUP BY skeleton", sql: "SELECT status, COUNT(*) AS cnt\\nFROM orders\\nGROUP BY status\\nORDER BY cnt DESC;" }
+];
+
+const TASK_BANK = [
+  {
+    id: "tb_1",
+    dataset: "support",
+    level: "easy",
+    title: "Открытые критичные тикеты",
+    prompt: "Выведи ticket_id, title, agent_id для тикетов со статусом open и severity critical/high. Сортировка по severity, затем ticket_id.",
+    starterSql: "SELECT ticket_id, title, agent_id\\nFROM tickets\\nWHERE status = 'open'\\n  AND severity IN ('critical', 'high')\\nORDER BY /* ... */;"
+  },
+  {
+    id: "tb_2",
+    dataset: "support",
+    level: "easy",
+    title: "Тикеты без комментариев",
+    prompt: "Найди тикеты, у которых нет ни одного комментария.",
+    starterSql: "SELECT t.ticket_id, t.title\\nFROM tickets t\\nLEFT JOIN comments c ON c.ticket_id = t.ticket_id\\nWHERE /* ... */;"
+  },
+  {
+    id: "tb_3",
+    dataset: "support",
+    level: "medium",
+    title: "Последний комментарий по тикету",
+    prompt: "Для каждого ticket_id выведи дату последнего комментария и тип автора этого комментария.",
+    starterSql: "WITH last_comment AS (\\n  SELECT ticket_id, MAX(created_at) AS max_created\\n  FROM comments\\n  GROUP BY ticket_id\\n)\\nSELECT /* ... */;"
+  },
+  {
+    id: "tb_4",
+    dataset: "support",
+    level: "medium",
+    title: "Нагрузка по агентам",
+    prompt: "Посчитай количество активных тикетов (open/in_progress) на каждого агента, включая агентов с нулем.",
+    starterSql: "SELECT a.agent_id, a.agent_name, COUNT(t.ticket_id) AS active_cnt\\nFROM agents a\\nLEFT JOIN tickets t ON t.agent_id = a.agent_id\\n  AND t.status IN ('open', 'in_progress')\\nGROUP BY a.agent_id, a.agent_name\\nORDER BY active_cnt DESC;"
+  },
+  {
+    id: "tb_5",
+    dataset: "users",
+    level: "medium",
+    title: "Доля cancelled по городам",
+    prompt: "Для каждого города посчитай paid_cnt, cancelled_cnt и cancelled_share = cancelled_cnt / all_cnt.",
+    starterSql: "SELECT u.city,\\n  SUM(CASE WHEN o.status = 'paid' THEN 1 ELSE 0 END) AS paid_cnt,\\n  SUM(CASE WHEN o.status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_cnt,\\n  COUNT(o.order_id) AS all_cnt\\nFROM users u\\nLEFT JOIN orders o ON o.user_id = u.user_id\\nGROUP BY u.city;"
+  },
+  {
+    id: "tb_6",
+    dataset: "users",
+    level: "easy",
+    title: "Первая покупка пользователя",
+    prompt: "Для каждого user_id найди дату первого paid-заказа.",
+    starterSql: "SELECT user_id, MIN(created_at) AS first_paid_at\\nFROM orders\\nWHERE status = 'paid'\\nGROUP BY user_id;"
+  },
+  {
+    id: "tb_7",
+    dataset: "users",
+    level: "hard",
+    title: "Лидеры по выручке в каждом городе",
+    prompt: "Найди пользователя(ей) с максимальной суммой paid-заказов в каждом городе.",
+    starterSql: "WITH totals AS (\\n  SELECT u.city, u.user_id, u.username, SUM(CASE WHEN o.status = 'paid' THEN o.amount ELSE 0 END) AS paid_sum\\n  FROM users u\\n  LEFT JOIN orders o ON o.user_id = u.user_id\\n  GROUP BY u.city, u.user_id, u.username\\n)\\nSELECT *\\nFROM totals\\nWHERE /* max per city */;"
+  },
+  {
+    id: "tb_8",
+    dataset: "shop",
+    level: "medium",
+    title: "Выручка по категориям",
+    prompt: "Посчитай revenue = SUM(quantity * price) по category только для paid заказов.",
+    starterSql: "SELECT p.category, SUM(o.quantity * p.price) AS revenue\\nFROM orders o\\nJOIN products p ON p.product_id = o.product_id\\nWHERE o.status = 'paid'\\nGROUP BY p.category\\nORDER BY revenue DESC;"
+  },
+  {
+    id: "tb_9",
+    dataset: "shop",
+    level: "medium",
+    title: "Категории без продаж",
+    prompt: "Выведи категории, по которым нет paid-заказов.",
+    starterSql: "SELECT DISTINCT p.category\\nFROM products p\\nLEFT JOIN orders o ON o.product_id = p.product_id\\n  AND o.status = 'paid'\\nWHERE o.order_id IS NULL;"
+  },
+  {
+    id: "tb_10",
+    dataset: "qa",
+    level: "hard",
+    title: "Топ-группа по выручке в заказе",
+    prompt: "Для каждого order_id найди product_group с максимальной выручкой quantity * unit_price.",
+    starterSql: "WITH grp AS (\\n  SELECT order_id, product_group, SUM(quantity * unit_price) AS grp_sum\\n  FROM order_items\\n  GROUP BY order_id, product_group\\n)\\nSELECT *\\nFROM grp\\nWHERE /* max by order */;"
+  },
+  {
+    id: "tb_11",
+    dataset: "qa",
+    level: "easy",
+    title: "Средний чек paid",
+    prompt: "Посчитай средний total_amount только по paid заказам.",
+    starterSql: "SELECT AVG(total_amount) AS avg_paid_check\\nFROM orders\\nWHERE status = 'paid';"
+  },
+  {
+    id: "tb_12",
+    dataset: "qa",
+    level: "medium",
+    title: "Заказы, где аксессуары > 15%",
+    prompt: "Найди order_id, где доля product_group='accessories' больше 15% от calc_total заказа.",
+    starterSql: "WITH sums AS (\\n  SELECT order_id,\\n    SUM(quantity * unit_price) AS calc_total,\\n    SUM(CASE WHEN product_group = 'accessories' THEN quantity * unit_price ELSE 0 END) AS acc_total\\n  FROM order_items\\n  GROUP BY order_id\\n)\\nSELECT order_id, calc_total, acc_total\\nFROM sums\\nWHERE acc_total * 1.0 / calc_total > 0.15;"
+  },
+  {
+    id: "tb_13",
+    dataset: "users",
+    level: "medium",
+    title: "3-дневная активность",
+    prompt: "Найди пользователей, у которых есть paid-заказы минимум в 2 разные даты.",
+    starterSql: "SELECT user_id\\nFROM orders\\nWHERE status = 'paid'\\nGROUP BY user_id\\nHAVING COUNT(DISTINCT created_at) >= 2;"
+  },
+  {
+    id: "tb_14",
+    dataset: "support",
+    level: "hard",
+    title: "Время до первого ответа агента",
+    prompt: "Для каждого тикета посчитай разницу между ticket.created_at и первым comment от agent. Если ответа нет, не выводить.",
+    starterSql: "WITH first_agent AS (\\n  SELECT ticket_id, MIN(created_at) AS first_agent_at\\n  FROM comments\\n  WHERE author_type = 'agent'\\n  GROUP BY ticket_id\\n)\\nSELECT t.ticket_id, t.created_at, f.first_agent_at\\nFROM tickets t\\nJOIN first_agent f ON f.ticket_id = t.ticket_id;"
+  },
+  {
+    id: "tb_15",
+    dataset: "shop",
+    level: "hard",
+    title: "ABC-анализ по выручке",
+    prompt: "Разбей товары на классы A/B/C по накопленной доле выручки (A до 80%, B до 95%, C остальное).",
+    starterSql: "WITH revenue AS (\\n  SELECT p.product_id, p.product_name, SUM(CASE WHEN o.status = 'paid' THEN o.quantity * p.price ELSE 0 END) AS rev\\n  FROM products p\\n  LEFT JOIN orders o ON o.product_id = p.product_id\\n  GROUP BY p.product_id, p.product_name\\n)\\nSELECT *\\nFROM revenue;"
+  },
+  {
+    id: "tb_16",
+    dataset: "users",
+    level: "easy",
+    title: "Пользователи без paid заказов",
+    prompt: "Найди пользователей, у которых нет ни одного paid-заказа.",
+    starterSql: "SELECT u.user_id, u.username\\nFROM users u\\nLEFT JOIN orders o ON o.user_id = u.user_id AND o.status = 'paid'\\nWHERE o.order_id IS NULL;"
+  },
+  {
+    id: "tb_17",
+    dataset: "support",
+    level: "medium",
+    title: "Тикеты с только user-комментами",
+    prompt: "Выведи тикеты, у которых есть комментарии, но ни одного от agent.",
+    starterSql: "SELECT c.ticket_id\\nFROM comments c\\nGROUP BY c.ticket_id\\nHAVING SUM(CASE WHEN author_type = 'agent' THEN 1 ELSE 0 END) = 0;"
+  },
+  {
+    id: "tb_18",
+    dataset: "qa",
+    level: "medium",
+    title: "Топ order_items по unit_price в каждом order",
+    prompt: "Для каждого order_id найди item_id с максимальным unit_price.",
+    starterSql: "WITH ranked AS (\\n  SELECT item_id, order_id, unit_price,\\n         ROW_NUMBER() OVER (PARTITION BY order_id ORDER BY unit_price DESC, item_id) AS rn\\n  FROM order_items\\n)\\nSELECT item_id, order_id, unit_price\\nFROM ranked\\nWHERE rn = 1;"
+  }
 ];
 
 let sqlPromise = null;
@@ -152,12 +315,32 @@ function saveJson(key, value) {
   localStorage.setItem(key, JSON.stringify(value));
 }
 
-function loadTasks() {
-  return loadJson(TASKS_KEY, []);
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
 }
 
-function saveTasks(tasks) {
-  saveJson(TASKS_KEY, tasks);
+function loadCustomDatasets() {
+  return loadJson(CUSTOM_DATASETS_KEY, {});
+}
+
+function saveCustomDatasets(data) {
+  saveJson(CUSTOM_DATASETS_KEY, data);
+}
+
+function getDatasetLibrary() {
+  return {
+    ...BUILTIN_DATASETS,
+    ...loadCustomDatasets()
+  };
+}
+
+function isBuiltInDataset(id) {
+  return Object.prototype.hasOwnProperty.call(BUILTIN_DATASETS, id);
 }
 
 function loadHistory() {
@@ -165,52 +348,20 @@ function loadHistory() {
 }
 
 function saveHistory(history) {
-  saveJson(HISTORY_KEY, history.slice(0, 100));
+  saveJson(HISTORY_KEY, history.slice(0, 80));
 }
 
 function loadState() {
   return loadJson(STATE_KEY, {
     dataset: "shop",
     sql: "",
-    activeTaskId: null,
-    form: {
-      title: "",
-      text: "",
-      expectedSql: "",
-      dataset: "shop",
-      ignoreOrder: true
-    }
+    taskDatasetFilter: "all",
+    taskLevelFilter: "all"
   });
 }
 
 function saveState(state) {
   saveJson(STATE_KEY, state);
-}
-
-function escapeHtml(value) {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-function uid(prefix) {
-  return `${prefix}_${Math.random().toString(36).slice(2, 8)}_${Date.now()}`;
-}
-
-function formatDateTime(ts) {
-  try {
-    return new Date(ts).toLocaleString("ru-RU", { hour12: false });
-  } catch {
-    return "";
-  }
-}
-
-function getSnippetSql(label) {
-  const hit = SNIPPETS.find((s) => s.label === label);
-  return hit ? hit.sql : "";
 }
 
 function splitSqlStatements(sql) {
@@ -230,32 +381,27 @@ function splitSqlStatements(sql) {
       i += 1;
       continue;
     }
-
-    if (!inSingle && !inBacktick && ch === '"') {
+    if (!inSingle && !inBacktick && ch === "\"") {
       inDouble = !inDouble;
       buf += ch;
       continue;
     }
-
     if (!inSingle && !inDouble && ch === "`") {
       inBacktick = !inBacktick;
       buf += ch;
       continue;
     }
-
     if (!inDouble && !inBacktick && ch === "'") {
       inSingle = !inSingle;
       buf += ch;
       continue;
     }
-
     if (!inSingle && !inDouble && !inBacktick && ch === ";") {
       const ready = buf.trim();
       if (ready) out.push(ready);
       buf = "";
       continue;
     }
-
     buf += ch;
   }
 
@@ -267,27 +413,22 @@ function splitSqlStatements(sql) {
 function formatSqlBasic(sql) {
   const keywords = [
     "select", "from", "where", "group by", "order by", "having", "limit", "offset",
-    "left join", "right join", "inner join", "full join", "join", "on",
+    "left join", "right join", "inner join", "full join", "join", "on", "with",
     "insert into", "values", "update", "set", "delete", "create table", "drop table",
     "case", "when", "then", "else", "end", "as", "and", "or"
   ];
 
   let out = sql.replace(/\s+/g, " ").trim();
+  keywords.sort((a, b) => b.length - a.length).forEach((kw) => {
+    const escaped = kw.replace(/\s+/g, "\\s+");
+    out = out.replace(new RegExp(`\\b${escaped}\\b`, "gi"), kw.toUpperCase());
+  });
 
-  keywords
-    .sort((a, b) => b.length - a.length)
-    .forEach((kw) => {
-      const escaped = kw.replace(/\s+/g, "\\s+");
-      const regex = new RegExp(`\\b${escaped}\\b`, "gi");
-      out = out.replace(regex, kw.toUpperCase());
-    });
-
-  out = out
+  return out
     .replace(/\s+(FROM|WHERE|GROUP BY|ORDER BY|HAVING|LIMIT|OFFSET|JOIN|LEFT JOIN|RIGHT JOIN|INNER JOIN|FULL JOIN|ON|VALUES|SET)\b/g, "\n$1")
     .replace(/\s+,\s*/g, ", ")
-    .replace(/\n{3,}/g, "\n\n");
-
-  return out.trim();
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 async function getSql() {
@@ -299,25 +440,25 @@ async function getSql() {
   return sqlPromise;
 }
 
-async function createDbFromDataset(datasetName) {
+async function createDbFromSeed(seedSql) {
   const SQL = await getSql();
-  const temp = new SQL.Database();
-  temp.run(DATASETS[datasetName] || DATASETS.shop);
-  return temp;
+  const tempDb = new SQL.Database();
+  if (seedSql.trim()) tempDb.run(seedSql);
+  return tempDb;
 }
 
-async function initDb(datasetName) {
+async function initDb(datasetId, library) {
+  const dataset = library[datasetId];
+  if (!dataset) throw new Error(`Датасет '${datasetId}' не найден.`);
   if (db) db.close();
-  db = await createDbFromDataset(datasetName);
+  db = await createDbFromSeed(dataset.seed);
 }
 
 function runSql(targetDb, sql) {
   const statements = splitSqlStatements(sql);
   if (!statements.length) throw new Error("SQL-запрос пуст.");
-
   let changed = 0;
   let lastResult = null;
-
   statements.forEach((statement, idx) => {
     try {
       const before = targetDb.getRowsModified();
@@ -328,7 +469,6 @@ function runSql(targetDb, sql) {
       throw new Error(`Ошибка в выражении ${idx + 1}: ${error.message}`);
     }
   });
-
   const rows = lastResult ? lastResult.values.length : 0;
   return {
     statementCount: statements.length,
@@ -341,65 +481,23 @@ function runSql(targetDb, sql) {
   };
 }
 
-function resultToComparable(result) {
-  if (!result) return { columns: [], rows: [] };
-  return {
-    columns: [...result.columns],
-    rows: result.values.map((row) => row.map((v) => (v === null ? "NULL" : String(v))))
-  };
-}
-
-function compareResults(userResult, expectedResult, ignoreOrder) {
-  const user = resultToComparable(userResult);
-  const expected = resultToComparable(expectedResult);
-
-  if (user.columns.length !== expected.columns.length) {
-    return { ok: false, message: "Количество колонок не совпадает с эталоном." };
-  }
-
-  for (let i = 0; i < user.columns.length; i += 1) {
-    if (user.columns[i] !== expected.columns[i]) {
-      return { ok: false, message: `Колонка #${i + 1} должна быть '${expected.columns[i]}'.` };
-    }
-  }
-
-  if (user.rows.length !== expected.rows.length) {
-    return { ok: false, message: `Количество строк не совпадает: ожидается ${expected.rows.length}, получено ${user.rows.length}.` };
-  }
-
-  const userRows = ignoreOrder
-    ? [...user.rows].map((r) => JSON.stringify(r)).sort()
-    : user.rows.map((r) => JSON.stringify(r));
-  const expRows = ignoreOrder
-    ? [...expected.rows].map((r) => JSON.stringify(r)).sort()
-    : expected.rows.map((r) => JSON.stringify(r));
-
-  for (let i = 0; i < userRows.length; i += 1) {
-    if (userRows[i] !== expRows[i]) {
-      return { ok: false, message: `Результат отличается от эталона (проверь фильтры, JOIN и агрегаты).` };
-    }
-  }
-
-  return { ok: true, message: "Отлично: результат совпал с эталоном." };
-}
-
 function renderResult(host, runData) {
   if (!runData.lastResult) {
     host.innerHTML = `<p class="sql-message">${escapeHtml(runData.summary)}</p>`;
     return;
   }
-
   const cols = runData.lastResult.columns;
   const rows = runData.lastResult.values;
   const timing = typeof runData.durationMs === "number" ? ` • ${runData.durationMs.toFixed(1)} ms` : "";
-
   host.innerHTML = `
     <p class="sql-message">${escapeHtml(runData.summary + timing)}</p>
     <div class="result-scroll">
       <table class="result-table">
         <thead><tr>${cols.map((c) => `<th>${escapeHtml(c)}</th>`).join("")}</tr></thead>
         <tbody>
-          ${rows.length ? rows.map((r) => `<tr>${r.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`}
+          ${rows.length
+    ? rows.map((r) => `<tr>${r.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`).join("")
+    : `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`}
         </tbody>
       </table>
     </div>
@@ -439,7 +537,6 @@ function renderPreviewTable(resultHost, tableName) {
     return;
   }
   renderResult(resultHost, {
-    ...sets[0],
     lastResult: sets[0],
     summary: `Превью таблицы ${tableName} (до 20 строк)`
   });
@@ -448,8 +545,7 @@ function renderPreviewTable(resultHost, tableName) {
 function renderExplain(resultHost, sql) {
   const statements = splitSqlStatements(sql);
   if (!statements.length) throw new Error("Сначала введи SQL.");
-  const first = statements[0];
-  const explainSet = db.exec(`EXPLAIN QUERY PLAN ${first}`);
+  const explainSet = db.exec(`EXPLAIN QUERY PLAN ${statements[0]}`);
   if (!explainSet.length) {
     resultHost.innerHTML = "<p class='sql-message'>EXPLAIN не вернул результат.</p>";
     return;
@@ -466,299 +562,234 @@ function appendHistory(entry) {
   saveHistory(history);
 }
 
-function renderHistory(listHost, onLoad, onRun) {
+function renderHistory(host, onLoad) {
   const history = loadHistory();
   if (!history.length) {
-    listHost.innerHTML = "<p class='sql-message'>История пока пустая.</p>";
+    host.innerHTML = "<p class='sql-message'>История пока пустая.</p>";
     return;
   }
-
-  listHost.innerHTML = history.map((item, idx) => `
+  host.innerHTML = history.map((item, idx) => `
     <article class="history-item">
       <div class="history-meta">
         <strong>${escapeHtml(item.dataset.toUpperCase())}</strong>
-        <span>${escapeHtml(formatDateTime(item.at))}</span>
+        <span>${escapeHtml(new Date(item.at).toLocaleString("ru-RU", { hour12: false }))}</span>
       </div>
       <p>${escapeHtml(item.summary)}</p>
-      <code>${escapeHtml(item.sql.slice(0, 180))}${item.sql.length > 180 ? "..." : ""}</code>
+      <code>${escapeHtml(item.sql.slice(0, 140))}${item.sql.length > 140 ? "..." : ""}</code>
       <div class="saved-task-actions">
         <button class="btn ghost" data-hload="${idx}" type="button">Вставить</button>
-        <button class="btn ghost" data-hrun="${idx}" type="button">Запустить</button>
       </div>
     </article>
   `).join("");
-
-  listHost.querySelectorAll("[data-hload]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const item = history[Number(btn.getAttribute("data-hload"))];
-      onLoad(item);
-    });
-  });
-
-  listHost.querySelectorAll("[data-hrun]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const item = history[Number(btn.getAttribute("data-hrun"))];
-      onRun(item);
-    });
+  host.querySelectorAll("[data-hload]").forEach((btn) => {
+    btn.addEventListener("click", () => onLoad(history[Number(btn.getAttribute("data-hload"))]));
   });
 }
 
-function renderSnippetBank(host, onPick) {
+function renderSnippets(host, onPick) {
   host.innerHTML = SNIPPETS.map((snippet) => `<button class="btn ghost" data-snip="${escapeHtml(snippet.label)}" type="button">${escapeHtml(snippet.label)}</button>`).join("");
   host.querySelectorAll("[data-snip]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const label = btn.getAttribute("data-snip");
-      onPick(getSnippetSql(label));
+      const snippet = SNIPPETS.find((s) => s.label === btn.getAttribute("data-snip"));
+      if (snippet) onPick(snippet.sql);
     });
   });
 }
 
-function renderCustomTasks(listHost, form, handlers) {
-  const tasks = loadTasks();
+function renderTaskBank(host, filters, library, onUse) {
+  const tasks = TASK_BANK.filter((task) => (filters.dataset === "all" || task.dataset === filters.dataset) && (filters.level === "all" || task.level === filters.level));
   if (!tasks.length) {
-    listHost.innerHTML = "<p class='sql-message'>Пока нет сохраненных задач.</p>";
+    host.innerHTML = "<p class='sql-message'>По текущим фильтрам задач нет.</p>";
     return;
   }
-
-  listHost.innerHTML = tasks.map((task) => `
-    <article class="saved-task ${form.activeTaskId === task.id ? "saved-task-active" : ""}">
-      <h4>${escapeHtml(task.title)}</h4>
-      <p>${escapeHtml(task.text)}</p>
-      <div class="saved-task-badges">
-        <span class="chip">${escapeHtml(task.dataset)}</span>
-        <span class="chip">${task.expectedSql ? "с эталоном" : "без эталона"}</span>
+  host.innerHTML = tasks.map((task) => `
+    <article class="task-bank-card" data-task-id="${task.id}">
+      <div class="task-bank-meta">
+        <span class="chip">${escapeHtml(library[task.dataset]?.label || task.dataset)}</span>
+        <span class="chip">${escapeHtml(task.level.toUpperCase())}</span>
       </div>
+      <h3>${escapeHtml(task.title)}</h3>
+      <p>${escapeHtml(task.prompt)}</p>
       <div class="saved-task-actions">
-        <button class="btn ghost" data-load="${task.id}" type="button">В редактор</button>
-        <button class="btn ghost" data-put-expected="${task.id}" type="button">Эталон в SQL</button>
-        <button class="btn ghost" data-delete="${task.id}" type="button">Удалить</button>
+        <button class="btn ghost" data-use="${task.id}" type="button">Вставить заготовку</button>
       </div>
     </article>
   `).join("");
-
-  listHost.querySelectorAll("[data-load]").forEach((btn) => {
+  host.querySelectorAll("[data-use]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      const id = btn.getAttribute("data-load");
-      handlers.onLoadTask(id);
-    });
-  });
-
-  listHost.querySelectorAll("[data-put-expected]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.getAttribute("data-put-expected");
-      handlers.onFillExpected(id);
-    });
-  });
-
-  listHost.querySelectorAll("[data-delete]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const id = btn.getAttribute("data-delete");
-      handlers.onDeleteTask(id);
+      const task = TASK_BANK.find((t) => t.id === btn.getAttribute("data-use"));
+      if (task) onUse(task);
     });
   });
 }
 
-function exportTasks() {
-  const payload = {
-    exportedAt: Date.now(),
-    version: 2,
-    tasks: loadTasks()
-  };
+function normalizeDatasetId(raw) {
+  return raw.trim().toLowerCase().replace(/[^a-z0-9_]/g, "_").replace(/_+/g, "_").replace(/^_|_$/g, "");
+}
+
+async function validateSeedSql(seedSql) {
+  const tempDb = await createDbFromSeed(seedSql);
+  tempDb.close();
+}
+
+function exportCustomDatasets() {
+  const payload = { version: 1, exportedAt: Date.now(), datasets: loadCustomDatasets() };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `sql-sandbox-tasks-${new Date().toISOString().slice(0, 10)}.json`;
-  a.click();
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `sql-sandbox-datasets-${new Date().toISOString().slice(0, 10)}.json`;
+  link.click();
   URL.revokeObjectURL(url);
 }
 
 async function main() {
-  const dataset = document.getElementById("dataset");
+  const datasetSelect = document.getElementById("dataset");
   const loadDatasetBtn = document.getElementById("load-dataset");
+  const deleteDatasetBtn = document.getElementById("delete-dataset");
   const showSchemaBtn = document.getElementById("show-schema");
   const previewBtn = document.getElementById("preview-table");
   const tablePicker = document.getElementById("table-picker");
-  const runBtn = document.getElementById("run-sql");
-  const resetSqlBtn = document.getElementById("reset-sql");
-  const resetDbBtn = document.getElementById("reset-db");
-  const explainBtn = document.getElementById("run-explain");
+  const runExplainBtn = document.getElementById("run-explain");
   const formatBtn = document.getElementById("format-sql");
+  const resetDbBtn = document.getElementById("reset-db");
+  const resetSqlBtn = document.getElementById("reset-sql");
+  const clearHistoryBtn = document.getElementById("clear-history");
   const sqlInput = document.getElementById("sandbox-sql");
+  const runBtn = document.getElementById("run-sql");
   const status = document.getElementById("sandbox-status");
   const result = document.getElementById("sandbox-result");
   const snippetBank = document.getElementById("snippet-bank");
-
-  const titleInput = document.getElementById("custom-title");
-  const textInput = document.getElementById("custom-text");
-  const expectedInput = document.getElementById("custom-expected");
-  const taskDatasetInput = document.getElementById("task-dataset");
-  const ignoreOrderInput = document.getElementById("task-ignore-order");
-
-  const saveTaskBtn = document.getElementById("save-task");
-  const checkCurrentTaskBtn = document.getElementById("check-current-task");
-  const exportTasksBtn = document.getElementById("export-tasks");
-  const importTasksBtn = document.getElementById("import-tasks");
-  const clearTasksBtn = document.getElementById("clear-tasks");
-  const importFile = document.getElementById("import-file");
-
-  const taskList = document.getElementById("saved-tasks");
   const historyList = document.getElementById("history-list");
+  const newDatasetId = document.getElementById("new-dataset-id");
+  const newDatasetName = document.getElementById("new-dataset-name");
+  const newDatasetSql = document.getElementById("new-dataset-sql");
+  const saveDatasetBtn = document.getElementById("save-dataset");
+  const importDatasetsBtn = document.getElementById("import-datasets");
+  const exportDatasetsBtn = document.getElementById("export-datasets");
+  const importDatasetsFile = document.getElementById("import-datasets-file");
+  const taskDatasetFilter = document.getElementById("task-dataset-filter");
+  const taskLevelFilter = document.getElementById("task-level-filter");
+  const taskRandomBtn = document.getElementById("task-random");
+  const taskBankList = document.getElementById("task-bank-list");
 
-  const pageState = loadState();
-  let activeTaskId = pageState.activeTaskId;
-
-  dataset.value = DATASETS[pageState.dataset] ? pageState.dataset : "shop";
-  taskDatasetInput.value = DATASETS[pageState.form.dataset] ? pageState.form.dataset : dataset.value;
-  titleInput.value = pageState.form.title || "";
-  textInput.value = pageState.form.text || "";
-  expectedInput.value = pageState.form.expectedSql || "";
-  ignoreOrderInput.checked = Boolean(pageState.form.ignoreOrder ?? true);
-  sqlInput.value = pageState.sql || "";
+  const state = loadState();
+  let activeDataset = state.dataset;
 
   function setStatus(text, kind = "") {
     status.className = `check-status${kind ? ` ${kind}` : ""}`;
     status.textContent = text;
   }
 
-  function persistState() {
+  function persist() {
     saveState({
-      dataset: dataset.value,
+      dataset: activeDataset,
       sql: sqlInput.value,
-      activeTaskId,
-      form: {
-        title: titleInput.value,
-        text: textInput.value,
-        expectedSql: expectedInput.value,
-        dataset: taskDatasetInput.value,
-        ignoreOrder: ignoreOrderInput.checked
-      }
+      taskDatasetFilter: taskDatasetFilter.value,
+      taskLevelFilter: taskLevelFilter.value
     });
   }
 
-  function loadTaskToForm(id) {
-    const tasks = loadTasks();
-    const task = tasks.find((t) => t.id === id);
-    if (!task) return;
-    activeTaskId = id;
-    titleInput.value = task.title;
-    textInput.value = task.text;
-    expectedInput.value = task.expectedSql || "";
-    taskDatasetInput.value = task.dataset || "shop";
-    ignoreOrderInput.checked = Boolean(task.ignoreOrder ?? true);
-    dataset.value = task.dataset || dataset.value;
-    persistState();
-    setStatus("Задача загружена в редактор.");
-    refreshTaskList();
+  function refreshDatasetSelectors() {
+    const lib = getDatasetLibrary();
+    const ids = Object.keys(lib);
+    if (!ids.length) throw new Error("Нет доступных датасетов.");
+    if (!lib[activeDataset]) activeDataset = ids[0];
+    const currentTaskFilter = taskDatasetFilter.value || state.taskDatasetFilter || "all";
+    datasetSelect.innerHTML = ids.map((id) => `<option value="${escapeHtml(id)}">${escapeHtml(lib[id].label)}</option>`).join("");
+    datasetSelect.value = activeDataset;
+    taskDatasetFilter.innerHTML = ["<option value=\"all\">Все датасеты</option>", ...ids.map((id) => `<option value="${escapeHtml(id)}">${escapeHtml(lib[id].label)}</option>`)].join("");
+    taskDatasetFilter.value = taskDatasetFilter.querySelector(`option[value="${currentTaskFilter}"]`) ? currentTaskFilter : "all";
   }
 
-  function refreshTaskList() {
-    renderCustomTasks(taskList, { activeTaskId }, {
-      onLoadTask: (id) => loadTaskToForm(id),
-      onFillExpected: (id) => {
-        const tasks = loadTasks();
-        const task = tasks.find((t) => t.id === id);
-        if (task?.expectedSql) {
-          sqlInput.value = task.expectedSql;
-          persistState();
-          setStatus("Эталонный SQL подставлен в редактор.");
-        } else {
-          setStatus("У этой задачи не заполнен эталонный SQL.", "fail");
-        }
-      },
-      onDeleteTask: (id) => {
-        const tasks = loadTasks().filter((t) => t.id !== id);
-        saveTasks(tasks);
-        if (activeTaskId === id) activeTaskId = null;
-        persistState();
-        refreshTaskList();
-        setStatus("Задача удалена.");
-      }
-    });
-  }
-
-  function refreshHistory() {
-    renderHistory(historyList, (item) => {
-      dataset.value = item.dataset;
-      sqlInput.value = item.sql;
-      persistState();
-      setStatus("SQL из истории загружен в редактор.");
-    }, async (item) => {
-      dataset.value = item.dataset;
-      await initDb(dataset.value);
-      await refreshTablePicker();
-      sqlInput.value = item.sql;
-      persistState();
-      await executeSql(true);
-    });
-  }
-
-  async function refreshTablePicker() {
+  function refreshTablePicker() {
     const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;");
     const names = (tables[0]?.values || []).map((r) => String(r[0]));
     tablePicker.innerHTML = names.map((name) => `<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join("");
   }
 
-  async function executeSql(recordHistory = true) {
-    const started = performance.now();
+  function refreshTaskBank() {
+    renderTaskBank(taskBankList, { dataset: taskDatasetFilter.value, level: taskLevelFilter.value }, getDatasetLibrary(), (task) => {
+      activeDataset = task.dataset;
+      datasetSelect.value = activeDataset;
+      sqlInput.value = task.starterSql;
+      persist();
+      setStatus(`Заготовка задачи '${task.title}' вставлена.`, "ok");
+    });
+  }
+
+  function refreshHistory() {
+    renderHistory(historyList, (item) => {
+      activeDataset = item.dataset;
+      datasetSelect.value = activeDataset;
+      sqlInput.value = item.sql;
+      persist();
+      setStatus("Запрос из истории вставлен в редактор.");
+    });
+  }
+
+  function executeSql() {
+    const start = performance.now();
     try {
       const runData = runSql(db, sqlInput.value);
-      runData.durationMs = performance.now() - started;
+      runData.durationMs = performance.now() - start;
       renderResult(result, runData);
-      setStatus("SQL выполнен.");
-      if (recordHistory) {
-        appendHistory({
-          id: uid("history"),
-          sql: sqlInput.value,
-          dataset: dataset.value,
-          at: Date.now(),
-          ok: true,
-          summary: runData.summary,
-          durationMs: runData.durationMs
-        });
-        refreshHistory();
-      }
+      setStatus("SQL выполнен.", "ok");
+      appendHistory({ dataset: activeDataset, sql: sqlInput.value, summary: runData.summary, at: Date.now() });
+      refreshHistory();
+      persist();
     } catch (error) {
       result.innerHTML = "";
       setStatus(`Ошибка: ${error.message}`, "fail");
-      if (recordHistory) {
-        appendHistory({
-          id: uid("history"),
-          sql: sqlInput.value,
-          dataset: dataset.value,
-          at: Date.now(),
-          ok: false,
-          summary: String(error.message)
-        });
-        refreshHistory();
-      }
-    } finally {
-      persistState();
     }
   }
 
-  await initDb(dataset.value);
-  await refreshTablePicker();
-  renderSnippetBank(snippetBank, (sql) => {
-    sqlInput.value = sql;
-    persistState();
-    setStatus("Шаблон SQL вставлен.");
-  });
-  refreshTaskList();
+  sqlInput.value = state.sql || "";
+  taskLevelFilter.value = state.taskLevelFilter || "all";
+
+  refreshDatasetSelectors();
+  await initDb(activeDataset, getDatasetLibrary());
+  refreshTablePicker();
+  refreshTaskBank();
   refreshHistory();
+  renderSnippets(snippetBank, (snippetSql) => {
+    sqlInput.value = snippetSql;
+    persist();
+    setStatus("SQL-шаблон вставлен.");
+  });
 
   loadDatasetBtn.addEventListener("click", async () => {
-    await initDb(dataset.value);
-    await refreshTablePicker();
+    activeDataset = datasetSelect.value;
+    await initDb(activeDataset, getDatasetLibrary());
+    refreshTablePicker();
     result.innerHTML = "";
-    setStatus("Датасет загружен.");
-    persistState();
+    setStatus("Датасет загружен.", "ok");
+    persist();
+  });
+
+  deleteDatasetBtn.addEventListener("click", async () => {
+    const id = datasetSelect.value;
+    if (!id) return;
+    if (isBuiltInDataset(id)) {
+      setStatus("Базовые датасеты удалить нельзя.", "fail");
+      return;
+    }
+    const custom = loadCustomDatasets();
+    delete custom[id];
+    saveCustomDatasets(custom);
+    refreshDatasetSelectors();
+    activeDataset = datasetSelect.value;
+    await initDb(activeDataset, getDatasetLibrary());
+    refreshTablePicker();
+    refreshTaskBank();
+    setStatus(`Кастомный датасет '${id}' удален.`, "ok");
+    persist();
   });
 
   showSchemaBtn.addEventListener("click", () => {
     try {
       renderSchema(result);
-      setStatus("");
+      setStatus("Схема выведена.");
     } catch (error) {
       setStatus(`Ошибка: ${error.message}`, "fail");
     }
@@ -767,184 +798,138 @@ async function main() {
   previewBtn.addEventListener("click", () => {
     try {
       renderPreviewTable(result, tablePicker.value);
-      setStatus("");
+      setStatus("Превью таблицы выведено.");
     } catch (error) {
       setStatus(`Ошибка: ${error.message}`, "fail");
     }
   });
 
-  explainBtn.addEventListener("click", () => {
+  runExplainBtn.addEventListener("click", () => {
     try {
       renderExplain(result, sqlInput.value);
-      setStatus("План выполнения построен.");
+      setStatus("EXPLAIN готов.");
     } catch (error) {
       setStatus(`Ошибка: ${error.message}`, "fail");
     }
-  });
-
-  runBtn.addEventListener("click", () => executeSql(true));
-
-  resetSqlBtn.addEventListener("click", () => {
-    sqlInput.value = "";
-    persistState();
-    setStatus("Редактор SQL очищен.");
-  });
-
-  resetDbBtn.addEventListener("click", async () => {
-    await initDb(dataset.value);
-    await refreshTablePicker();
-    result.innerHTML = "";
-    setStatus("База датасета сброшена.");
   });
 
   formatBtn.addEventListener("click", () => {
     sqlInput.value = formatSqlBasic(sqlInput.value);
-    persistState();
+    persist();
     setStatus("SQL отформатирован.");
   });
 
-  saveTaskBtn.addEventListener("click", () => {
-    const title = titleInput.value.trim();
-    const text = textInput.value.trim();
-    const expectedSql = expectedInput.value.trim();
-    const taskDataset = taskDatasetInput.value;
-
-    if (!title || !text) {
-      setStatus("Заполни название и условие задачи.", "fail");
-      return;
-    }
-
-    const tasks = loadTasks();
-    if (activeTaskId) {
-      const idx = tasks.findIndex((t) => t.id === activeTaskId);
-      if (idx >= 0) {
-        tasks[idx] = {
-          ...tasks[idx],
-          title,
-          text,
-          expectedSql,
-          dataset: taskDataset,
-          ignoreOrder: ignoreOrderInput.checked,
-          updatedAt: Date.now()
-        };
-      }
-    } else {
-      const task = {
-        id: uid("task"),
-        title,
-        text,
-        expectedSql,
-        dataset: taskDataset,
-        ignoreOrder: ignoreOrderInput.checked,
-        createdAt: Date.now()
-      };
-      tasks.unshift(task);
-      activeTaskId = task.id;
-    }
-
-    saveTasks(tasks);
-    persistState();
-    refreshTaskList();
-    setStatus("Задача сохранена.", "ok");
+  resetDbBtn.addEventListener("click", async () => {
+    await initDb(activeDataset, getDatasetLibrary());
+    refreshTablePicker();
+    result.innerHTML = "";
+    setStatus("База сброшена к исходному состоянию датасета.");
   });
 
-  checkCurrentTaskBtn.addEventListener("click", async () => {
-    const userSql = sqlInput.value.trim();
-    const expectedSql = expectedInput.value.trim();
-    const taskDataset = taskDatasetInput.value;
+  resetSqlBtn.addEventListener("click", () => {
+    sqlInput.value = "";
+    persist();
+    setStatus("SQL-редактор очищен.");
+  });
 
-    if (!userSql) {
-      setStatus("Сначала напиши SQL в редакторе.", "fail");
+  clearHistoryBtn.addEventListener("click", () => {
+    saveHistory([]);
+    refreshHistory();
+    setStatus("История запусков очищена.");
+  });
+
+  runBtn.addEventListener("click", executeSql);
+
+  saveDatasetBtn.addEventListener("click", async () => {
+    const id = normalizeDatasetId(newDatasetId.value);
+    const label = newDatasetName.value.trim();
+    const seed = newDatasetSql.value.trim();
+    if (!id || id.length < 2) {
+      setStatus("Укажи корректный ID датасета (минимум 2 символа).", "fail");
       return;
     }
-    if (!expectedSql) {
-      setStatus("Для проверки нужен эталонный SQL в карточке задачи.", "fail");
+    if (!label) {
+      setStatus("Укажи читаемое название датасета.", "fail");
       return;
     }
-
-    let userDb = null;
-    let expectedDb = null;
-
+    if (!seed) {
+      setStatus("SQL-скрипт датасета пустой.", "fail");
+      return;
+    }
     try {
-      userDb = await createDbFromDataset(taskDataset);
-      expectedDb = await createDbFromDataset(taskDataset);
-
-      const userRun = runSql(userDb, userSql);
-      const expectedRun = runSql(expectedDb, expectedSql);
-      renderResult(result, userRun);
-
-      const verdict = compareResults(userRun.lastResult, expectedRun.lastResult, ignoreOrderInput.checked);
-      if (verdict.ok) {
-        setStatus(verdict.message, "ok");
-      } else {
-        setStatus(verdict.message, "fail");
-      }
+      await validateSeedSql(seed);
+      const custom = loadCustomDatasets();
+      custom[id] = { label, seed };
+      saveCustomDatasets(custom);
+      refreshDatasetSelectors();
+      refreshTaskBank();
+      setStatus(`Датасет '${id}' сохранен.`, "ok");
+      newDatasetId.value = id;
     } catch (error) {
-      setStatus(`Ошибка проверки: ${error.message}`, "fail");
-    } finally {
-      if (userDb) userDb.close();
-      if (expectedDb) expectedDb.close();
+      setStatus(`Ошибка в SQL-скрипте датасета: ${error.message}`, "fail");
     }
   });
 
-  exportTasksBtn.addEventListener("click", () => {
-    exportTasks();
-    setStatus("JSON с задачами экспортирован.");
+  exportDatasetsBtn.addEventListener("click", () => {
+    exportCustomDatasets();
+    setStatus("Кастомные датасеты экспортированы в JSON.", "ok");
   });
 
-  importTasksBtn.addEventListener("click", () => {
-    importFile.click();
-  });
-
-  importFile.addEventListener("change", async () => {
-    const file = importFile.files?.[0];
+  importDatasetsBtn.addEventListener("click", () => importDatasetsFile.click());
+  importDatasetsFile.addEventListener("change", async () => {
+    const file = importDatasetsFile.files?.[0];
     if (!file) return;
     try {
-      const text = await file.text();
-      const parsed = JSON.parse(text);
-      const incoming = Array.isArray(parsed) ? parsed : parsed.tasks;
-      if (!Array.isArray(incoming)) throw new Error("Неверный формат файла.");
-
-      const existing = loadTasks();
-      const normalized = incoming
-        .map((t) => ({
-          id: t.id || uid("task"),
-          title: String(t.title || "").trim(),
-          text: String(t.text || "").trim(),
-          expectedSql: String(t.expectedSql || "").trim(),
-          dataset: DATASETS[t.dataset] ? t.dataset : "shop",
-          ignoreOrder: Boolean(t.ignoreOrder ?? true),
-          createdAt: Number(t.createdAt || Date.now())
-        }))
-        .filter((t) => t.title && t.text);
-
-      saveTasks([...normalized, ...existing]);
-      refreshTaskList();
-      setStatus(`Импортировано задач: ${normalized.length}.`, "ok");
+      const parsed = JSON.parse(await file.text());
+      const incoming = parsed.datasets || parsed;
+      if (!incoming || typeof incoming !== "object" || Array.isArray(incoming)) {
+        throw new Error("Ожидался объект datasets.");
+      }
+      const current = loadCustomDatasets();
+      let validCount = 0;
+      for (const [rawId, data] of Object.entries(incoming)) {
+        const id = normalizeDatasetId(rawId);
+        if (!id || isBuiltInDataset(id) || !data || typeof data !== "object") continue;
+        const label = String(data.label || "").trim();
+        const seed = String(data.seed || "").trim();
+        if (!label || !seed) continue;
+        await validateSeedSql(seed);
+        current[id] = { label, seed };
+        validCount += 1;
+      }
+      saveCustomDatasets(current);
+      refreshDatasetSelectors();
+      refreshTaskBank();
+      setStatus(`Импортировано датасетов: ${validCount}.`, "ok");
     } catch (error) {
       setStatus(`Ошибка импорта: ${error.message}`, "fail");
     } finally {
-      importFile.value = "";
+      importDatasetsFile.value = "";
     }
   });
 
-  clearTasksBtn.addEventListener("click", () => {
-    saveTasks([]);
-    activeTaskId = null;
-    persistState();
-    refreshTaskList();
-    setStatus("Все кастомные задачи удалены.");
+  taskDatasetFilter.addEventListener("change", () => {
+    refreshTaskBank();
+    persist();
+  });
+  taskLevelFilter.addEventListener("change", () => {
+    refreshTaskBank();
+    persist();
+  });
+  taskRandomBtn.addEventListener("click", () => {
+    const cards = Array.from(taskBankList.querySelectorAll(".task-bank-card"));
+    if (!cards.length) return;
+    const picked = cards[Math.floor(Math.random() * cards.length)];
+    cards.forEach((card) => card.classList.remove("task-bank-pick"));
+    picked.classList.add("task-bank-pick");
+    picked.scrollIntoView({ behavior: "smooth", block: "center" });
   });
 
-  [dataset, taskDatasetInput, titleInput, textInput, expectedInput, ignoreOrderInput, sqlInput].forEach((el) => {
-    el.addEventListener("input", persistState);
-    el.addEventListener("change", persistState);
-  });
-
+  sqlInput.addEventListener("input", persist);
   sqlInput.addEventListener("keydown", (event) => {
     if ((event.ctrlKey || event.metaKey) && event.key === "Enter") {
       event.preventDefault();
-      executeSql(true);
+      executeSql();
     }
   });
 }
