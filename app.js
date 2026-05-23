@@ -99,6 +99,42 @@ const QUIZ_BANK = {
       ],
       correct: 0,
       explain: "Это базовая терминология, которую почти всегда спрашивают на интервью."
+    },
+    {
+      id: "d1_q8",
+      question: "State Transition Testing (тестирование переходов состояний) лучше всего подходит для...",
+      options: [
+        "Систем с явными статусами и переходами между ними",
+        "Проверки орфографии в UI",
+        "Только нагрузки",
+        "Только SQL запросов"
+      ],
+      correct: 0,
+      explain: "Техника полезна для сценариев заказа/платежа/workflow со статусами."
+    },
+    {
+      id: "d1_q9",
+      question: "Error Guessing (предугадывание ошибок) чаще всего основан на...",
+      options: [
+        "Опыте QA и типовых уязвимых местах системы",
+        "Случайном выборе тестов",
+        "Только официальной документации",
+        "Только автотестах"
+      ],
+      correct: 0,
+      explain: "Опыт помогает быстро находить зоны с высокой вероятностью дефектов."
+    },
+    {
+      id: "d1_q10",
+      question: "Какая приоритизация чаще всего верна при остром дедлайне?",
+      options: [
+        "Критический путь + высокорисковые зоны в первую очередь",
+        "Случайный порядок тестов",
+        "Только самые простые кейсы",
+        "Только UI smoke"
+      ],
+      correct: 0,
+      explain: "Risk-based подход снижает шанс пропустить критичный дефект."
     }
   ],
   2: [
@@ -180,6 +216,42 @@ const QUIZ_BANK = {
       ],
       correct: 0,
       explain: "Daily нужен для синхронизации команды и выявления блокеров."
+    },
+    {
+      id: "d2_q8",
+      question: "Что важно в API negative case (негативном сценарии)?",
+      options: [
+        "Проверить и код ошибки, и структуру/понятность error body",
+        "Только HTTP статус",
+        "Только время ответа",
+        "Только то, что фронт показал алерт"
+      ],
+      correct: 0,
+      explain: "Хороший API-тест валидирует диагностичность ошибки для клиента и поддержки."
+    },
+    {
+      id: "d2_q9",
+      question: "Когда уместно дополнительно проверять идемпотентность (idempotency — идемпотентность)?",
+      options: [
+        "Когда возможны повторные запросы/ретраи по сети",
+        "Никогда",
+        "Только для GET",
+        "Только в проде"
+      ],
+      correct: 0,
+      explain: "Особенно критично для create/payment-like операций."
+    },
+    {
+      id: "d2_q10",
+      question: "Что должен уметь QA объяснить про Agile (Аджайл) на техничке?",
+      options: [
+        "Как команда планирует, тестирует в спринте и управляет рисками качества",
+        "Только названия церемоний",
+        "Только роль scrum-мастера",
+        "Только как писать автотесты"
+      ],
+      correct: 0,
+      explain: "Интервьюеру важна практическая применимость процесса, а не теория ради теории."
     }
   ],
   3: [
@@ -266,6 +338,42 @@ const QUIZ_BANK = {
       ],
       correct: 0,
       explain: "Уточнение требований — сильный сигнал зрелого QA-подхода."
+    },
+    {
+      id: "d3_q8",
+      question: "Что наиболее важно в шаге воспроизведения (steps to reproduce — шаги воспроизведения)?",
+      options: [
+        "Достаточная точность, чтобы другой человек стабильно получил тот же результат",
+        "Короткость любой ценой",
+        "Только один скрин вместо шагов",
+        "Описание без тестовых данных"
+      ],
+      correct: 0,
+      explain: "Без воспроизводимости баг-репорт теряет ценность для разработки."
+    },
+    {
+      id: "d3_q9",
+      question: "Почему на SQL-лайвкодинге важно проговаривать ход мысли?",
+      options: [
+        "Потому что оценивают не только результат, но и инженерный процесс",
+        "Чтобы выиграть время",
+        "Это не важно",
+        "Только чтобы попросить подсказку"
+      ],
+      correct: 0,
+      explain: "Прозрачное рассуждение повышает оценку даже при неидеальном финальном ответе."
+    },
+    {
+      id: "d3_q10",
+      question: "Что из этого лучше всего показывает зрелость QA на финальном этапе подготовки?",
+      options: [
+        "Умение объяснить компромиссы coverage/сроки и дать риск-прогноз",
+        "Знать наизусть определения без примеров",
+        "Сделать только красивые заметки",
+        "Решать только легкие SQL задачи"
+      ],
+      correct: 0,
+      explain: "Для технички важно мышление о рисках и коммуникация, а не только теория."
     }
   ]
 };
@@ -518,6 +626,8 @@ function buildDayCard(day, progress) {
 function renderIndex() {
   const progress = loadProgress();
   const grid = document.getElementById("days-grid");
+  const theoryTrack = document.getElementById("theory-track-days");
+  const sqlTrack = document.getElementById("sql-track-days");
   const done = Object.values(progress).filter(Boolean).length;
 
   grid.innerHTML = DAYS.map((d) => buildDayCard(d, progress)).join("");
@@ -526,6 +636,13 @@ function renderIndex() {
   const fill = document.getElementById("progress-fill");
   text.textContent = `${done} из ${TOTAL_DAYS} модулей отмечено как пройдено`;
   fill.style.width = `${(done / TOTAL_DAYS) * 100}%`;
+
+  if (theoryTrack) {
+    theoryTrack.innerHTML = [1, 2, 3].map((d) => `<a class="btn ghost track-link" href="day${d}.html?view=theory">Теория: День ${d}</a>`).join("");
+  }
+  if (sqlTrack) {
+    sqlTrack.innerHTML = [1, 2, 3].map((d) => `<a class="btn ghost track-link" href="day${d}.html?view=sql">SQL: День ${d}</a>`).join("");
+  }
 
   grid.querySelectorAll("[data-day-toggle]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -849,7 +966,7 @@ async function renderSqlInto(dayId, container, onProgress) {
   loadTask();
 }
 
-async function renderHybridPractice(dayId, toggleBtn) {
+async function renderHybridPractice(dayId, toggleBtn, defaultView = "theory") {
   const panel = document.getElementById("practice-panel");
   panel.innerHTML = `
     <div class="practice-cockpit">
@@ -876,6 +993,12 @@ async function renderHybridPractice(dayId, toggleBtn) {
   const sqlView = panel.querySelector("#view-sql");
   const switchButtons = panel.querySelectorAll(".switch-btn");
 
+  function setActiveView(view) {
+    switchButtons.forEach((b) => b.classList.toggle("active", b.getAttribute("data-view") === view));
+    theoryView.classList.toggle("active", view === "theory");
+    sqlView.classList.toggle("active", view === "sql");
+  }
+
   function refreshDayCompletion() {
     const quizStats = getQuizStats(dayId);
     const sqlStats = getSqlStats(dayId);
@@ -894,14 +1017,13 @@ async function renderHybridPractice(dayId, toggleBtn) {
   switchButtons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const view = btn.getAttribute("data-view");
-      switchButtons.forEach((b) => b.classList.toggle("active", b === btn));
-      theoryView.classList.toggle("active", view === "theory");
-      sqlView.classList.toggle("active", view === "sql");
+      setActiveView(view);
     });
   });
 
   renderQuizInto(dayId, theoryView, refreshDayCompletion);
   await renderSqlInto(dayId, sqlView, refreshDayCompletion);
+  setActiveView(defaultView === "sql" ? "sql" : "theory");
   refreshDayCompletion();
 }
 
@@ -941,7 +1063,9 @@ async function renderDay() {
   }
 
   buildDayPagination(dayId);
-  await renderHybridPractice(dayId, toggle);
+  const params = new URLSearchParams(window.location.search);
+  const defaultView = params.get("view") === "sql" ? "sql" : "theory";
+  await renderHybridPractice(dayId, toggle, defaultView);
 }
 
 function main() {
