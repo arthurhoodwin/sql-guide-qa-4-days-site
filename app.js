@@ -840,6 +840,58 @@ const SQL_TASKS = {
         const ok = arr.every((v, i) => v === sorted[i]);
         return ok ? { ok: true, message: "Супер: сортировка и лимит корректны." } : { ok: false, message: "Проверь ORDER BY price DESC." };
       }
+    },
+    {
+      id: "d1_t3",
+      title: "DISTINCT + ORDER BY",
+      prompt: "Выведи уникальные category в алфавитном порядке.",
+      starter: "SELECT category\nFROM products\nORDER BY category DESC;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
+        const actual = lastResult.values.map((r) => String(r[0]));
+        const expectedRaw = db.exec("SELECT DISTINCT category FROM products ORDER BY category;");
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => String(r[0])) : [];
+        const ok = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
+        return ok ? { ok: true, message: "Отлично: DISTINCT и сортировка верны." } : { ok: false, message: "Нужны уникальные category и сортировка по возрастанию." };
+      }
+    },
+    {
+      id: "d1_t4",
+      title: "GROUP BY + COUNT",
+      prompt: "Выведи category и количество товаров в категории (items_count), отсортируй по items_count убыванию.",
+      starter: "SELECT category, COUNT(*) AS items_count\nFROM products\nGROUP BY category\nORDER BY items_count ASC;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
+        const actual = lastResult.values.map((r) => [String(r[0]), Number(r[1])]);
+        const expectedRaw = db.exec(`
+          SELECT category, COUNT(*) AS items_count
+          FROM products
+          GROUP BY category
+          ORDER BY items_count DESC, category ASC;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => [String(r[0]), Number(r[1])]) : [];
+        const ok = actual.length === expected.length && actual.every((row, i) => row[0] === expected[i][0] && row[1] === expected[i][1]);
+        return ok ? { ok: true, message: "Верно: агрегация и сортировка корректны." } : { ok: false, message: "Проверь GROUP BY category и ORDER BY items_count DESC." };
+      }
+    },
+    {
+      id: "d1_t5",
+      title: "WHERE + ORDER BY",
+      prompt: "Выведи product_name и price для категории 'Периферия' с ценой < 5000, отсортируй по цене убыванию.",
+      starter: "SELECT product_name, price\nFROM products\nWHERE category = 'Периферия'\nORDER BY price ASC;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
+        const actual = lastResult.values.map((r) => [String(r[0]), Number(r[1])]);
+        const expectedRaw = db.exec(`
+          SELECT product_name, price
+          FROM products
+          WHERE category = 'Периферия' AND price < 5000
+          ORDER BY price DESC;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => [String(r[0]), Number(r[1])]) : [];
+        const ok = actual.length === expected.length && actual.every((row, i) => row[0] === expected[i][0] && row[1] === expected[i][1]);
+        return ok ? { ok: true, message: "Супер: фильтрация по категории/цене сделана верно." } : { ok: false, message: "Нужны фильтр по price < 5000 и сортировка DESC." };
+      }
     }
   ],
   2: [
@@ -872,6 +924,68 @@ const SQL_TASKS = {
         const sorted = [...arr].sort((a, b) => b - a);
         const ok = arr.every((v, i) => v === sorted[i]);
         return ok ? { ok: true, message: "Отлично: агрегация и сортировка верны." } : { ok: false, message: "Проверь ORDER BY total_paid DESC." };
+      }
+    },
+    {
+      id: "d2_t3",
+      title: "LEFT JOIN + COUNT",
+      prompt: "Выведи всех пользователей и количество их заказов (orders_count), включая тех, у кого 0 заказов. Сортировка по user_id.",
+      starter: "SELECT u.user_id, COUNT(*) AS orders_count\nFROM users u\nLEFT JOIN orders o ON u.user_id = o.user_id\nGROUP BY u.user_id;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается результат с пользователями." };
+        const actual = lastResult.values.map((r) => [Number(r[0]), Number(r[1])]);
+        const expectedRaw = db.exec(`
+          SELECT u.user_id, COUNT(o.order_id) AS orders_count
+          FROM users u
+          LEFT JOIN orders o ON u.user_id = o.user_id
+          GROUP BY u.user_id
+          ORDER BY u.user_id;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => [Number(r[0]), Number(r[1])]) : [];
+        const ok = actual.length === expected.length && actual.every((row, i) => row[0] === expected[i][0] && row[1] === expected[i][1]);
+        return ok ? { ok: true, message: "Верно: учтены и пользователи без заказов." } : { ok: false, message: "Используй COUNT(o.order_id) и сортировку по user_id." };
+      }
+    },
+    {
+      id: "d2_t4",
+      title: "JOIN + GROUP BY по городу",
+      prompt: "Выведи city и сумму paid заказов (total_paid) по городам, отсортируй по total_paid убыванию.",
+      starter: "SELECT u.city, SUM(o.amount) AS total_paid\nFROM users u\nJOIN orders o ON u.user_id = o.user_id\nGROUP BY u.city\nORDER BY total_paid ASC;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой агрегированный результат." };
+        const actual = lastResult.values.map((r) => [String(r[0]), Number(r[1])]);
+        const expectedRaw = db.exec(`
+          SELECT u.city, SUM(o.amount) AS total_paid
+          FROM users u
+          JOIN orders o ON u.user_id = o.user_id
+          WHERE o.status = 'paid'
+          GROUP BY u.city
+          ORDER BY total_paid DESC, u.city ASC;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => [String(r[0]), Number(r[1])]) : [];
+        const ok = actual.length === expected.length && actual.every((row, i) => row[0] === expected[i][0] && row[1] === expected[i][1]);
+        return ok ? { ok: true, message: "Отлично: сумма paid по городам корректна." } : { ok: false, message: "Не забудь фильтр status='paid' и сортировку DESC." };
+      }
+    },
+    {
+      id: "d2_t5",
+      title: "HAVING: paid и cancelled",
+      prompt: "Найди user_id пользователей, у которых есть и paid, и cancelled заказы.",
+      starter: "SELECT user_id\nFROM orders\nGROUP BY user_id\nHAVING SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) > 0;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается минимум один user_id." };
+        const actual = [...new Set(lastResult.values.map((r) => Number(r[0])))].sort((a, b) => a - b);
+        const expectedRaw = db.exec(`
+          SELECT user_id
+          FROM orders
+          GROUP BY user_id
+          HAVING SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) > 0
+             AND SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) > 0
+          ORDER BY user_id;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => Number(r[0])) : [];
+        const ok = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
+        return ok ? { ok: true, message: "Верно: пользователи с двумя статусами найдены." } : { ok: false, message: "Нужен HAVING одновременно по paid и cancelled." };
       }
     }
   ],
@@ -913,6 +1027,66 @@ const SQL_TASKS = {
         const amount = Number(lastResult.values[0][idxAmount]);
         if (orderId === 2 && amount === 30000) return { ok: true, message: "Отлично: второй максимум найден." };
         return { ok: false, message: "Проверь OFFSET для второго места." };
+      }
+    },
+    {
+      id: "d3_t3",
+      title: "TOP-2 по calc_total",
+      prompt: "Посчитай calc_total = SUM(quantity * unit_price) по каждому заказу и выведи топ-2 заказа по calc_total (убывание).",
+      starter: "SELECT oi.order_id, SUM(oi.quantity * oi.unit_price) AS calc_total\nFROM order_items oi\nGROUP BY oi.order_id\nORDER BY calc_total ASC\nLIMIT 2;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || lastResult.values.length !== 2) return { ok: false, message: "Нужно вернуть ровно 2 строки." };
+        const actual = lastResult.values.map((r) => [Number(r[0]), Number(r[1])]);
+        const expectedRaw = db.exec(`
+          SELECT oi.order_id, SUM(oi.quantity * oi.unit_price) AS calc_total
+          FROM order_items oi
+          GROUP BY oi.order_id
+          ORDER BY calc_total DESC, oi.order_id ASC
+          LIMIT 2;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => [Number(r[0]), Number(r[1])]) : [];
+        const ok = actual.length === expected.length && actual.every((row, i) => row[0] === expected[i][0] && row[1] === expected[i][1]);
+        return ok ? { ok: true, message: "Супер: топ по calc_total посчитан правильно." } : { ok: false, message: "Проверь сортировку DESC и LIMIT 2." };
+      }
+    },
+    {
+      id: "d3_t4",
+      title: "AVG по заказам",
+      prompt: "Выведи order_id и avg_item_price = AVG(unit_price) только для заказов, где avg_item_price > 2000. Сортировка по avg_item_price убыванию.",
+      starter: "SELECT order_id, AVG(unit_price) AS avg_item_price\nFROM order_items\nGROUP BY order_id\nORDER BY avg_item_price ASC;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
+        const actual = lastResult.values.map((r) => [Number(r[0]), Number(r[1])]);
+        const expectedRaw = db.exec(`
+          SELECT order_id, AVG(unit_price) AS avg_item_price
+          FROM order_items
+          GROUP BY order_id
+          HAVING AVG(unit_price) > 2000
+          ORDER BY avg_item_price DESC, order_id ASC;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => [Number(r[0]), Number(r[1])]) : [];
+        const ok = actual.length === expected.length && actual.every((row, i) => row[0] === expected[i][0] && Math.abs(row[1] - expected[i][1]) < 0.01);
+        return ok ? { ok: true, message: "Верно: HAVING и AVG применены корректно." } : { ok: false, message: "Нужны HAVING AVG(unit_price) > 2000 и ORDER BY DESC." };
+      }
+    },
+    {
+      id: "d3_t5",
+      title: "Заказы с 2+ позициями",
+      prompt: "Найди order_id заказов, у которых 2 и более строк в order_items.",
+      starter: "SELECT order_id\nFROM order_items\nGROUP BY order_id\nHAVING COUNT(*) > 2;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой список order_id." };
+        const actual = [...new Set(lastResult.values.map((r) => Number(r[0])))].sort((a, b) => a - b);
+        const expectedRaw = db.exec(`
+          SELECT order_id
+          FROM order_items
+          GROUP BY order_id
+          HAVING COUNT(*) >= 2
+          ORDER BY order_id;
+        `);
+        const expected = expectedRaw.length ? expectedRaw[0].values.map((r) => Number(r[0])) : [];
+        const ok = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
+        return ok ? { ok: true, message: "Отлично: заказы с 2+ позициями найдены." } : { ok: false, message: "Проверь HAVING COUNT(*) >= 2." };
       }
     }
   ]
