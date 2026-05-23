@@ -759,11 +759,10 @@ async function main() {
       clearAutocompleteHint();
       return false;
     }
-    const suffix = suggestion.slice(currentToken.length);
-    const before = sqlInput.value.slice(0, end);
+    const before = sqlInput.value.slice(0, start);
     const after = sqlInput.value.slice(end);
-    sqlInput.value = `${before}${suffix}${after}`;
-    const newCaret = end + suffix.length;
+    sqlInput.value = `${before}${suggestion}${after}`;
+    const newCaret = start + suggestion.length;
     sqlInput.selectionStart = newCaret;
     sqlInput.selectionEnd = newCaret;
     persist();
