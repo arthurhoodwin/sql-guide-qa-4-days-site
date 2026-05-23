@@ -1306,6 +1306,121 @@ body.day-focus-mode .toc-wrap {
   line-height: 1.5;
 }
 
+/* Compact vertical sandbox layout */
+.sandbox3-layout {
+  gap: 0.72rem;
+}
+
+.sandbox3-headline,
+.sandbox3-editor,
+.sandbox3-active-task,
+.sandbox3-history,
+.sandbox3-bank,
+.sandbox3-datasets {
+  padding: 0.82rem;
+}
+
+.sandbox3-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.95fr);
+  gap: 0.72rem;
+  align-items: start;
+}
+
+.sandbox3-side {
+  display: grid;
+  gap: 0.72rem;
+}
+
+.sandbox3-headline h1 {
+  font-size: 1.95rem;
+}
+
+.sandbox3-headline p {
+  font-size: 0.98rem;
+}
+
+.sandbox3-layout .btn {
+  padding: 0.5rem 0.76rem;
+  font-size: 0.91rem;
+  border-radius: 10px;
+}
+
+.sandbox3-controls {
+  gap: 0.36rem;
+}
+
+.sandbox3-layout .field-input,
+.sandbox3-layout .field-text {
+  padding: 0.46rem 0.56rem;
+  border-radius: 9px;
+}
+
+.sandbox3-task-top {
+  margin-top: 0.3rem;
+}
+
+.sandbox3-task-card {
+  margin-top: 0.55rem;
+  padding: 0.68rem;
+}
+
+.sandbox3-task-card h2 {
+  font-size: 1.05rem;
+}
+
+.sandbox3-task-card p {
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
+.sandbox3-editor .sandbox-sql {
+  min-height: 220px;
+  margin-bottom: 0.45rem;
+}
+
+.sandbox3-editor .workbench-actions {
+  margin-bottom: 0.2rem;
+}
+
+.sandbox3-bank-head {
+  align-items: flex-start;
+  gap: 0.45rem;
+}
+
+.sandbox3-bank-head h2 {
+  margin-top: 0.2rem;
+}
+
+.sandbox3-bank-filters {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.36rem;
+  flex-wrap: wrap;
+}
+
+.sandbox3-filter {
+  width: 220px;
+}
+
+.task-bank-list {
+  gap: 0.52rem;
+}
+
+.task-bank-card {
+  padding: 0.68rem;
+}
+
+.task-bank-card h3 {
+  font-size: 0.98rem;
+}
+
+.task-bank-card p {
+  font-size: 0.92rem;
+  line-height: 1.42;
+}
+
 .quizlets-layout {
   display: grid;
   gap: 0.96rem;
@@ -1471,6 +1586,19 @@ body.day-focus-mode .toc-wrap {
 
   .task-bank-list {
     grid-template-columns: 1fr;
+  }
+
+  .sandbox3-workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .sandbox3-bank-filters {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .sandbox3-filter {
+    width: min(280px, 100%);
   }
 
   .sandbox3-controls,
