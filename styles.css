@@ -725,6 +725,113 @@ h1 {
   gap: .4rem;
 }
 
+.quizlets-layout {
+  display: grid;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+}
+
+.quizlets-head {
+  padding: 1.1rem;
+}
+
+.quizlets-head h1 {
+  margin: .1rem 0 .45rem;
+  font-size: clamp(1.7rem, 4.2vw, 2.5rem);
+}
+
+.quizlets-head p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.quizlets-controls {
+  padding: 1rem;
+  display: grid;
+  gap: .8rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: end;
+}
+
+.quizlets-controls label {
+  display: grid;
+  gap: .35rem;
+  font-weight: 700;
+  color: #2b4353;
+}
+
+.quizlets-controls input,
+.quizlets-controls select {
+  border: 1px solid var(--stroke);
+  border-radius: 10px;
+  padding: .58rem .68rem;
+  font: inherit;
+  background: #fffdf8;
+}
+
+.quizlets-meta {
+  display: grid;
+  gap: .25rem;
+  justify-items: end;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.quiz-card-wrap {
+  padding: 1rem;
+  display: grid;
+  gap: .8rem;
+}
+
+.flip-card {
+  perspective: 1300px;
+  min-height: 300px;
+  cursor: pointer;
+}
+
+.flip-inner {
+  position: relative;
+  width: 100%;
+  min-height: 300px;
+  transform-style: preserve-3d;
+  transition: transform .45s ease;
+}
+
+.flip-card.flipped .flip-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid #ecdbc3;
+  border-radius: 14px;
+  background: #fffefb;
+  padding: 1rem;
+  backface-visibility: hidden;
+}
+
+.flip-face h3 {
+  margin: 0 0 .55rem;
+  color: #1f4456;
+}
+
+.flip-face p {
+  margin: 0;
+  line-height: 1.52;
+  font-size: 1.02rem;
+}
+
+.flip-back {
+  transform: rotateY(180deg);
+}
+
+.quizlets-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+}
+
 @media (max-width: 900px) {
   .practice-grid,
   .sql-shell {
@@ -737,5 +844,13 @@ h1 {
 
   .sandbox-side {
     position: static;
+  }
+
+  .quizlets-controls {
+    grid-template-columns: 1fr;
+  }
+
+  .quizlets-meta {
+    justify-items: start;
   }
 }

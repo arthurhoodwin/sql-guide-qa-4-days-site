@@ -1,33 +1,38 @@
-﻿# SQL День 2: JOIN, GROUP BY, агрегаты
+﻿# SQL День 2: JOIN, GROUP BY, HAVING — максимально подробно
 
-## Цель дня
+## Главная цель дня
 
-- Научиться решать типичные собесные задачи на объединение таблиц.
-- Уверенно писать `JOIN`, `GROUP BY`, `HAVING`, агрегаты (`SUM`, `COUNT`, `AVG`).
-- Видеть и контролировать дубли после JOIN.
+- Закрыть самый частый блок лайвкодинга на QA собеседовании: `JOIN + агрегаты`.
+- Научиться избегать дублей, правильно считать суммы/количества и уверенно объяснять логику.
+- Дойти до состояния «могу решить задачу на пользователей/заказы за 5-10 минут».
 
-## План дня (6-8 часов)
+## Результат к концу дня
 
-1. `1.5 ч` — JOIN-теория.
-2. `1.5 ч` — агрегаты и группировка.
-3. `2-3 ч` — задачи в тренажёре.
-4. `1-2 ч` — устный прогон и закрепление.
+Ты должен:
 
-## 1) JOIN (соединение таблиц)
+1. Отличать `INNER JOIN` и `LEFT JOIN` на практике.
+2. Находить записи «без пары» (`LEFT JOIN + IS NULL`).
+3. Писать `GROUP BY + SUM/COUNT/AVG`.
+4. Понимать, когда `WHERE`, а когда `HAVING`.
+5. Контролировать кардинальность и дубли после JOIN.
 
-### INNER JOIN
+## 1) JOIN: что происходит по факту
 
-Возвращает только совпадения по условию `ON`.
+JOIN объединяет строки из таблиц по условию `ON`.
+
+### 1.1 INNER JOIN
+
+Оставляет только совпавшие строки.
 
 ```sql
-SELECT u.user_id, u.username, o.amount
+SELECT u.user_id, u.username, o.order_id, o.amount
 FROM users u
 INNER JOIN orders o ON u.user_id = o.user_id;
 ```
 
-### LEFT JOIN
+### 1.2 LEFT JOIN
 
-Возвращает все строки из левой таблицы и совпадения справа.
+Оставляет все строки слева и совпадения справа.
 
 ```sql
 SELECT u.user_id, u.username, o.order_id
@@ -35,7 +40,7 @@ FROM users u
 LEFT JOIN orders o ON u.user_id = o.user_id;
 ```
 
-### Поиск «без пары»
+### 1.3 Anti-join (поиск «без пары»)
 
 ```sql
 SELECT u.user_id, u.username
@@ -44,16 +49,23 @@ LEFT JOIN orders o ON u.user_id = o.user_id
 WHERE o.order_id IS NULL;
 ```
 
-## 2) GROUP BY и агрегаты
+Это один из любимых форматов задач на собесе.
 
-### SUM / COUNT / AVG
+## 2) Кардинальность (1:1, 1:N, N:M)
 
-```sql
-SELECT user_id, SUM(amount) AS total_paid
-FROM orders
-WHERE status = 'paid'
-GROUP BY user_id;
-```
+Почему важно:
+
+- при `1:N` количество строк после JOIN вырастет;
+- это нормально, но нужно контролировать;
+- иначе можно ошибиться в суммах/количествах.
+
+Типовой фейл:
+
+- ожидаешь 4 строки пользователей, получаешь 20 строк — потому что у каждого по несколько заказов.
+
+## 3) GROUP BY подробно
+
+`GROUP BY` группирует строки по ключу.
 
 ```sql
 SELECT user_id, COUNT(*) AS orders_cnt
@@ -61,13 +73,42 @@ FROM orders
 GROUP BY user_id;
 ```
 
+Правило:
+
+- в SELECT должны быть либо поля из GROUP BY, либо агрегаты.
+
+## 4) Агрегаты
+
+### COUNT
+
+```sql
+SELECT user_id, COUNT(*) AS orders_cnt
+FROM orders
+GROUP BY user_id;
+```
+
+### SUM
+
+```sql
+SELECT user_id, SUM(amount) AS total_amount
+FROM orders
+GROUP BY user_id;
+```
+
+### AVG
+
 ```sql
 SELECT user_id, AVG(amount) AS avg_amount
 FROM orders
 GROUP BY user_id;
 ```
 
-## 3) HAVING (фильтрация агрегатов)
+## 5) WHERE vs HAVING (обязательно)
+
+- `WHERE` — фильтрует строки до группировки.
+- `HAVING` — фильтрует группы после агрегации.
+
+Пример:
 
 ```sql
 SELECT user_id, SUM(amount) AS total_paid
@@ -77,55 +118,131 @@ GROUP BY user_id
 HAVING SUM(amount) > 5000;
 ```
 
-Разница:
+## 6) Сортировка агрегатов
 
-- `WHERE` фильтрует строки до группировки.
-- `HAVING` фильтрует группы после агрегирования.
+```sql
+SELECT user_id, SUM(amount) AS total_paid
+FROM orders
+WHERE status = 'paid'
+GROUP BY user_id
+ORDER BY total_paid DESC;
+```
 
-## 4) Типовые задачи для технички
+Частая ошибка:
 
-1. Пользователи без заказов.
-2. Сумма оплат по пользователям.
-3. Количество заказов по статусам.
-4. Топ пользователей по сумме покупок.
-5. Пользователи, у которых больше N заказов.
+- сортировать ASC, когда задача просит топы.
 
-## 5) Частые ошибки на JOIN и GROUP BY
+## 7) Пошаговый шаблон решения JOIN-задачи
 
-- Неполное условие `ON` -> лишние дубли.
-- Использование `WHERE` вместо `HAVING` для агрегатов.
-- Выбор колонок, не входящих в `GROUP BY` и не агрегированных.
-- Неверный порядок сортировки (`ASC` вместо `DESC`).
+1. Прочитай условие и назови сущности (users/orders).
+2. Определи тип JOIN.
+3. Напиши FROM + JOIN + ON.
+4. Добавь WHERE (если фильтры по исходным строкам).
+5. Добавь GROUP BY (если есть агрегаты).
+6. Добавь HAVING (если фильтр по агрегату).
+7. Добавь ORDER BY/LIMIT.
+8. Проверь результат глазами.
 
-## 6) Пошаговая отладка сложного запроса
+## 8) Топ-7 типовых задач (с шаблонами)
 
-1. Запусти `FROM + JOIN` без фильтров и посмотри количество строк.
-2. Добавь `WHERE` и снова проверь кардинальность.
-3. Добавь `GROUP BY`.
-4. Добавь агрегаты.
-5. Добавь `HAVING`.
-6. Добавь `ORDER BY` и `LIMIT`.
+### 8.1 Пользователи без заказов
 
-## 7) Как озвучивать решение на интервью
+```sql
+SELECT u.user_id, u.username
+FROM users u
+LEFT JOIN orders o ON u.user_id = o.user_id
+WHERE o.order_id IS NULL;
+```
 
-- «Сначала объединяю таблицы users и orders по user_id, потом фильтрую paid, дальше группирую по user_id, считаю SUM(amount), сортирую по убыванию total_paid».
+### 8.2 Сумма оплаченных заказов по пользователям
 
-Это лучше, чем молча написать запрос и отдать результат.
+```sql
+SELECT o.user_id, SUM(o.amount) AS total_paid
+FROM orders o
+WHERE o.status = 'paid'
+GROUP BY o.user_id
+ORDER BY total_paid DESC;
+```
 
-## 8) Контрольный oral drill
+### 8.3 Количество заказов по статусам
 
-Проговори и напиши:
+```sql
+SELECT status, COUNT(*) AS cnt
+FROM orders
+GROUP BY status
+ORDER BY cnt DESC;
+```
 
-1. Найди пользователей без заказов.
-2. Выведи user_id и total_paid только для paid.
-3. Оставь только пользователей с total_paid > 5000.
-4. Отсортируй по total_paid по убыванию.
+### 8.4 Пользователи с более чем 2 заказами
 
-## 9) Финал дня
+```sql
+SELECT user_id, COUNT(*) AS orders_cnt
+FROM orders
+GROUP BY user_id
+HAVING COUNT(*) > 2;
+```
 
-Ты готов к собесному блоку JOIN/агрегаты, если:
+### 8.5 Средний чек по пользователям
 
-- за 5-8 минут решаешь задачу на LEFT JOIN + IS NULL;
-- уверенно пишешь GROUP BY + SUM/COUNT;
-- не путаешь WHERE и HAVING;
-- замечаешь дубли и объясняешь, почему они появились.
+```sql
+SELECT user_id, AVG(amount) AS avg_check
+FROM orders
+WHERE status = 'paid'
+GROUP BY user_id;
+```
+
+### 8.6 Топ-3 пользователя по обороту
+
+```sql
+SELECT user_id, SUM(amount) AS turnover
+FROM orders
+WHERE status = 'paid'
+GROUP BY user_id
+ORDER BY turnover DESC
+LIMIT 3;
+```
+
+### 8.7 Кол-во пользователей с заказами и без
+
+```sql
+SELECT
+  CASE WHEN o.order_id IS NULL THEN 'without_orders' ELSE 'with_orders' END AS segment,
+  COUNT(DISTINCT u.user_id) AS users_cnt
+FROM users u
+LEFT JOIN orders o ON u.user_id = o.user_id
+GROUP BY segment;
+```
+
+## 9) Ошибки, которые «роняют» кандидатов
+
+1. Неправильный JOIN-тип.
+2. Потеря строк из-за INNER JOIN там, где нужен LEFT JOIN.
+3. Неверный ON -> дубли.
+4. WHERE вместо HAVING для агрегатов.
+5. Сумма без фильтра статуса (`paid`/`cancelled` смешались).
+
+## 10) QA-практика: как использовать это в реальной работе
+
+- Проверка отчетов и дашбордов.
+- Валидация API-ответа против БД.
+- Поиск «почему цифры в UI не сходятся».
+- Расследование инцидентов по данным.
+
+## 11) Проверка себя перед Днём 3
+
+Ты готов, если:
+
+- решаешь anti-join задачу без подсказки;
+- пишешь GROUP BY/HAVING стабильно правильно;
+- объясняешь, почему появилась каждая строка результата;
+- быстро находишь источник дублей.
+
+## 12) Режим тренировки
+
+- 5 задач подряд по 8-10 минут.
+- На каждую задачу: 30 секунд на план + 6 минут на код + 1 минута на самопроверку.
+- Обязательно проговаривать логику вслух.
+
+Ключевая мысль:
+
+На интервью важен не только SQL-синтаксис, но и способность контролировать логику данных после JOIN.
