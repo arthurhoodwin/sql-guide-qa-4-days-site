@@ -1,1962 +1,1962 @@
 window.QA_QUIZLETS = [
   {
     "id": "q1",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Testing.",
-    "back": "Activity of evaluating software quality against requirements and risks."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Тестирование.",
+    "back": "Процесс оценки качества ПО через проверку требований, поведения и рисков."
   },
   {
     "id": "q2",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Activity of evaluating software quality against requirements and risks.",
-    "back": "Testing"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Процесс оценки качества ПО через проверку требований, поведения и рисков.",
+    "back": "Тестирование"
   },
   {
     "id": "q3",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Quality Assurance.",
-    "back": "Process-focused activities that prevent defects and improve delivery quality."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Обеспечение качества (QA).",
+    "back": "Процессные практики, которые предотвращают дефекты и улучшают качество поставки."
   },
   {
     "id": "q4",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Process-focused activities that prevent defects and improve delivery quality.",
-    "back": "Quality Assurance"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Процессные практики, которые предотвращают дефекты и улучшают качество поставки.",
+    "back": "Обеспечение качества (QA)"
   },
   {
     "id": "q5",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Quality Control.",
-    "back": "Product-focused checks that detect defects in implemented features."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Контроль качества (QC).",
+    "back": "Продуктовые проверки, которые находят дефекты в реализованной функциональности."
   },
   {
     "id": "q6",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Product-focused checks that detect defects in implemented features.",
-    "back": "Quality Control"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Продуктовые проверки, которые находят дефекты в реализованной функциональности.",
+    "back": "Контроль качества (QC)"
   },
   {
     "id": "q7",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Defect/Bug.",
-    "back": "A mismatch between expected and actual behavior."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Дефект/Баг.",
+    "back": "Несоответствие фактического поведения ожидаемому."
   },
   {
     "id": "q8",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: A mismatch between expected and actual behavior.",
-    "back": "Defect/Bug"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Несоответствие фактического поведения ожидаемому.",
+    "back": "Дефект/Баг"
   },
   {
     "id": "q9",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Error.",
-    "back": "A human action that leads to an incorrect result."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Ошибка (Error).",
+    "back": "Действие человека, приводящее к некорректному результату."
   },
   {
     "id": "q10",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: A human action that leads to an incorrect result.",
-    "back": "Error"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Действие человека, приводящее к некорректному результату.",
+    "back": "Ошибка (Error)"
   },
   {
     "id": "q11",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Failure.",
-    "back": "Observed incorrect behavior during execution caused by one or more defects."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Сбой (Failure).",
+    "back": "Наблюдаемое некорректное поведение при выполнении системы."
   },
   {
     "id": "q12",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Observed incorrect behavior during execution caused by one or more defects.",
-    "back": "Failure"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Наблюдаемое некорректное поведение при выполнении системы.",
+    "back": "Сбой (Failure)"
   },
   {
     "id": "q13",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Verification.",
-    "back": "Checking we build the product right according to specification."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Верификация.",
+    "back": "Проверка, что продукт реализован правильно по спецификации."
   },
   {
     "id": "q14",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Checking we build the product right according to specification.",
-    "back": "Verification"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка, что продукт реализован правильно по спецификации.",
+    "back": "Верификация"
   },
   {
     "id": "q15",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Validation.",
-    "back": "Checking we build the right product for user/business needs."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Валидация.",
+    "back": "Проверка, что продукт решает нужную задачу пользователя/бизнеса."
   },
   {
     "id": "q16",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Checking we build the right product for user/business needs.",
-    "back": "Validation"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка, что продукт решает нужную задачу пользователя/бизнеса.",
+    "back": "Валидация"
   },
   {
     "id": "q17",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Regression testing.",
-    "back": "Ensures recent changes did not break existing behavior."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Регрессионное тестирование.",
+    "back": "Проверка, что изменения не сломали существующую функциональность."
   },
   {
     "id": "q18",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Ensures recent changes did not break existing behavior.",
-    "back": "Regression testing"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка, что изменения не сломали существующую функциональность.",
+    "back": "Регрессионное тестирование"
   },
   {
     "id": "q19",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Retesting.",
-    "back": "Verifies that a specific fixed defect is actually fixed."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Ретест.",
+    "back": "Повторная проверка конкретно исправленного дефекта."
   },
   {
     "id": "q20",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Verifies that a specific fixed defect is actually fixed.",
-    "back": "Retesting"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Повторная проверка конкретно исправленного дефекта.",
+    "back": "Ретест"
   },
   {
     "id": "q21",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Smoke testing.",
-    "back": "Fast confidence check that critical flows are alive after build/deploy."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Smoke-тестирование.",
+    "back": "Быстрая проверка, что критичный путь жив после сборки/деплоя."
   },
   {
     "id": "q22",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Fast confidence check that critical flows are alive after build/deploy.",
-    "back": "Smoke testing"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Быстрая проверка, что критичный путь жив после сборки/деплоя.",
+    "back": "Smoke-тестирование"
   },
   {
     "id": "q23",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Define: Sanity testing.",
-    "back": "Narrow validation of a specific changed area."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Sanity-тестирование.",
+    "back": "Узкая проверка конкретно измененной области."
   },
   {
     "id": "q24",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Narrow validation of a specific changed area.",
-    "back": "Sanity testing"
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Узкая проверка конкретно измененной области.",
+    "back": "Sanity-тестирование"
   },
   {
     "id": "q25",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Define: Unit testing.",
-    "back": "Validation of isolated functions/classes/modules."
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Модульное тестирование.",
+    "back": "Проверка отдельных функций/классов/модулей в изоляции."
   },
   {
     "id": "q26",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Validation of isolated functions/classes/modules.",
-    "back": "Unit testing"
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка отдельных функций/классов/модулей в изоляции.",
+    "back": "Модульное тестирование"
   },
   {
     "id": "q27",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Define: Integration testing.",
-    "back": "Validation of interactions between components and interfaces."
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Интеграционное тестирование.",
+    "back": "Проверка взаимодействий между компонентами и интерфейсами."
   },
   {
     "id": "q28",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Validation of interactions between components and interfaces.",
-    "back": "Integration testing"
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка взаимодействий между компонентами и интерфейсами.",
+    "back": "Интеграционное тестирование"
   },
   {
     "id": "q29",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Define: System testing.",
-    "back": "Validation of complete integrated behavior end-to-end."
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Системное тестирование.",
+    "back": "Проверка поведения всей интегрированной системы end-to-end."
   },
   {
     "id": "q30",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Validation of complete integrated behavior end-to-end.",
-    "back": "System testing"
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка поведения всей интегрированной системы end-to-end.",
+    "back": "Системное тестирование"
   },
   {
     "id": "q31",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Define: Acceptance testing.",
-    "back": "Validation of readiness from business/user perspective."
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Приемочное тестирование.",
+    "back": "Проверка готовности продукта с точки зрения бизнеса/пользователя."
   },
   {
     "id": "q32",
-    "topic": "Test Levels",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Validation of readiness from business/user perspective.",
-    "back": "Acceptance testing"
+    "topic": "Уровни тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка готовности продукта с точки зрения бизнеса/пользователя.",
+    "back": "Приемочное тестирование"
   },
   {
     "id": "q33",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Define: Functional testing.",
-    "back": "Checks that feature behavior matches functional requirements."
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Функциональное тестирование.",
+    "back": "Проверка соответствия поведения функциональным требованиям."
   },
   {
     "id": "q34",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Checks that feature behavior matches functional requirements.",
-    "back": "Functional testing"
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка соответствия поведения функциональным требованиям.",
+    "back": "Функциональное тестирование"
   },
   {
     "id": "q35",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Define: Non-functional testing.",
-    "back": "Checks quality attributes such as performance, security, usability."
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Нефункциональное тестирование.",
+    "back": "Проверка качественных характеристик: производительность, безопасность, UX."
   },
   {
     "id": "q36",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Checks quality attributes such as performance, security, usability.",
-    "back": "Non-functional testing"
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверка качественных характеристик: производительность, безопасность, UX.",
+    "back": "Нефункциональное тестирование"
   },
   {
     "id": "q37",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Define: Performance testing.",
-    "back": "Measures responsiveness, throughput, and stability under workload."
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Тестирование производительности.",
+    "back": "Оценка отклика, пропускной способности и стабильности под нагрузкой."
   },
   {
     "id": "q38",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Measures responsiveness, throughput, and stability under workload.",
-    "back": "Performance testing"
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Оценка отклика, пропускной способности и стабильности под нагрузкой.",
+    "back": "Тестирование производительности"
   },
   {
     "id": "q39",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Define: Load testing.",
-    "back": "Evaluates behavior under expected production load."
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Нагрузочное тестирование.",
+    "back": "Оценка поведения системы под ожидаемой рабочей нагрузкой."
   },
   {
     "id": "q40",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Evaluates behavior under expected production load.",
-    "back": "Load testing"
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Оценка поведения системы под ожидаемой рабочей нагрузкой.",
+    "back": "Нагрузочное тестирование"
   },
   {
     "id": "q41",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Define: Stress testing.",
-    "back": "Evaluates behavior beyond expected capacity and failure recovery."
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Стресс-тестирование.",
+    "back": "Оценка поведения системы за пределами нормальной нагрузки и восстановление."
   },
   {
     "id": "q42",
-    "topic": "Test Types",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Evaluates behavior beyond expected capacity and failure recovery.",
-    "back": "Stress testing"
+    "topic": "Виды тестирования",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Оценка поведения системы за пределами нормальной нагрузки и восстановление.",
+    "back": "Стресс-тестирование"
   },
   {
     "id": "q43",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Define: Equivalence Partitioning.",
-    "back": "Divide inputs into classes with similar behavior and test representatives."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Разбиение на классы эквивалентности.",
+    "back": "Делим входные данные на классы и берем представителей каждого класса."
   },
   {
     "id": "q44",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Divide inputs into classes with similar behavior and test representatives.",
-    "back": "Equivalence Partitioning"
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Делим входные данные на классы и берем представителей каждого класса.",
+    "back": "Разбиение на классы эквивалентности"
   },
   {
     "id": "q45",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Define: Boundary Value Analysis.",
-    "back": "Focus on min/max boundaries and neighboring values."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Анализ граничных значений.",
+    "back": "Проверяем границы диапазонов и соседние значения."
   },
   {
     "id": "q46",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Focus on min/max boundaries and neighboring values.",
-    "back": "Boundary Value Analysis"
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверяем границы диапазонов и соседние значения.",
+    "back": "Анализ граничных значений"
   },
   {
     "id": "q47",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Define: Decision Table Testing.",
-    "back": "Covers combinations of conditions and expected actions."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Таблица решений.",
+    "back": "Покрываем комбинации условий и ожидаемых действий."
   },
   {
     "id": "q48",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Covers combinations of conditions and expected actions.",
-    "back": "Decision Table Testing"
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Покрываем комбинации условий и ожидаемых действий.",
+    "back": "Таблица решений"
   },
   {
     "id": "q49",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Define: State Transition Testing.",
-    "back": "Validates legal/illegal transitions between states."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Тестирование переходов состояний.",
+    "back": "Проверяем допустимые и недопустимые переходы между состояниями."
   },
   {
     "id": "q50",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Validates legal/illegal transitions between states.",
-    "back": "State Transition Testing"
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Проверяем допустимые и недопустимые переходы между состояниями.",
+    "back": "Тестирование переходов состояний"
   },
   {
     "id": "q51",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Define: Pairwise Testing.",
-    "back": "Covers all pairs of parameter values with reduced test count."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Попарное тестирование (Pairwise).",
+    "back": "Снижаем число комбинаций, покрывая все пары параметров."
   },
   {
     "id": "q52",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Covers all pairs of parameter values with reduced test count.",
-    "back": "Pairwise Testing"
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Снижаем число комбинаций, покрывая все пары параметров.",
+    "back": "Попарное тестирование (Pairwise)"
   },
   {
     "id": "q53",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Define: Error Guessing.",
-    "back": "Uses tester experience to target likely defect areas."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Предугадывание ошибок (Error Guessing).",
+    "back": "Ищем дефекты на основе опыта и типовых слабых мест."
   },
   {
     "id": "q54",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Uses tester experience to target likely defect areas.",
-    "back": "Error Guessing"
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Ищем дефекты на основе опыта и типовых слабых мест.",
+    "back": "Предугадывание ошибок (Error Guessing)"
   },
   {
     "id": "q55",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Define: SDLC.",
-    "back": "Lifecycle from requirements to design, build, test, release, maintenance."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: SDLC.",
+    "back": "Жизненный цикл разработки: требования, дизайн, разработка, тесты, релиз, поддержка."
   },
   {
     "id": "q56",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Lifecycle from requirements to design, build, test, release, maintenance.",
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Жизненный цикл разработки: требования, дизайн, разработка, тесты, релиз, поддержка.",
     "back": "SDLC"
   },
   {
     "id": "q57",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Define: STLC.",
-    "back": "Testing lifecycle from analysis and planning to execution and reporting."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: STLC.",
+    "back": "Жизненный цикл тестирования: анализ, план, дизайн тестов, выполнение, отчетность."
   },
   {
     "id": "q58",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Testing lifecycle from analysis and planning to execution and reporting.",
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Жизненный цикл тестирования: анализ, план, дизайн тестов, выполнение, отчетность.",
     "back": "STLC"
   },
   {
     "id": "q59",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Define: Scrum.",
-    "back": "Agile framework with accountabilities, events, and artifacts."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Scrum.",
+    "back": "Agile-фреймворк с ролями, событиями и артефактами."
   },
   {
     "id": "q60",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Agile framework with accountabilities, events, and artifacts.",
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Agile-фреймворк с ролями, событиями и артефактами.",
     "back": "Scrum"
   },
   {
     "id": "q61",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Define: Definition of Done.",
-    "back": "Shared quality bar that increment must satisfy."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Definition of Done.",
+    "back": "Общий критерий качества, которому должен соответствовать инкремент."
   },
   {
     "id": "q62",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Shared quality bar that increment must satisfy.",
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Общий критерий качества, которому должен соответствовать инкремент.",
     "back": "Definition of Done"
   },
   {
     "id": "q63",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Define: Definition of Ready.",
-    "back": "Practical readiness criteria before a backlog item is started."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Definition of Ready.",
+    "back": "Практические критерии готовности задачи к старту в работе."
   },
   {
     "id": "q64",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Practical readiness criteria before a backlog item is started.",
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Практические критерии готовности задачи к старту в работе.",
     "back": "Definition of Ready"
   },
   {
     "id": "q65",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Define: REST API.",
-    "back": "HTTP-based resource-oriented interface with standard methods."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: REST API.",
+    "back": "HTTP-интерфейс с ресурсной моделью и стандартными методами."
   },
   {
     "id": "q66",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: HTTP-based resource-oriented interface with standard methods.",
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: HTTP-интерфейс с ресурсной моделью и стандартными методами.",
     "back": "REST API"
   },
   {
     "id": "q67",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Define: HTTP 401.",
-    "back": "Request lacks valid authentication credentials."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: HTTP 401.",
+    "back": "У запроса нет валидной аутентификации."
   },
   {
     "id": "q68",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Request lacks valid authentication credentials.",
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: У запроса нет валидной аутентификации.",
     "back": "HTTP 401"
   },
   {
     "id": "q69",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Define: HTTP 403.",
-    "back": "Credentials may be valid but permission is insufficient."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: HTTP 403.",
+    "back": "Аутентификация может быть валидной, но прав недостаточно."
   },
   {
     "id": "q70",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Credentials may be valid but permission is insufficient.",
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Аутентификация может быть валидной, но прав недостаточно.",
     "back": "HTTP 403"
   },
   {
     "id": "q71",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Define: Idempotency.",
-    "back": "Repeated identical request has the same intended effect."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Идемпотентность.",
+    "back": "Повтор одинакового запроса не должен менять итоговый эффект."
   },
   {
     "id": "q72",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Repeated identical request has the same intended effect.",
-    "back": "Idempotency"
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Повтор одинакового запроса не должен менять итоговый эффект.",
+    "back": "Идемпотентность"
   },
   {
     "id": "q73",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "Define: Test Plan.",
-    "back": "Document defining scope, approach, resources, schedule, and risks."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Тест-план.",
+    "back": "Документ о стратегии, объеме, ресурсах, сроках и рисках тестирования."
   },
   {
     "id": "q74",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Document defining scope, approach, resources, schedule, and risks.",
-    "back": "Test Plan"
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Документ о стратегии, объеме, ресурсах, сроках и рисках тестирования.",
+    "back": "Тест-план"
   },
   {
     "id": "q75",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "Define: RTM.",
-    "back": "Traceability matrix linking requirements to test cases."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: RTM.",
+    "back": "Матрица трассировки требований на тесты."
   },
   {
     "id": "q76",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Traceability matrix linking requirements to test cases.",
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Матрица трассировки требований на тесты.",
     "back": "RTM"
   },
   {
     "id": "q77",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "Define: Bug report.",
-    "back": "Structured defect description for reproducibility and prioritization."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: Баг-репорт.",
+    "back": "Структурированное описание дефекта для воспроизведения и приоритизации."
   },
   {
     "id": "q78",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Structured defect description for reproducibility and prioritization.",
-    "back": "Bug report"
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Структурированное описание дефекта для воспроизведения и приоритизации.",
+    "back": "Баг-репорт"
   },
   {
     "id": "q79",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Define: SELECT.",
-    "back": "Returns rows/columns from one or more tables."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: SELECT.",
+    "back": "Оператор выборки данных из таблиц."
   },
   {
     "id": "q80",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Returns rows/columns from one or more tables.",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Оператор выборки данных из таблиц.",
     "back": "SELECT"
   },
   {
     "id": "q81",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Define: WHERE.",
-    "back": "Filters rows before grouping."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: WHERE.",
+    "back": "Фильтрация строк до группировки."
   },
   {
     "id": "q82",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Filters rows before grouping.",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Фильтрация строк до группировки.",
     "back": "WHERE"
   },
   {
     "id": "q83",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Define: GROUP BY.",
-    "back": "Groups rows for aggregate calculations."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: GROUP BY.",
+    "back": "Группировка строк для агрегатных вычислений."
   },
   {
     "id": "q84",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Groups rows for aggregate calculations.",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Группировка строк для агрегатных вычислений.",
     "back": "GROUP BY"
   },
   {
     "id": "q85",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Define: HAVING.",
-    "back": "Filters grouped results after aggregation."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: HAVING.",
+    "back": "Фильтрация групп после агрегирования."
   },
   {
     "id": "q86",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Filters grouped results after aggregation.",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Фильтрация групп после агрегирования.",
     "back": "HAVING"
   },
   {
     "id": "q87",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Define: LEFT JOIN.",
-    "back": "Returns all rows from left table and matches from right table."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: LEFT JOIN.",
+    "back": "Все строки из левой таблицы + совпадения справа."
   },
   {
     "id": "q88",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Returns all rows from left table and matches from right table.",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Все строки из левой таблицы + совпадения справа.",
     "back": "LEFT JOIN"
   },
   {
     "id": "q89",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Define: INNER JOIN.",
-    "back": "Returns only rows that match join condition on both sides."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Дай определение: INNER JOIN.",
+    "back": "Только совпавшие строки по условию соединения."
   },
   {
     "id": "q90",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Which term matches this meaning: Returns only rows that match join condition on both sides.",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой термин подходит к определению: Только совпавшие строки по условию соединения.",
     "back": "INNER JOIN"
   },
   {
     "id": "q91",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: login?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: логин?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q92",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: login?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: логин?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q93",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: login?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: логин?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q94",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: login?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: логин?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q95",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: registration?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: регистрация?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q96",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: registration?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: регистрация?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q97",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: registration?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: регистрация?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q98",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: registration?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: регистрация?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q99",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: password reset?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: сброс пароля?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q100",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: password reset?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: сброс пароля?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q101",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: password reset?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: сброс пароля?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q102",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: password reset?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: сброс пароля?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q103",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: profile update?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: обновление профиля?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q104",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: profile update?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: обновление профиля?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q105",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: profile update?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: обновление профиля?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q106",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: profile update?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: обновление профиля?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q107",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: order creation?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: создание заказа?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q108",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: order creation?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: создание заказа?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q109",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: order creation?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: создание заказа?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q110",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: order creation?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: создание заказа?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q111",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: checkout?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: чекаут?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q112",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: checkout?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: чекаут?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q113",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: checkout?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: чекаут?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q114",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: checkout?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: чекаут?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q115",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: search?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: поиск?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q116",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: search?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: поиск?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q117",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: search?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: поиск?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q118",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: search?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: поиск?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q119",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: notifications?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: уведомления?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q120",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: notifications?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: уведомления?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q121",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: notifications?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: уведомления?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q122",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: notifications?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: уведомления?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q123",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: payment?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: оплата?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q124",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: payment?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: оплата?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q125",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: payment?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: оплата?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q126",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: payment?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: оплата?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q127",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: refund?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: возврат?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q128",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: refund?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: возврат?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q129",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: refund?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: возврат?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q130",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: refund?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: возврат?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q131",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: cart?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: корзина?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q132",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: cart?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: корзина?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q133",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: cart?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: корзина?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q134",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: cart?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: корзина?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q135",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What positive checks would you run for API endpoint: wishlist?",
-    "back": "Validate status code, response schema/types, business result, and side effects in DB/logs."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие позитивные проверки сделать для API endpoint: избранное?",
+    "back": "Проверить статус-код, схему и типы ответа, бизнес-результат и побочные эффекты в БД/логах."
   },
   {
     "id": "q136",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What negative checks would you run for API endpoint: wishlist?",
-    "back": "Missing required fields, invalid types/formats, unauthorized access, forbidden role, invalid identifiers."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какие негативные проверки сделать для API endpoint: избранное?",
+    "back": "Пустые обязательные поля, неверные типы/форматы, отсутствие токена, недостаточные права, невалидные идентификаторы."
   },
   {
     "id": "q137",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you verify error contract consistency for endpoint: wishlist?",
-    "back": "Check status code, machine-readable error code, message format, and required fields in error body."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как проверить консистентность error-контракта для endpoint: избранное?",
+    "back": "Сверить статус-код, machine-readable error code, формат сообщения и обязательные поля в error body."
   },
   {
     "id": "q138",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you test idempotency risk for endpoint: wishlist?",
-    "back": "Repeat same request multiple times and verify state remains correct with no duplicate side effects."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как протестировать риск идемпотентности для endpoint: избранное?",
+    "back": "Повторить одинаковый запрос несколько раз и убедиться, что нет дублей и неправильных side-effects."
   },
   {
     "id": "q139",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Boundary Value Analysis to age 18..65?",
-    "back": "Test boundary-neighbor values: 17,18,19,64,65,66."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить BVA для объекта: возраст 18..65?",
+    "back": "Проверить граничные и соседние значения: 17,18,19,64,65,66."
   },
   {
     "id": "q140",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Equivalence Partitioning to age 18..65?",
-    "back": "Create valid and invalid classes, then test representatives from each class."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить разбиение на классы эквивалентности для объекта: возраст 18..65?",
+    "back": "Выделить валидные/невалидные классы данных и взять представителя каждого класса."
   },
   {
     "id": "q141",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Give one likely Error Guessing case for age 18..65.",
-    "back": "Try null/empty input, invalid type, extreme value, and rapid repeated actions."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Приведи пример Error Guessing для объекта: возраст 18..65.",
+    "back": "Проверить null/empty, неверный тип, экстремальные значения и частые повторные действия."
   },
   {
     "id": "q142",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Boundary Value Analysis to quantity 1..99?",
-    "back": "Test boundary-neighbor values: 0,1,2,98,99,100."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить BVA для объекта: количество 1..99?",
+    "back": "Проверить граничные и соседние значения: 0,1,2,98,99,100."
   },
   {
     "id": "q143",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Equivalence Partitioning to quantity 1..99?",
-    "back": "Create valid and invalid classes, then test representatives from each class."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить разбиение на классы эквивалентности для объекта: количество 1..99?",
+    "back": "Выделить валидные/невалидные классы данных и взять представителя каждого класса."
   },
   {
     "id": "q144",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Give one likely Error Guessing case for quantity 1..99.",
-    "back": "Try null/empty input, invalid type, extreme value, and rapid repeated actions."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Приведи пример Error Guessing для объекта: количество 1..99.",
+    "back": "Проверить null/empty, неверный тип, экстремальные значения и частые повторные действия."
   },
   {
     "id": "q145",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Boundary Value Analysis to rating 1..5?",
-    "back": "Test boundary-neighbor values: 0,1,2,4,5,6."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить BVA для объекта: рейтинг 1..5?",
+    "back": "Проверить граничные и соседние значения: 0,1,2,4,5,6."
   },
   {
     "id": "q146",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Equivalence Partitioning to rating 1..5?",
-    "back": "Create valid and invalid classes, then test representatives from each class."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить разбиение на классы эквивалентности для объекта: рейтинг 1..5?",
+    "back": "Выделить валидные/невалидные классы данных и взять представителя каждого класса."
   },
   {
     "id": "q147",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Give one likely Error Guessing case for rating 1..5.",
-    "back": "Try null/empty input, invalid type, extreme value, and rapid repeated actions."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Приведи пример Error Guessing для объекта: рейтинг 1..5.",
+    "back": "Проверить null/empty, неверный тип, экстремальные значения и частые повторные действия."
   },
   {
     "id": "q148",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Boundary Value Analysis to password length 8..64?",
-    "back": "Test boundary-neighbor values: 7,8,9,63,64,65."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить BVA для объекта: длина пароля 8..64?",
+    "back": "Проверить граничные и соседние значения: 7,8,9,63,64,65."
   },
   {
     "id": "q149",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Equivalence Partitioning to password length 8..64?",
-    "back": "Create valid and invalid classes, then test representatives from each class."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить разбиение на классы эквивалентности для объекта: длина пароля 8..64?",
+    "back": "Выделить валидные/невалидные классы данных и взять представителя каждого класса."
   },
   {
     "id": "q150",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Give one likely Error Guessing case for password length 8..64.",
-    "back": "Try null/empty input, invalid type, extreme value, and rapid repeated actions."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Приведи пример Error Guessing для объекта: длина пароля 8..64.",
+    "back": "Проверить null/empty, неверный тип, экстремальные значения и частые повторные действия."
   },
   {
     "id": "q151",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Boundary Value Analysis to discount 0..100?",
-    "back": "Test boundary-neighbor values: -1,0,1,99,100,101."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить BVA для объекта: скидка 0..100?",
+    "back": "Проверить граничные и соседние значения: -1,0,1,99,100,101."
   },
   {
     "id": "q152",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Equivalence Partitioning to discount 0..100?",
-    "back": "Create valid and invalid classes, then test representatives from each class."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить разбиение на классы эквивалентности для объекта: скидка 0..100?",
+    "back": "Выделить валидные/невалидные классы данных и взять представителя каждого класса."
   },
   {
     "id": "q153",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Give one likely Error Guessing case for discount 0..100.",
-    "back": "Try null/empty input, invalid type, extreme value, and rapid repeated actions."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Приведи пример Error Guessing для объекта: скидка 0..100.",
+    "back": "Проверить null/empty, неверный тип, экстремальные значения и частые повторные действия."
   },
   {
     "id": "q154",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Boundary Value Analysis to order total 1..100000?",
-    "back": "Test boundary-neighbor values: 0,1,2,99999,100000,100001."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить BVA для объекта: сумма заказа 1..100000?",
+    "back": "Проверить граничные и соседние значения: 0,1,2,99999,100000,100001."
   },
   {
     "id": "q155",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "How do you apply Equivalence Partitioning to order total 1..100000?",
-    "back": "Create valid and invalid classes, then test representatives from each class."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Как применить разбиение на классы эквивалентности для объекта: сумма заказа 1..100000?",
+    "back": "Выделить валидные/невалидные классы данных и взять представителя каждого класса."
   },
   {
     "id": "q156",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "Give one likely Error Guessing case for order total 1..100000.",
-    "back": "Try null/empty input, invalid type, extreme value, and rapid repeated actions."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Приведи пример Error Guessing для объекта: сумма заказа 1..100000.",
+    "back": "Проверить null/empty, неверный тип, экстремальные значения и частые повторные действия."
   },
   {
     "id": "q157",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What must be included in a bug report for: checkout fails after payment?",
-    "back": "Title, environment, reproducible steps, expected/actual, severity/priority, evidence (logs/screenshots)."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Что обязательно должно быть в баг-репорте для кейса: чекаут падает после оплаты?",
+    "back": "Заголовок, окружение, шаги воспроизведения, expected/actual, severity/priority, вложения (логи/скрин/видео)."
   },
   {
     "id": "q158",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How do you make this defect reproducible: checkout fails after payment?",
-    "back": "Use deterministic steps with concrete test data, exact build/version, and explicit expected checkpoints."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как сделать дефект воспроизводимым для кейса: чекаут падает после оплаты?",
+    "back": "Дать детальные шаги, конкретные тестовые данные, точную версию сборки и контрольные точки ожидаемого результата."
   },
   {
     "id": "q159",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you justify priority for: checkout fails after payment?",
-    "back": "Explain user/business impact, frequency, workaround availability, and release timeline risk."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как обосновать priority для кейса: чекаут падает после оплаты?",
+    "back": "Оценить влияние на пользователя/бизнес, частоту, наличие обходного пути и риски релизного окна."
   },
   {
     "id": "q160",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What must be included in a bug report for: duplicate records in report?",
-    "back": "Title, environment, reproducible steps, expected/actual, severity/priority, evidence (logs/screenshots)."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Что обязательно должно быть в баг-репорте для кейса: дубли в отчете?",
+    "back": "Заголовок, окружение, шаги воспроизведения, expected/actual, severity/priority, вложения (логи/скрин/видео)."
   },
   {
     "id": "q161",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How do you make this defect reproducible: duplicate records in report?",
-    "back": "Use deterministic steps with concrete test data, exact build/version, and explicit expected checkpoints."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как сделать дефект воспроизводимым для кейса: дубли в отчете?",
+    "back": "Дать детальные шаги, конкретные тестовые данные, точную версию сборки и контрольные точки ожидаемого результата."
   },
   {
     "id": "q162",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you justify priority for: duplicate records in report?",
-    "back": "Explain user/business impact, frequency, workaround availability, and release timeline risk."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как обосновать priority для кейса: дубли в отчете?",
+    "back": "Оценить влияние на пользователя/бизнес, частоту, наличие обходного пути и риски релизного окна."
   },
   {
     "id": "q163",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What must be included in a bug report for: empty dashboard after deploy?",
-    "back": "Title, environment, reproducible steps, expected/actual, severity/priority, evidence (logs/screenshots)."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Что обязательно должно быть в баг-репорте для кейса: пустой дашборд после деплоя?",
+    "back": "Заголовок, окружение, шаги воспроизведения, expected/actual, severity/priority, вложения (логи/скрин/видео)."
   },
   {
     "id": "q164",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How do you make this defect reproducible: empty dashboard after deploy?",
-    "back": "Use deterministic steps with concrete test data, exact build/version, and explicit expected checkpoints."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как сделать дефект воспроизводимым для кейса: пустой дашборд после деплоя?",
+    "back": "Дать детальные шаги, конкретные тестовые данные, точную версию сборки и контрольные точки ожидаемого результата."
   },
   {
     "id": "q165",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you justify priority for: empty dashboard after deploy?",
-    "back": "Explain user/business impact, frequency, workaround availability, and release timeline risk."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как обосновать priority для кейса: пустой дашборд после деплоя?",
+    "back": "Оценить влияние на пользователя/бизнес, частоту, наличие обходного пути и риски релизного окна."
   },
   {
     "id": "q166",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What must be included in a bug report for: random 500 on order API?",
-    "back": "Title, environment, reproducible steps, expected/actual, severity/priority, evidence (logs/screenshots)."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Что обязательно должно быть в баг-репорте для кейса: случайные 500 в order API?",
+    "back": "Заголовок, окружение, шаги воспроизведения, expected/actual, severity/priority, вложения (логи/скрин/видео)."
   },
   {
     "id": "q167",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How do you make this defect reproducible: random 500 on order API?",
-    "back": "Use deterministic steps with concrete test data, exact build/version, and explicit expected checkpoints."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как сделать дефект воспроизводимым для кейса: случайные 500 в order API?",
+    "back": "Дать детальные шаги, конкретные тестовые данные, точную версию сборки и контрольные точки ожидаемого результата."
   },
   {
     "id": "q168",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you justify priority for: random 500 on order API?",
-    "back": "Explain user/business impact, frequency, workaround availability, and release timeline risk."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как обосновать priority для кейса: случайные 500 в order API?",
+    "back": "Оценить влияние на пользователя/бизнес, частоту, наличие обходного пути и риски релизного окна."
   },
   {
     "id": "q169",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What must be included in a bug report for: user can edit another user profile?",
-    "back": "Title, environment, reproducible steps, expected/actual, severity/priority, evidence (logs/screenshots)."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Что обязательно должно быть в баг-репорте для кейса: пользователь может редактировать чужой профиль?",
+    "back": "Заголовок, окружение, шаги воспроизведения, expected/actual, severity/priority, вложения (логи/скрин/видео)."
   },
   {
     "id": "q170",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How do you make this defect reproducible: user can edit another user profile?",
-    "back": "Use deterministic steps with concrete test data, exact build/version, and explicit expected checkpoints."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как сделать дефект воспроизводимым для кейса: пользователь может редактировать чужой профиль?",
+    "back": "Дать детальные шаги, конкретные тестовые данные, точную версию сборки и контрольные точки ожидаемого результата."
   },
   {
     "id": "q171",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you justify priority for: user can edit another user profile?",
-    "back": "Explain user/business impact, frequency, workaround availability, and release timeline risk."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как обосновать priority для кейса: пользователь может редактировать чужой профиль?",
+    "back": "Оценить влияние на пользователя/бизнес, частоту, наличие обходного пути и риски релизного окна."
   },
   {
     "id": "q172",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What must be included in a bug report for: search returns stale data?",
-    "back": "Title, environment, reproducible steps, expected/actual, severity/priority, evidence (logs/screenshots)."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Что обязательно должно быть в баг-репорте для кейса: поиск показывает устаревшие данные?",
+    "back": "Заголовок, окружение, шаги воспроизведения, expected/actual, severity/priority, вложения (логи/скрин/видео)."
   },
   {
     "id": "q173",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How do you make this defect reproducible: search returns stale data?",
-    "back": "Use deterministic steps with concrete test data, exact build/version, and explicit expected checkpoints."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как сделать дефект воспроизводимым для кейса: поиск показывает устаревшие данные?",
+    "back": "Дать детальные шаги, конкретные тестовые данные, точную версию сборки и контрольные точки ожидаемого результата."
   },
   {
     "id": "q174",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you justify priority for: search returns stale data?",
-    "back": "Explain user/business impact, frequency, workaround availability, and release timeline risk."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как обосновать priority для кейса: поиск показывает устаревшие данные?",
+    "back": "Оценить влияние на пользователя/бизнес, частоту, наличие обходного пути и риски релизного окна."
   },
   {
     "id": "q175",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What must be included in a bug report for: notification sent twice?",
-    "back": "Title, environment, reproducible steps, expected/actual, severity/priority, evidence (logs/screenshots)."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Что обязательно должно быть в баг-репорте для кейса: уведомление отправляется дважды?",
+    "back": "Заголовок, окружение, шаги воспроизведения, expected/actual, severity/priority, вложения (логи/скрин/видео)."
   },
   {
     "id": "q176",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How do you make this defect reproducible: notification sent twice?",
-    "back": "Use deterministic steps with concrete test data, exact build/version, and explicit expected checkpoints."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как сделать дефект воспроизводимым для кейса: уведомление отправляется дважды?",
+    "back": "Дать детальные шаги, конкретные тестовые данные, точную версию сборки и контрольные точки ожидаемого результата."
   },
   {
     "id": "q177",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you justify priority for: notification sent twice?",
-    "back": "Explain user/business impact, frequency, workaround availability, and release timeline risk."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как обосновать priority для кейса: уведомление отправляется дважды?",
+    "back": "Оценить влияние на пользователя/бизнес, частоту, наличие обходного пути и риски релизного окна."
   },
   {
     "id": "q178",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Return top 3 products by price",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Вывести топ-3 товаров по цене",
     "back": "SELECT product_name, price FROM products ORDER BY price DESC LIMIT 3;"
   },
   {
     "id": "q179",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: return top 3 products by price?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: вывести топ-3 товаров по цене?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q180",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Find users without orders",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Найти пользователей без заказов",
     "back": "SELECT u.user_id FROM users u LEFT JOIN orders o ON u.user_id=o.user_id WHERE o.order_id IS NULL;"
   },
   {
     "id": "q181",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: find users without orders?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: найти пользователей без заказов?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q182",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Get total paid amount per user",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Посчитать сумму paid-заказов по пользователям",
     "back": "SELECT user_id, SUM(amount) AS total_paid FROM orders WHERE status='paid' GROUP BY user_id;"
   },
   {
     "id": "q183",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: get total paid amount per user?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: посчитать сумму paid-заказов по пользователям?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q184",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Find the second highest order total",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Найти второй по величине заказ",
     "back": "SELECT order_id, total_amount FROM orders ORDER BY total_amount DESC LIMIT 1 OFFSET 1;"
   },
   {
     "id": "q185",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: find the second highest order total?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: найти второй по величине заказ?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q186",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "List unique categories",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Показать уникальные категории",
     "back": "SELECT DISTINCT category FROM products;"
   },
   {
     "id": "q187",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: list unique categories?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: показать уникальные категории?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q188",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Count rows in products",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Посчитать количество строк в products",
     "back": "SELECT COUNT(*) AS total_rows FROM products;"
   },
   {
     "id": "q189",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: count rows in products?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: посчитать количество строк в products?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q190",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Find records with NULL category",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Найти записи с NULL category",
     "back": "SELECT * FROM products WHERE category IS NULL;"
   },
   {
     "id": "q191",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: find records with null category?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: найти записи с null category?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q192",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Get paid order count per user",
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Посчитать количество paid-заказов по пользователям",
     "back": "SELECT user_id, COUNT(*) AS paid_cnt FROM orders WHERE status='paid' GROUP BY user_id;"
   },
   {
     "id": "q193",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: get paid order count per user?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: посчитать количество paid-заказов по пользователям?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q194",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "Find total mismatch in order sums",
-    "back": "JOIN orders with order_items and compare total_amount with SUM(quantity*unit_price) using HAVING !=."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Найти расхождения total заказа и суммы позиций",
+    "back": "Сделать JOIN orders + order_items и сравнить total_amount с SUM(quantity*unit_price) через HAVING !=."
   },
   {
     "id": "q195",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "How would you self-check correctness for: find total mismatch in order sums?",
-    "back": "Verify selected columns, filter logic, sort direction, row count, and 2-3 sample rows manually."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Как быстро самопроверить корректность результата для задачи: найти расхождения total заказа и суммы позиций?",
+    "back": "Проверить выбранные колонки, логику фильтра, направление сортировки, количество строк и 2-3 строки руками."
   },
   {
     "id": "q196",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "What does QA contribute during backlog refinement?",
-    "back": "Clarifies acceptance criteria, testability gaps, dependencies, and quality risks early."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Что QA делает на backlog refinement?",
+    "back": "Уточняет критерии приемки, тестируемость, зависимости и риски качества до разработки."
   },
   {
     "id": "q197",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "What does QA contribute during sprint planning?",
-    "back": "Estimates test effort, identifies risky items, and aligns on test scope for sprint goal."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Что QA дает на sprint planning?",
+    "back": "Оценивает тестовые активности, подсвечивает рисковые задачи и выравнивает тест-скоуп под цель спринта."
   },
   {
     "id": "q198",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "Why is retrospective important for QA?",
-    "back": "It reveals process bottlenecks and recurring quality failure patterns."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Почему ретро важно для QA?",
+    "back": "Позволяет устранять системные процессные проблемы и повторяющиеся quality-сбои."
   },
   {
     "id": "q199",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "How do you explain Definition of Done to interviewer?",
-    "back": "A shared quality threshold that every increment must meet before considered complete."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Как объяснить Definition of Done на собесе?",
+    "back": "Это общий порог качества, ниже которого инкремент не считается завершенным."
   },
   {
     "id": "q200",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "How do you handle ambiguous requirement?",
-    "back": "State assumptions, ask clarifying questions, and document agreed behavior before deep testing."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Что делать при неоднозначном требовании?",
+    "back": "Явно проговорить допущения, уточнить у владельца требований и зафиксировать согласованную трактовку."
   },
   {
     "id": "q201",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "How does QA support Sprint Review?",
-    "back": "Presents tested scope, known risks, and quality observations on delivered increment."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Как QA помогает на Sprint Review?",
+    "back": "Показывает покрытый тест-скоуп, известные риски и качество доставленного инкремента."
   },
   {
     "id": "q202",
-    "topic": "Security Basics",
-    "level": "Intern/Junior",
-    "front": "What is Broken Access Control?",
-    "back": "A user can perform action or access data outside granted permissions."
+    "topic": "Безопасность",
+    "level": "Стажер/Джун",
+    "front": "Что такое Broken Access Control?",
+    "back": "Нарушение контроля доступа, когда пользователь может делать то, что ему не разрешено."
   },
   {
     "id": "q203",
-    "topic": "Security Basics",
-    "level": "Intern/Junior",
-    "front": "How to test potential IDOR/BOLA?",
-    "back": "Change resource identifier to another user resource and verify access is denied."
+    "topic": "Безопасность",
+    "level": "Стажер/Джун",
+    "front": "Как проверить риск IDOR/BOLA?",
+    "back": "Подменить идентификатор ресурса на чужой и убедиться, что доступ блокируется."
   },
   {
     "id": "q204",
-    "topic": "Security Basics",
-    "level": "Intern/Junior",
-    "front": "Why should production API hide stack traces?",
-    "back": "Detailed internal errors leak implementation data and raise exploitability."
+    "topic": "Безопасность",
+    "level": "Стажер/Джун",
+    "front": "Почему нельзя отдавать stack trace в production API?",
+    "back": "Это утечка внутренних деталей системы и рост риска эксплуатации уязвимостей."
   },
   {
     "id": "q205",
-    "topic": "Security Basics",
-    "level": "Intern/Junior",
-    "front": "How to test rate limiting behavior?",
-    "back": "Send burst requests and verify deterministic throttling and recovery behavior."
+    "topic": "Безопасность",
+    "level": "Стажер/Джун",
+    "front": "Как тестировать rate limiting?",
+    "back": "Сгенерировать burst запросов и проверить предсказуемый троттлинг и корректное восстановление."
   },
   {
     "id": "q206",
-    "topic": "Security Basics",
-    "level": "Intern/Junior",
-    "front": "How to test password reset flow safely?",
-    "back": "Check token lifetime, one-time usage, invalidation after use, and brute-force protections."
+    "topic": "Безопасность",
+    "level": "Стажер/Джун",
+    "front": "Как тестировать reset password flow?",
+    "back": "Проверить TTL токена, одноразовость, инвалидацию после использования и защиту от перебора."
   },
   {
     "id": "q207",
-    "topic": "Security Basics",
-    "level": "Intern/Junior",
-    "front": "What to verify for session timeout?",
-    "back": "Idle timeout, refresh policy, and forced re-authentication for sensitive actions."
+    "topic": "Безопасность",
+    "level": "Стажер/Джун",
+    "front": "Что проверять в session timeout?",
+    "back": "Время неактивности, политику продления сессии и принудительную реавторизацию для чувствительных действий."
   },
   {
     "id": "q208",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for cart?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: корзина?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q209",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for cart?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: корзина?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q210",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in cart is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле корзина на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q211",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in cart?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле корзина?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q212",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in cart?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле корзина?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q213",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for wishlist?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: избранное?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q214",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for wishlist?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: избранное?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q215",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in wishlist is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле избранное на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q216",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in wishlist?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле избранное?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q217",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in wishlist?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле избранное?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q218",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for payment?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: оплата?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q219",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for payment?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: оплата?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q220",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in payment is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле оплата на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q221",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in payment?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле оплата?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q222",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in payment?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле оплата?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q223",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for address book?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: адреса?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q224",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for address book?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: адреса?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q225",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in address book is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле адреса на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q226",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in address book?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле адреса?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q227",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in address book?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле адреса?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q228",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for order history?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: история заказов?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q229",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for order history?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: история заказов?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q230",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in order history is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле история заказов на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q231",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in order history?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле история заказов?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q232",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in order history?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле история заказов?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q233",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for search filters?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: фильтры поиска?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q234",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for search filters?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: фильтры поиска?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q235",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in search filters is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле фильтры поиска на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q236",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in search filters?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле фильтры поиска?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q237",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in search filters?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле фильтры поиска?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q238",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for promo code?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: промокод?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q239",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for promo code?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: промокод?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q240",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in promo code is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле промокод на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q241",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in promo code?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле промокод?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q242",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in promo code?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле промокод?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q243",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for invoice?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: инвойс?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q244",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for invoice?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: инвойс?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q245",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in invoice is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле инвойс на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q246",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in invoice?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле инвойс?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q247",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in invoice?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле инвойс?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q248",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for user profile?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: профиль?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q249",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for user profile?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: профиль?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q250",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in user profile is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле профиль на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q251",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in user profile?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле профиль?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q252",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in user profile?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле профиль?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q253",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "If testing time is cut to 30%, how do you reduce scope for loyalty points?",
-    "back": "Prioritize critical user journeys and high-impact risks; document deferred coverage and residual risk."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Если время тестирования срезали до 30%, как сократить скоуп для модуля: бонусные баллы?",
+    "back": "Покрыть критический путь и high-risk зоны, затем зафиксировать отложенное покрытие и остаточные риски."
   },
   {
     "id": "q254",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What boundary and negative data would you pick first for loyalty points?",
-    "back": "Pick min/max boundaries, null/empty values, wrong type/format, and realistic business edge cases."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какие boundary и negative данные взять первыми для модуля: бонусные баллы?",
+    "back": "Минимум/максимум, пустые/null значения, неверные типы/форматы, реальный edge-case из бизнеса."
   },
   {
     "id": "q255",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "How would you isolate whether bug in loyalty points is frontend or backend?",
-    "back": "Inspect API request/response contract and compare with UI behavior and DB state."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Как быстро локализовать, что баг в модуле бонусные баллы на фронте или на бэке?",
+    "back": "Проверить API запрос/ответ, затем сверить состояние в БД и поведение UI относительно контракта."
   },
   {
     "id": "q256",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "What evidence should accompany a bug in loyalty points?",
-    "back": "Screenshot/video, request payload, response body/status, logs, build/version, and test data."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Какие артефакты приложить к дефекту в модуле бонусные баллы?",
+    "back": "Скрин/видео, payload запроса, response body/status, логи, версия сборки и тестовые данные."
   },
   {
     "id": "q257",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What SQL check can validate data shown in loyalty points?",
-    "back": "Write focused SELECT with expected filter/sort and compare DB result with UI/API output."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какой SQL-check поможет провалидировать данные в модуле бонусные баллы?",
+    "back": "Написать точечный SELECT с нужным фильтром/сортировкой и сравнить результат с UI/API."
   },
   {
     "id": "q258",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (Test Design, variant 1)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (Тест-дизайн, вариант 1)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q259",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (API & Architecture, variant 2)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (API и архитектура, вариант 2)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   },
   {
     "id": "q260",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you explain this to an interviewer in 60 seconds? (Documentation, variant 3)",
-    "back": "Give definition, practical use, short example, and one risk/tradeoff."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как ответить на это на собесе за 60 секунд? (Документация и баги, вариант 3)",
+    "back": "Структура: определение -> где применяешь -> короткий пример -> риск/ограничение."
   },
   {
     "id": "q261",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (SQL Basics, variant 4)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (SQL, вариант 4)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q262",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (SDLC & Agile, variant 5)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (SDLC и Agile, вариант 5)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   },
   {
     "id": "q263",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "How would you explain this to an interviewer in 60 seconds? (Testing Fundamentals, variant 6)",
-    "back": "Give definition, practical use, short example, and one risk/tradeoff."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Как ответить на это на собесе за 60 секунд? (Основы тестирования, вариант 6)",
+    "back": "Структура: определение -> где применяешь -> короткий пример -> риск/ограничение."
   },
   {
     "id": "q264",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (Test Design, variant 7)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (Тест-дизайн, вариант 7)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q265",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (API & Architecture, variant 8)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (API и архитектура, вариант 8)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   },
   {
     "id": "q266",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you explain this to an interviewer in 60 seconds? (Documentation, variant 9)",
-    "back": "Give definition, practical use, short example, and one risk/tradeoff."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как ответить на это на собесе за 60 секунд? (Документация и баги, вариант 9)",
+    "back": "Структура: определение -> где применяешь -> короткий пример -> риск/ограничение."
   },
   {
     "id": "q267",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (SQL Basics, variant 10)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (SQL, вариант 10)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q268",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (SDLC & Agile, variant 11)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (SDLC и Agile, вариант 11)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   },
   {
     "id": "q269",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "How would you explain this to an interviewer in 60 seconds? (Testing Fundamentals, variant 12)",
-    "back": "Give definition, practical use, short example, and one risk/tradeoff."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Как ответить на это на собесе за 60 секунд? (Основы тестирования, вариант 12)",
+    "back": "Структура: определение -> где применяешь -> короткий пример -> риск/ограничение."
   },
   {
     "id": "q270",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (Test Design, variant 13)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (Тест-дизайн, вариант 13)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q271",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (API & Architecture, variant 14)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (API и архитектура, вариант 14)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   },
   {
     "id": "q272",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you explain this to an interviewer in 60 seconds? (Documentation, variant 15)",
-    "back": "Give definition, practical use, short example, and one risk/tradeoff."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как ответить на это на собесе за 60 секунд? (Документация и баги, вариант 15)",
+    "back": "Структура: определение -> где применяешь -> короткий пример -> риск/ограничение."
   },
   {
     "id": "q273",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (SQL Basics, variant 16)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (SQL, вариант 16)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q274",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (SDLC & Agile, variant 17)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (SDLC и Agile, вариант 17)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   },
   {
     "id": "q275",
-    "topic": "Testing Fundamentals",
-    "level": "Intern/Junior",
-    "front": "How would you explain this to an interviewer in 60 seconds? (Testing Fundamentals, variant 18)",
-    "back": "Give definition, practical use, short example, and one risk/tradeoff."
+    "topic": "Основы тестирования",
+    "level": "Стажер/Джун",
+    "front": "Как ответить на это на собесе за 60 секунд? (Основы тестирования, вариант 18)",
+    "back": "Структура: определение -> где применяешь -> короткий пример -> риск/ограничение."
   },
   {
     "id": "q276",
-    "topic": "Test Design",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (Test Design, variant 19)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "Тест-дизайн",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (Тест-дизайн, вариант 19)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q277",
-    "topic": "API & Architecture",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (API & Architecture, variant 20)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "API и архитектура",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (API и архитектура, вариант 20)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   },
   {
     "id": "q278",
-    "topic": "Documentation",
-    "level": "Intern/Junior",
-    "front": "How would you explain this to an interviewer in 60 seconds? (Documentation, variant 21)",
-    "back": "Give definition, practical use, short example, and one risk/tradeoff."
+    "topic": "Документация и баги",
+    "level": "Стажер/Джун",
+    "front": "Как ответить на это на собесе за 60 секунд? (Документация и баги, вариант 21)",
+    "back": "Структура: определение -> где применяешь -> короткий пример -> риск/ограничение."
   },
   {
     "id": "q279",
-    "topic": "SQL Basics",
-    "level": "Intern/Junior",
-    "front": "What is the most common junior mistake here? (SQL Basics, variant 22)",
-    "back": "Skipping assumptions, weak validation, and no risk-based prioritization."
+    "topic": "SQL",
+    "level": "Стажер/Джун",
+    "front": "Какая самая частая ошибка стажера/джуна здесь? (SQL, вариант 22)",
+    "back": "Нечеткие допущения, слабая самопроверка результата и отсутствие риск-приоритизации."
   },
   {
     "id": "q280",
-    "topic": "SDLC & Agile",
-    "level": "Intern/Junior",
-    "front": "What is your fast sanity check here before release? (SDLC & Agile, variant 23)",
-    "back": "Run critical path checks, key negative path, and verify high-impact metrics/data."
+    "topic": "SDLC и Agile",
+    "level": "Стажер/Джун",
+    "front": "Какой минимальный sanity-check нужен перед релизом? (SDLC и Agile, вариант 23)",
+    "back": "Проверить критический путь, один негативный кейс и ключевую консистентность данных/метрик."
   }
 ];
