@@ -4,14 +4,21 @@ const SQL_TASK_STATE_KEY = "vk-qa-sql-task-state-v1";
 const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
 
 const DAYS = [
-  { id: 1, mode: "quiz", title: "Теория тестирования", subtitle: "Виды тестирования, smoke/sanity/retest/regression" },
-  { id: 2, mode: "quiz", title: "Тест-дизайн", subtitle: "Эквивалентность, границы, decision table, state transition" },
-  { id: 3, mode: "quiz", title: "SDLC и Agile", subtitle: "Процессы, роли, сущности, артефакты" },
-  { id: 4, mode: "quiz", title: "Клиент-сервер и API", subtitle: "HTTP, коды, контракты, проверки API" },
-  { id: 5, mode: "quiz", title: "Тест-документация", subtitle: "Test case/checklist/bug report/RTM" },
-  { id: 6, mode: "sql", title: "SQL лайвкодинг I", subtitle: "Базовые SELECT/WHERE/ORDER BY/LIMIT" },
-  { id: 7, mode: "sql", title: "SQL лайвкодинг II", subtitle: "JOIN/GROUP BY/HAVING/поиск аномалий" },
-  { id: 8, mode: "quiz", title: "Репетиция собеса", subtitle: "Финальный микс вопросов и стратегии ответа" }
+  {
+    id: 1,
+    title: "День 1: База QA + SQL основы",
+    subtitle: "Теория тестирования, тест-дизайн, SQL SELECT/WHERE"
+  },
+  {
+    id: 2,
+    title: "День 2: Процессы + API + SQL JOIN",
+    subtitle: "SDLC/Agile, клиент-сервер, API, SQL JOIN/GROUP BY"
+  },
+  {
+    id: 3,
+    title: "День 3: Репетиция технички",
+    subtitle: "Документация, mixed-вопросы, финальный SQL лайвкодинг"
+  }
 ];
 
 const DAY_MAP = Object.fromEntries(DAYS.map((d) => [d.id, d]));
@@ -23,193 +30,248 @@ const QUIZ_BANK = {
       id: "d1_q1",
       question: "Чем retest отличается от regression?",
       options: [
-        "Retest проверяет конкретно фикс, regression проверяет что остальное не сломали",
-        "Retest это то же самое что regression",
-        "Retest всегда автоматизированный, regression всегда ручной",
-        "Retest делают только перед релизом"
+        "Retest проверяет конкретный фикс, regression ищет побочные поломки",
+        "Они полностью одинаковы",
+        "Retest только авто, regression только ручной",
+        "Retest делают только на проде"
       ],
       correct: 0,
-      explain: "Retest = проверка исправленного дефекта. Regression = проверка смежной функциональности на побочки."
+      explain: "Retest = проверка исправления дефекта. Regression = проверка, что рядом ничего не сломалось."
     },
     {
       id: "d1_q2",
-      question: "Что обычно включает smoke-тест после деплоя?",
-      options: [
-        "Только критические end-to-end пути системы",
-        "Полный регресс всех модулей",
-        "Только UI-проверки без API",
-        "Только нагрузочные тесты"
-      ],
+      question: "Для диапазона 1..100 какие значения критичны по BVA?",
+      options: ["1, 100, 0, 101", "50, 51", "10, 20, 30", "2, 99"],
       correct: 0,
-      explain: "Smoke должен быстро ответить на вопрос: система вообще жива и можно ли продолжать тестирование."
+      explain: "Границы и соседние значения дают максимальный шанс найти дефект."
     },
     {
       id: "d1_q3",
-      question: "Какой вид тестирования в первую очередь про производительность?",
-      options: ["Функциональное", "Usability", "Performance", "Compatibility"],
-      correct: 2,
-      explain: "Performance-тестирование покрывает скорость, стабильность под нагрузкой и деградации."
+      question: "Когда лучше использовать checklist, а не детальные test cases?",
+      options: [
+        "Когда нужны быстрые повторяемые проверки и низкая сложность сценариев",
+        "Никогда",
+        "Только для API",
+        "Только для автоматизации"
+      ],
+      correct: 0,
+      explain: "Checklist быстрее поддерживать, но он хуже для сложных ветвлений."
+    },
+    {
+      id: "d1_q4",
+      question: "Что обычно включает smoke после деплоя?",
+      options: [
+        "Проверку критических user flow и жизнеспособности системы",
+        "Полный регресс",
+        "Только UI анимации",
+        "Только нагрузку"
+      ],
+      correct: 0,
+      explain: "Smoke нужен, чтобы быстро понять: можно ли продолжать полноценное тестирование."
+    },
+    {
+      id: "d1_q5",
+      question: "Какое тестирование в первую очередь проверяет взаимодействие модулей?",
+      options: ["Интеграционное", "Юзабилити", "Приемочное", "Нагрузочное"],
+      correct: 0,
+      explain: "Интеграционное фокусируется на стыках компонентов и обмене данными между ними."
+    },
+    {
+      id: "d1_q6",
+      question: "Что лучше сделать первым при очень маленьком окне на тестирование?",
+      options: [
+        "Риск-бейзд приоритизацию и проверку критического пути",
+        "Запуск полного регресса без приоритетов",
+        "Проверить только happy path UI",
+        "Отложить тестирование"
+      ],
+      correct: 0,
+      explain: "На техничке ждут, что QA умеет резать scope по рискам, а не случайно."
+    },
+    {
+      id: "d1_q7",
+      question: "Какая формулировка про severity и priority наиболее корректна?",
+      options: [
+        "Severity — влияние дефекта, Priority — срочность исправления",
+        "Severity и Priority всегда одно и то же",
+        "Priority задает только QA, Severity только PM",
+        "Severity нужна только для UI-багов"
+      ],
+      correct: 0,
+      explain: "Это базовая терминология, которую почти всегда спрашивают на интервью."
     }
   ],
   2: [
     {
       id: "d2_q1",
-      question: "Для диапазона 1..100 какие значения наиболее важны по BVA?",
-      options: ["1, 100, 0, 101", "50, 51, 52", "10, 20, 30", "2, 99"],
+      question: "Какая разница между 401 и 403?",
+      options: [
+        "401 — не авторизован, 403 — авторизован, но нет прав",
+        "401 и 403 это одно и то же",
+        "401 — ошибка сервера, 403 — ошибка клиента",
+        "403 бывает только у GET"
+      ],
       correct: 0,
-      explain: "Границы и ближайшие значения вокруг них чаще всего дают дефекты."
+      explain: "Классический вопрос по API и auth."
     },
     {
       id: "d2_q2",
-      question: "Когда лучше использовать decision table?",
+      question: "Что такое API-контракт для QA?",
       options: [
-        "Когда много комбинаций условий и бизнес-правил",
-        "Когда один input и один output",
-        "Только для UI верстки",
-        "Только для SQL"
+        "Согласованная структура запросов/ответов и правила поведения endpoint",
+        "Только URL ручки",
+        "Только SQL схема БД",
+        "Только swagger-файл без логики"
       ],
       correct: 0,
-      explain: "Decision table помогает системно покрыть комбинации условий/правил."
+      explain: "Контракт помогает валидировать формат, типы, обязательность полей и коды ответов."
     },
     {
       id: "d2_q3",
-      question: "Что такое эквивалентные классы?",
+      question: "Что описывает Definition of Done?",
       options: [
-        "Группы значений, которые система обрабатывает одинаково",
-        "Список всех возможных значений поля",
-        "Только граничные значения",
-        "Только невалидные значения"
+        "Критерии завершенности задачи/инкремента",
+        "Только acceptance criteria",
+        "Список багов в спринте",
+        "Роли команды"
       ],
       correct: 0,
-      explain: "Техника нужна, чтобы сократить набор тестов без потери покрытия логики."
+      explain: "DoD — про общую готовность результата команды."
+    },
+    {
+      id: "d2_q4",
+      question: "Когда уместно просить риск-бейзд сужение покрытия?",
+      options: [
+        "Когда сроки жесткие и нужно явно зафиксировать компромисс по рискам",
+        "Никогда",
+        "Когда лень писать тесты",
+        "Только после релиза"
+      ],
+      correct: 0,
+      explain: "Важно не молча резать покрытие, а прозрачно коммуницировать риски."
+    },
+    {
+      id: "d2_q5",
+      question: "Какой HTTP-метод обычно используют для частичного обновления ресурса?",
+      options: ["GET", "PATCH", "DELETE", "OPTIONS"],
+      correct: 1,
+      explain: "PATCH применяют для частичных изменений. PUT обычно трактуют как полную замену."
+    },
+    {
+      id: "d2_q6",
+      question: "Что полезнее всего проверить в негативном API-сценарии?",
+      options: [
+        "Код ошибки, тело ошибки и консистентность сообщения",
+        "Только код 4xx/5xx",
+        "Только время ответа",
+        "Только запись в UI"
+      ],
+      correct: 0,
+      explain: "На техничке важно показать, что ты проверяешь контракт ошибок, а не только статус-код."
+    },
+    {
+      id: "d2_q7",
+      question: "Что лучше описывает Scrum Daily?",
+      options: [
+        "Короткий синк по плану/блокерам, а не детальная техдискуссия",
+        "Полноценный статус-репорт на 30-40 минут",
+        "Демо для заказчика",
+        "Ретроспектива по багам"
+      ],
+      correct: 0,
+      explain: "Daily нужен для синхронизации команды и выявления блокеров."
     }
   ],
   3: [
     {
       id: "d3_q1",
-      question: "Что из этого относится к Scrum-ритуалам?",
-      options: ["Daily, Sprint Planning, Review, Retro", "Only Kanban Board", "Only Bug Triage", "Only Release Meeting"],
+      question: "Что должно быть в хорошем bug report?",
+      options: [
+        "Шаги, окружение, expected/actual, severity/priority, вложения",
+        "Только заголовок",
+        "Только скрин",
+        "Только ссылку на таску"
+      ],
       correct: 0,
-      explain: "Это базовый набор регулярных scrum-событий."
+      explain: "Цель баг-репорта — быстрое воспроизведение и корректный приоритет фикса."
     },
     {
       id: "d3_q2",
-      question: "Что такое Definition of Done (DoD)?",
+      question: "Лучшая структура устного ответа на техничке?",
       options: [
-        "Критерии, при которых задача считается завершенной командой",
-        "То же самое что acceptance criteria",
-        "Список багов в спринте",
-        "Только инструкция для QA"
+        "Определение → применение → пример → риски/trade-off",
+        "Сразу длинная история без структуры",
+        "Только термин",
+        "Только пример"
       ],
       correct: 0,
-      explain: "DoD про готовность инкремента в целом, а AC про конкретную user story."
+      explain: "Структурные ответы сильно повышают впечатление от кандидата."
     },
     {
       id: "d3_q3",
-      question: "Главная идея Kanban?",
-      options: ["Фиксированные 2-недельные спринты", "Непрерывный поток + WIP-лимиты", "Без приоритизации", "Только для поддержки"],
-      correct: 1,
-      explain: "Kanban оптимизирует поток доставки и ограничивает параллельную работу."
-    }
-  ],
-  4: [
-    {
-      id: "d4_q1",
-      question: "Какой HTTP-метод обычно используют для частичного обновления ресурса?",
-      options: ["GET", "POST", "PATCH", "DELETE"],
-      correct: 2,
-      explain: "PATCH применяют для частичного обновления; PUT обычно про полную замену ресурса."
-    },
-    {
-      id: "d4_q2",
-      question: "Какой код ответа означает неавторизованный запрос?",
-      options: ["200", "401", "404", "500"],
-      correct: 1,
-      explain: "401 = Unauthorized. 403 = Forbidden (авторизован, но нет прав)."
-    },
-    {
-      id: "d4_q3",
-      question: "Что в API тестах означает " + '"контракт"' + "?",
+      question: "Если не уверен в ответе, как лучше?",
       options: [
-        "Согласованная схема/формат запроса и ответа",
-        "Только URL endpoint",
-        "Только структура БД",
-        "Только swagger-док"
+        "Честно обозначить неопределенность и предложить аргументированную гипотезу",
+        "Уверенно выдумывать",
+        "Молчать",
+        "Сменить тему"
       ],
       correct: 0,
-      explain: "Контракт — это договор о структуре и поведении API между клиентом и сервером."
-    }
-  ],
-  5: [
-    {
-      id: "d5_q1",
-      question: "Когда лучше checklist вместо детальных test cases?",
-      options: [
-        "Когда проверка типовая/быстрая и нужны краткие контрольные пункты",
-        "Никогда",
-        "Только для автоматизации",
-        "Только для API"
-      ],
-      correct: 0,
-      explain: "Checklist быстрее в поддержке, но для сложной логики часто нужны подробные test cases."
+      explain: "На техничке ценят мышление и прозрачность."
     },
     {
-      id: "d5_q2",
-      question: "Что обязательно должно быть в bug report?",
-      options: ["Только скрин", "Шаги + expected/actual + окружение", "Только severity", "Только ссылку на таску"],
-      correct: 1,
-      explain: "Без шагов/результатов/окружения баг сложно воспроизвести и качественно починить."
-    },
-    {
-      id: "d5_q3",
-      question: "Для чего RTM (traceability matrix)?",
+      id: "d3_q4",
+      question: "RTM нужен прежде всего для...",
       options: [
-        "Связать требования с тестами и контролировать покрытие",
-        "Планировать релизы",
-        "Хранить логи сервера",
-        "Считать velocity"
+        "Трассировки требований в тесты и контроля coverage",
+        "Подсчета velocity",
+        "Логирования API",
+        "Планирования отпусков"
       ],
       correct: 0,
-      explain: "RTM помогает увидеть, какие требования не покрыты тестами."
-    }
-  ],
-  8: [
-    {
-      id: "d8_q1",
-      question: "Если не знаешь ответ на вопрос интервьюера, лучший ход?",
-      options: [
-        "Честно сказать и предложить структурированную гипотезу",
-        "Импровизировать уверенно любой ценой",
-        "Перевести тему",
-        "Сказать " + '"не знаю"' + " и молчать"
-      ],
-      correct: 0,
-      explain: "Прозрачность + логика рассуждения лучше, чем уверенная выдумка."
+      explain: "RTM помогает обнаружить непокрытые требования до релиза."
     },
     {
-      id: "d8_q2",
-      question: "Какая структура ответа на техничке обычно самая сильная?",
+      id: "d3_q5",
+      question: "Какая структура шага в bug report самая рабочая?",
       options: [
-        "Определение → когда применяю → пример → риски/trade-off",
-        "Сразу длинная история",
-        "Только термин без примера",
-        "Только пример без термина"
+        "Пронумерованные шаги + конкретные входные данные + expected/actual",
+        "Свободный текст без структуры",
+        "Только видео и скрин",
+        "Только stack trace"
       ],
       correct: 0,
-      explain: "Структурный ответ показывает системность и практичность мышления QA."
+      explain: "Воспроизводимость — ключ к быстрому и качественному исправлению."
     },
     {
-      id: "d8_q3",
-      question: "Что важно в SQL-лайвкодинге кроме синтаксиса?",
-      options: ["Молчать и быстро печатать", "Озвучивать ход мысли и проверять результат", "Сразу писать подзапросы", "Игнорировать edge cases"],
-      correct: 1,
-      explain: "Интервьюер оценивает не только код, но и твой инженерный процесс."
+      id: "d3_q6",
+      question: "Что важно делать во время SQL лайвкодинга на интервью?",
+      options: [
+        "Озвучивать ход мысли и валидировать промежуточный результат",
+        "Писать молча и быстро",
+        "Сразу решать через сложные подзапросы",
+        "Избегать уточнений требований"
+      ],
+      correct: 0,
+      explain: "Интервьюер оценивает не только результат, но и процесс инженерного мышления."
+    },
+    {
+      id: "d3_q7",
+      question: "Если вопрос сформулирован неоднозначно, лучшее действие?",
+      options: [
+        "Уточнить допущения и продолжить решение явно проговорив их",
+        "Сделать случайный выбор и молчать",
+        "Сказать, что задача плохая",
+        "Перескочить к следующему вопросу"
+      ],
+      correct: 0,
+      explain: "Уточнение требований — сильный сигнал зрелого QA-подхода."
     }
   ]
 };
 
 const SQL_SEEDS = {
-  6: `
+  1: `
     DROP TABLE IF EXISTS products;
     CREATE TABLE products (
       product_id INTEGER PRIMARY KEY,
@@ -220,13 +282,13 @@ const SQL_SEEDS = {
     );
     INSERT INTO products (product_id, product_name, category, price, in_stock) VALUES
       (1, 'iPhone 14', 'Электроника', 79990, 15),
-      (2, 'Samsung Galaxy S23', 'Электроника', 69990, 20),
+      (2, 'Samsung S23', 'Электроника', 69990, 20),
       (3, 'Ноутбук ASUS', 'Электроника', 54990, 8),
       (4, 'Наушники Sony', 'Аксессуары', 5990, 50),
-      (5, 'Клавиатура Logitech', 'Периферия', 3499, 30),
-      (6, 'Мышь Razer', 'Периферия', 2999, 40);
+      (5, 'Мышь Razer', 'Периферия', 2999, 40),
+      (6, 'Веб-камера', 'Периферия', 4999, 25);
   `,
-  7: `
+  2: `
     DROP TABLE IF EXISTS users;
     DROP TABLE IF EXISTS orders;
     CREATE TABLE users (
@@ -251,61 +313,87 @@ const SQL_SEEDS = {
       (3, 2, 3000, 'cancelled'),
       (4, 2, 4200, 'paid'),
       (5, 3, 1500, 'paid');
+  `,
+  3: `
+    DROP TABLE IF EXISTS orders;
+    DROP TABLE IF EXISTS order_items;
+    CREATE TABLE orders (
+      order_id INTEGER PRIMARY KEY,
+      total_amount REAL
+    );
+    CREATE TABLE order_items (
+      item_id INTEGER PRIMARY KEY,
+      order_id INTEGER,
+      quantity INTEGER,
+      unit_price REAL
+    );
+    INSERT INTO orders (order_id, total_amount) VALUES
+      (1, 51000),
+      (2, 30000),
+      (3, 5000),
+      (4, 4500);
+    INSERT INTO order_items (item_id, order_id, quantity, unit_price) VALUES
+      (1, 1, 1, 50000),
+      (2, 1, 1, 1000),
+      (3, 2, 1, 30000),
+      (4, 3, 1, 5000),
+      (5, 4, 1, 3000),
+      (6, 4, 1, 1000);
   `
 };
 
 const SQL_TASKS = {
-  6: [
+  1: [
     {
-      id: "d6_t1",
-      title: "Товары дороже 10000",
-      prompt: "Выведи product_name и price для товаров дороже 10000.",
+      id: "d1_t1",
+      title: "SELECT + WHERE",
+      prompt: "Выведи product_name и price только для товаров дороже 10000.",
       starter: "SELECT product_name, price\nFROM products\nWHERE price > 0;",
       validate: ({ lastResult }) => {
-        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидаются строки результата." };
-        const i = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
-        if (i < 0) return { ok: false, message: "Нужна колонка price." };
-        const ok = lastResult.values.every((r) => Number(r[i]) > 10000);
-        return ok ? { ok: true, message: "Верно." } : { ok: false, message: "Есть строки с price <= 10000." };
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой SELECT-результат." };
+        const idx = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
+        if (idx < 0) return { ok: false, message: "В результате должна быть колонка price." };
+        const ok = lastResult.values.every((r) => Number(r[idx]) > 10000);
+        return ok ? { ok: true, message: "Отлично: фильтрация корректная." } : { ok: false, message: "Есть строки с price <= 10000." };
       }
     },
     {
-      id: "d6_t2",
-      title: "Топ-3 дорогих",
-      prompt: "Покажи 3 самых дорогих товара.",
-      starter: "SELECT product_name, price\nFROM products\nORDER BY price ASC\nLIMIT 3;",
+      id: "d1_t2",
+      title: "ORDER BY + LIMIT",
+      prompt: "Покажи топ-2 самых дорогих товара (по убыванию цены).",
+      starter: "SELECT product_name, price\nFROM products\nORDER BY price ASC\nLIMIT 2;",
       validate: ({ lastResult }) => {
-        if (!lastResult || lastResult.values.length !== 3) return { ok: false, message: "Нужно ровно 3 строки." };
-        const i = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
-        if (i < 0) return { ok: false, message: "Нужна колонка price." };
-        const arr = lastResult.values.map((r) => Number(r[i]));
+        if (!lastResult || lastResult.values.length !== 2) return { ok: false, message: "Нужно ровно 2 строки." };
+        const idx = lastResult.columns.findIndex((c) => c.toLowerCase() === "price");
+        if (idx < 0) return { ok: false, message: "Нужна колонка price." };
+        const arr = lastResult.values.map((r) => Number(r[idx]));
         const sorted = [...arr].sort((a, b) => b - a);
-        const ok = arr.every((v, idx) => v === sorted[idx]);
-        return ok ? { ok: true, message: "Отлично." } : { ok: false, message: "Проверь ORDER BY DESC." };
+        const ok = arr.every((v, i) => v === sorted[i]);
+        return ok ? { ok: true, message: "Супер: сортировка и лимит корректны." } : { ok: false, message: "Проверь ORDER BY price DESC." };
       }
     }
   ],
-  7: [
+  2: [
     {
-      id: "d7_t1",
-      title: "Пользователи без заказов",
-      prompt: "Найди пользователей без заказов (LEFT JOIN + IS NULL).",
+      id: "d2_t1",
+      title: "LEFT JOIN: пользователи без заказов",
+      prompt: "Найди пользователей, у которых нет заказов.",
       starter: "SELECT u.user_id, u.username\nFROM users u\nLEFT JOIN orders o ON u.user_id = o.user_id\nWHERE o.order_id IS NULL;",
       validate: ({ db, lastResult }) => {
-        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается минимум 1 пользователь." };
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается минимум один пользователь." };
         const idx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("user_id"));
-        if (idx < 0) return { ok: false, message: "В выдаче нужен user_id." };
+        if (idx < 0) return { ok: false, message: "Нужна колонка user_id в результате." };
         const actual = [...new Set(lastResult.values.map((r) => Number(r[idx])))].sort((a, b) => a - b);
-        const exp = db.exec("SELECT user_id FROM users WHERE user_id NOT IN (SELECT DISTINCT user_id FROM orders) ORDER BY user_id;");
-        const expected = exp.length ? exp[0].values.map((r) => Number(r[0])) : [];
+        const expRaw = db.exec("SELECT user_id FROM users WHERE user_id NOT IN (SELECT DISTINCT user_id FROM orders) ORDER BY user_id;");
+        const expected = expRaw.length ? expRaw[0].values.map((r) => Number(r[0])) : [];
         const ok = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
-        return ok ? { ok: true, message: "Верно." } : { ok: false, message: "Список пользователей не совпал." };
+        return ok ? { ok: true, message: "Верно: пользователи без заказов найдены." } : { ok: false, message: "Проверь логику JOIN/IS NULL." };
       }
     },
     {
-      id: "d7_t2",
-      title: "Сумма paid-заказов по пользователю",
-      prompt: "Выведи user_id и total_paid только по статусу paid, отсортируй по total_paid убыванию.",
+      id: "d2_t2",
+      title: "GROUP BY: сумма paid заказов",
+      prompt: "Выведи user_id и total_paid по статусу paid, отсортируй по total_paid убыванию.",
       starter: "SELECT user_id, SUM(amount) AS total_paid\nFROM orders\nWHERE status = 'paid'\nGROUP BY user_id\nORDER BY total_paid ASC;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
@@ -314,7 +402,48 @@ const SQL_TASKS = {
         const arr = lastResult.values.map((r) => Number(r[idx]));
         const sorted = [...arr].sort((a, b) => b - a);
         const ok = arr.every((v, i) => v === sorted[i]);
-        return ok ? { ok: true, message: "Отлично." } : { ok: false, message: "Проверь ORDER BY ... DESC." };
+        return ok ? { ok: true, message: "Отлично: агрегация и сортировка верны." } : { ok: false, message: "Проверь ORDER BY total_paid DESC." };
+      }
+    }
+  ],
+  3: [
+    {
+      id: "d3_t1",
+      title: "Проверка целостности totals",
+      prompt: "Найди заказы, где total_amount не совпадает с суммой order_items.",
+      starter: "SELECT o.order_id, o.total_amount, SUM(oi.quantity * oi.unit_price) AS calc_total\nFROM orders o\nLEFT JOIN order_items oi ON o.order_id = oi.order_id\nGROUP BY o.order_id;",
+      validate: ({ db, lastResult }) => {
+        if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
+        const idx = lastResult.columns.findIndex((c) => c.toLowerCase().includes("order_id"));
+        if (idx < 0) return { ok: false, message: "Нужна колонка order_id." };
+        const actual = [...new Set(lastResult.values.map((r) => Number(r[idx])))].sort((a, b) => a - b);
+        const expRaw = db.exec(`
+          SELECT o.order_id
+          FROM orders o
+          LEFT JOIN order_items oi ON o.order_id = oi.order_id
+          GROUP BY o.order_id
+          HAVING ABS(o.total_amount - SUM(oi.quantity * oi.unit_price)) > 0.01
+          ORDER BY o.order_id;
+        `);
+        const expected = expRaw.length ? expRaw[0].values.map((r) => Number(r[0])) : [];
+        const ok = actual.length === expected.length && actual.every((v, i) => v === expected[i]);
+        return ok ? { ok: true, message: "Верно: аномальные заказы найдены." } : { ok: false, message: "Нужен HAVING по расхождению сумм." };
+      }
+    },
+    {
+      id: "d3_t2",
+      title: "N-й максимум",
+      prompt: "Выведи второй по сумме заказ (order_id, total_amount).",
+      starter: "SELECT order_id, total_amount\nFROM orders\nORDER BY total_amount DESC\nLIMIT 1 OFFSET 0;",
+      validate: ({ lastResult }) => {
+        if (!lastResult || lastResult.values.length !== 1) return { ok: false, message: "Ожидается ровно 1 строка." };
+        const idxOrder = lastResult.columns.findIndex((c) => c.toLowerCase().includes("order_id"));
+        const idxAmount = lastResult.columns.findIndex((c) => c.toLowerCase().includes("total_amount"));
+        if (idxOrder < 0 || idxAmount < 0) return { ok: false, message: "Нужны order_id и total_amount." };
+        const orderId = Number(lastResult.values[0][idxOrder]);
+        const amount = Number(lastResult.values[0][idxAmount]);
+        if (orderId === 2 && amount === 30000) return { ok: true, message: "Отлично: второй максимум найден." };
+        return { ok: false, message: "Проверь OFFSET для второго места." };
       }
     }
   ]
@@ -336,10 +465,10 @@ function saveJson(key, value) {
 }
 
 function loadProgress() {
-  const saved = loadJson(STORAGE_KEY, {});
-  const result = {};
-  DAYS.forEach((d) => { result[d.id] = Boolean(saved[d.id]); });
-  return result;
+  const data = loadJson(STORAGE_KEY, {});
+  const p = {};
+  DAYS.forEach((d) => { p[d.id] = Boolean(data[d.id]); });
+  return p;
 }
 
 function saveProgress(progress) {
@@ -390,11 +519,12 @@ function renderIndex() {
   const progress = loadProgress();
   const grid = document.getElementById("days-grid");
   const done = Object.values(progress).filter(Boolean).length;
+
   grid.innerHTML = DAYS.map((d) => buildDayCard(d, progress)).join("");
 
-  const txt = document.getElementById("overall-progress");
+  const text = document.getElementById("overall-progress");
   const fill = document.getElementById("progress-fill");
-  txt.textContent = `${done} из ${TOTAL_DAYS} модулей отмечено как пройдено`;
+  text.textContent = `${done} из ${TOTAL_DAYS} модулей отмечено как пройдено`;
   fill.style.width = `${(done / TOTAL_DAYS) * 100}%`;
 
   grid.querySelectorAll("[data-day-toggle]").forEach((btn) => {
@@ -409,83 +539,76 @@ function renderIndex() {
 
 function buildDayPagination(dayId) {
   const wrap = document.getElementById("day-nav");
-  const idx = DAYS.findIndex((d) => d.id === dayId);
-  const prev = idx > 0 ? DAYS[idx - 1] : null;
-  const next = idx < DAYS.length - 1 ? DAYS[idx + 1] : null;
+  const index = DAYS.findIndex((d) => d.id === dayId);
+  const prev = index > 0 ? DAYS[index - 1] : null;
+  const next = index < DAYS.length - 1 ? DAYS[index + 1] : null;
   wrap.innerHTML = `${prev ? `<a class="btn ghost" href="day${prev.id}.html">← День ${prev.id}</a>` : "<span></span>"}${next ? `<a class="btn primary" href="day${next.id}.html">День ${next.id} →</a>` : `<a class="btn primary" href="index.html">К модулям</a>`}`;
 }
 
-function renderMarkdownContent(contentEl, tocEl, md) {
+function renderMarkdown(contentEl, tocEl, markdownText) {
   marked.setOptions({ gfm: true, breaks: false });
-  contentEl.innerHTML = marked.parse(md);
+  contentEl.innerHTML = marked.parse(markdownText);
   const headers = contentEl.querySelectorAll("h2, h3");
   tocEl.innerHTML = "";
   headers.forEach((header) => {
-    const id = slugify(header.textContent || "section") || `section-${Math.random().toString(36).slice(2, 7)}`;
+    const id = slugify(header.textContent || "section") || `section-${Math.random().toString(36).slice(2, 8)}`;
     header.id = id;
-    const a = document.createElement("a");
-    a.href = `#${id}`;
-    a.textContent = header.textContent || "Раздел";
-    tocEl.appendChild(a);
+    const link = document.createElement("a");
+    link.href = `#${id}`;
+    link.textContent = header.textContent || "Раздел";
+    tocEl.appendChild(link);
   });
   if (!headers.length) tocEl.innerHTML = "<p>Разделы не найдены</p>";
 }
 
-function renderQuiz(dayId, toggleBtn) {
-  const panel = document.getElementById("practice-panel");
+function getQuizStats(dayId) {
   const questions = QUIZ_BANK[dayId] || [];
-  if (!questions.length) {
-    panel.innerHTML = "<p>Квиз для этого дня еще не добавлен.</p>";
-    return;
-  }
-
   const state = loadJson(QUIZ_STATE_KEY, {});
-  if (!state[dayId]) state[dayId] = {};
+  const answers = state[dayId] || {};
+  let answered = 0;
+  let correct = 0;
+  questions.forEach((q) => {
+    const pick = answers[q.id];
+    if (typeof pick === "number") {
+      answered += 1;
+      if (pick === q.correct) correct += 1;
+    }
+  });
+  return { total: questions.length, answered, correct };
+}
 
-  panel.innerHTML = `
-    <div class="practice-head">
-      <h2>Интерактив: Квиз</h2>
-      <p>Отвечай на вопросы. Состояние сохраняется. День засчитывается автоматически при всех верных ответах.</p>
-    </div>
-    <div id="quiz-root" class="quiz-root"></div>
-  `;
+function getSqlStats(dayId) {
+  const tasks = SQL_TASKS[dayId] || [];
+  const state = loadJson(SQL_TASK_STATE_KEY, {});
+  const solvedState = state[dayId] || {};
+  const solved = tasks.filter((t) => Boolean(solvedState[t.id])).length;
+  return { total: tasks.length, solved };
+}
 
-  const root = panel.querySelector("#quiz-root");
+function renderQuizInto(dayId, container, onProgress) {
+  const questions = QUIZ_BANK[dayId] || [];
+  const allState = loadJson(QUIZ_STATE_KEY, {});
+  if (!allState[dayId]) allState[dayId] = {};
 
-  function calcSummary() {
-    let correct = 0;
-    let answered = 0;
-    questions.forEach((q) => {
-      const selected = state[dayId][q.id];
-      if (typeof selected === "number") {
-        answered += 1;
-        if (selected === q.correct) correct += 1;
-      }
-    });
-    return { correct, answered };
-  }
+  function draw() {
+    const answers = allState[dayId];
+    const stats = getQuizStats(dayId);
 
-  function renderQuizCards() {
-    const summary = calcSummary();
-    root.innerHTML = `
+    container.innerHTML = `
       <div class="quiz-summary panel">
-        <strong>Прогресс: ${summary.correct}/${questions.length} верно</strong>
-        <span>Отвечено: ${summary.answered}/${questions.length}</span>
+        <strong>Теория: ${stats.correct}/${stats.total} верно</strong>
+        <span>Отвечено: ${stats.answered}/${stats.total}</span>
       </div>
       ${questions.map((q, idx) => {
-        const selected = state[dayId][q.id];
+        const selected = answers[q.id];
         const isAnswered = typeof selected === "number";
         const isCorrect = isAnswered && selected === q.correct;
-        const resultClass = isAnswered ? (isCorrect ? "ok" : "fail") : "";
-
+        const cls = isAnswered ? (isCorrect ? "ok" : "fail") : "";
         return `
-          <section class="panel quiz-card ${resultClass}">
+          <section class="panel quiz-card ${cls}">
             <h3>${idx + 1}. ${escapeHtml(q.question)}</h3>
             <div class="quiz-options">
-              ${q.options.map((opt, i) => {
-                const active = selected === i ? "active" : "";
-                return `<button class="quiz-option ${active}" data-qid="${q.id}" data-opt="${i}" type="button">${escapeHtml(opt)}</button>`;
-              }).join("")}
+              ${q.options.map((opt, i) => `<button class="quiz-option ${selected === i ? "active" : ""}" data-qid="${q.id}" data-opt="${i}" type="button">${escapeHtml(opt)}</button>`).join("")}
             </div>
             ${isAnswered ? `<p class="quiz-explain ${isCorrect ? "ok" : "fail"}">${escapeHtml(q.explain)}</p>` : ""}
           </section>
@@ -493,23 +616,19 @@ function renderQuiz(dayId, toggleBtn) {
       }).join("")}
     `;
 
-    root.querySelectorAll(".quiz-option").forEach((btn) => {
+    container.querySelectorAll(".quiz-option").forEach((btn) => {
       btn.addEventListener("click", () => {
         const qid = btn.getAttribute("data-qid");
         const opt = Number(btn.getAttribute("data-opt"));
-        state[dayId][qid] = opt;
-        saveJson(QUIZ_STATE_KEY, state);
-        renderQuizCards();
+        allState[dayId][qid] = opt;
+        saveJson(QUIZ_STATE_KEY, allState);
+        draw();
+        onProgress();
       });
     });
-
-    const after = calcSummary();
-    if (after.correct === questions.length) {
-      setDayCompleted(dayId, toggleBtn);
-    }
   }
 
-  renderQuizCards();
+  draw();
 }
 
 async function getSqlJs() {
@@ -521,16 +640,16 @@ async function getSqlJs() {
   return sqlJsPromise;
 }
 
-async function buildSqlDb(dayId) {
+async function buildDb(dayId) {
   const SQL = await getSqlJs();
   const db = new SQL.Database();
   db.run(SQL_SEEDS[dayId] || "");
   return db;
 }
 
-async function cloneSqlDb(source) {
+async function cloneDb(sourceDb) {
   const SQL = await getSqlJs();
-  return new SQL.Database(source.export());
+  return new SQL.Database(sourceDb.export());
 }
 
 function runSql(db, sql) {
@@ -556,7 +675,9 @@ function renderSqlResult(host, runData) {
     <div class="result-scroll">
       <table class="result-table">
         <thead><tr>${cols.map((c) => `<th>${escapeHtml(c)}</th>`).join("")}</tr></thead>
-        <tbody>${rows.length ? rows.map((r) => `<tr>${r.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`}</tbody>
+        <tbody>
+          ${rows.length ? rows.map((r) => `<tr>${r.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`}
+        </tbody>
       </table>
     </div>
   `;
@@ -565,45 +686,36 @@ function renderSqlResult(host, runData) {
 function renderSchema(db, host) {
   const tables = db.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name;");
   if (!tables.length || !tables[0].values.length) {
-    host.innerHTML = "<p class='sql-message'>Таблиц нет.</p>";
+    host.innerHTML = "<p class='sql-message'>Таблиц не найдено.</p>";
     return;
   }
   const names = tables[0].values.map((r) => String(r[0]));
-  const blocks = names.map((name) => {
-    const info = db.exec(`PRAGMA table_info(${name});`);
+  const blocks = names.map((tableName) => {
+    const info = db.exec(`PRAGMA table_info(${tableName});`);
     const rows = info.length ? info[0].values : [];
     return `
-      <h4>${escapeHtml(name)}</h4>
+      <h4>${escapeHtml(tableName)}</h4>
       <table class="result-table">
         <thead><tr><th>column</th><th>type</th><th>constraints</th><th>key</th></tr></thead>
-        <tbody>
-          ${rows.map((r) => `<tr><td>${escapeHtml(r[1])}</td><td>${escapeHtml(r[2])}</td><td>${Number(r[3]) ? "NOT NULL" : ""}</td><td>${Number(r[5]) ? "PK" : ""}</td></tr>`).join("")}
-        </tbody>
+        <tbody>${rows.map((r) => `<tr><td>${escapeHtml(r[1])}</td><td>${escapeHtml(r[2])}</td><td>${Number(r[3]) ? "NOT NULL" : ""}</td><td>${Number(r[5]) ? "PK" : ""}</td></tr>`).join("")}</tbody>
       </table>
     `;
   }).join("");
-  host.innerHTML = `<p class='sql-message'>Схема текущей БД</p>${blocks}`;
+  host.innerHTML = `<p class='sql-message'>Схема текущей учебной БД</p>${blocks}`;
 }
 
-async function renderSqlPractice(dayId, toggleBtn) {
-  const panel = document.getElementById("practice-panel");
+async function renderSqlInto(dayId, container, onProgress) {
   const tasks = SQL_TASKS[dayId] || [];
-  if (!tasks.length) {
-    panel.innerHTML = "<p>SQL-практика для этого дня еще не добавлена.</p>";
-    return;
-  }
+  const allState = loadJson(SQL_TASK_STATE_KEY, {});
+  const allDrafts = loadJson(SQL_DRAFT_KEY, {});
+  if (!allState[dayId]) allState[dayId] = {};
+  if (!allDrafts[dayId]) allDrafts[dayId] = {};
 
-  const taskState = loadJson(SQL_TASK_STATE_KEY, {});
-  if (!taskState[dayId]) taskState[dayId] = {};
-  const drafts = loadJson(SQL_DRAFT_KEY, {});
-  if (!drafts[dayId]) drafts[dayId] = {};
+  let active = 0;
+  let db = await buildDb(dayId);
 
-  panel.innerHTML = `
-    <div class="practice-head">
-      <h2>Интерактив: SQL Лайвкодинг</h2>
-      <p>Run SQL меняет учебную БД. Проверка задачи запускается в изолированной копии БД.</p>
-    </div>
-    <div class="practice-grid">
+  container.innerHTML = `
+    <div class="sql-shell">
       <aside class="task-list" id="task-list"></aside>
       <section class="task-workbench">
         <div class="task-meta">
@@ -615,8 +727,8 @@ async function renderSqlPractice(dayId, toggleBtn) {
         <div class="workbench-actions">
           <button class="btn primary" id="run-sql" type="button">Run SQL</button>
           <button class="btn ghost" id="check-sql" type="button">Проверить задачу</button>
-          <button class="btn ghost" id="show-schema" type="button">Показать схему</button>
-          <button class="btn ghost" id="reset-db" type="button">Сбросить БД</button>
+          <button class="btn ghost" id="show-schema" type="button">Схема БД</button>
+          <button class="btn ghost" id="reset-db" type="button">Сброс БД</button>
         </div>
         <div id="check-status" class="check-status"></div>
         <div id="sql-result" class="sql-result"></div>
@@ -624,31 +736,22 @@ async function renderSqlPractice(dayId, toggleBtn) {
     </div>
   `;
 
-  const list = panel.querySelector("#task-list");
-  const title = panel.querySelector("#task-title");
-  const prompt = panel.querySelector("#task-prompt");
-  const progressEl = panel.querySelector("#task-progress");
-  const input = panel.querySelector("#sql-input");
-  const runBtn = panel.querySelector("#run-sql");
-  const checkBtn = panel.querySelector("#check-sql");
-  const schemaBtn = panel.querySelector("#show-schema");
-  const resetBtn = panel.querySelector("#reset-db");
-  const status = panel.querySelector("#check-status");
-  const result = panel.querySelector("#sql-result");
+  const list = container.querySelector("#task-list");
+  const title = container.querySelector("#task-title");
+  const prompt = container.querySelector("#task-prompt");
+  const progressEl = container.querySelector("#task-progress");
+  const input = container.querySelector("#sql-input");
+  const runBtn = container.querySelector("#run-sql");
+  const checkBtn = container.querySelector("#check-sql");
+  const schemaBtn = container.querySelector("#show-schema");
+  const resetBtn = container.querySelector("#reset-db");
+  const status = container.querySelector("#check-status");
+  const result = container.querySelector("#sql-result");
 
-  let active = 0;
-  let db = await buildSqlDb(dayId);
-
-  function updateHeaderProgress() {
-    const solved = tasks.filter((t) => Boolean(taskState[dayId][t.id])).length;
-    progressEl.textContent = `Решено: ${solved}/${tasks.length}`;
-    if (solved === tasks.length) setDayCompleted(dayId, toggleBtn);
-  }
-
-  function renderTaskButtons() {
-    list.innerHTML = tasks.map((t, i) => {
-      const done = Boolean(taskState[dayId][t.id]);
-      return `<button class="task-btn ${i === active ? "active" : ""}" data-task="${i}" type="button"><span>${escapeHtml(t.title)}</span><strong>${done ? "✓" : "•"}</strong></button>`;
+  function redrawTaskList() {
+    list.innerHTML = tasks.map((task, index) => {
+      const solved = Boolean(allState[dayId][task.id]);
+      return `<button class="task-btn ${index === active ? "active" : ""}" data-task="${index}" type="button"><span>${escapeHtml(task.title)}</span><strong>${solved ? "✓" : "•"}</strong></button>`;
     }).join("");
 
     list.querySelectorAll("[data-task]").forEach((btn) => {
@@ -659,60 +762,66 @@ async function renderSqlPractice(dayId, toggleBtn) {
     });
   }
 
+  function updateProgressText() {
+    const solved = tasks.filter((t) => Boolean(allState[dayId][t.id])).length;
+    progressEl.textContent = `SQL-прогресс: ${solved}/${tasks.length}`;
+  }
+
   function loadTask() {
-    const t = tasks[active];
-    title.textContent = t.title;
-    prompt.textContent = t.prompt;
-    input.value = drafts[dayId][t.id] || t.starter;
+    const task = tasks[active];
+    title.textContent = task.title;
+    prompt.textContent = task.prompt;
+    input.value = allDrafts[dayId][task.id] || task.starter;
     status.textContent = "";
     status.className = "check-status";
     result.innerHTML = "";
-    renderTaskButtons();
-    updateHeaderProgress();
+    redrawTaskList();
+    updateProgressText();
   }
 
   input.addEventListener("input", () => {
-    const t = tasks[active];
-    drafts[dayId][t.id] = input.value;
-    saveJson(SQL_DRAFT_KEY, drafts);
+    const task = tasks[active];
+    allDrafts[dayId][task.id] = input.value;
+    saveJson(SQL_DRAFT_KEY, allDrafts);
   });
 
   runBtn.addEventListener("click", () => {
     try {
-      status.className = "check-status";
       const runData = runSql(db, input.value);
       renderSqlResult(result, runData);
+      status.className = "check-status";
       status.textContent = "SQL выполнен в учебной БД.";
-    } catch (e) {
+    } catch (error) {
       result.innerHTML = "";
       status.className = "check-status fail";
-      status.textContent = `Ошибка: ${e.message}`;
+      status.textContent = `Ошибка: ${error.message}`;
     }
   });
 
   checkBtn.addEventListener("click", async () => {
-    const t = tasks[active];
+    const task = tasks[active];
     let checkDb = null;
     try {
-      checkDb = await cloneSqlDb(db);
+      checkDb = await cloneDb(db);
       const runData = runSql(checkDb, input.value);
       renderSqlResult(result, runData);
-      const verdict = t.validate({ db: checkDb, lastResult: runData.lastResult });
+      const verdict = task.validate({ db: checkDb, lastResult: runData.lastResult });
       if (verdict.ok) {
-        taskState[dayId][t.id] = true;
-        saveJson(SQL_TASK_STATE_KEY, taskState);
+        allState[dayId][task.id] = true;
+        saveJson(SQL_TASK_STATE_KEY, allState);
         status.className = "check-status ok";
         status.textContent = verdict.message;
       } else {
         status.className = "check-status fail";
         status.textContent = verdict.message;
       }
-      renderTaskButtons();
-      updateHeaderProgress();
-    } catch (e) {
+      redrawTaskList();
+      updateProgressText();
+      onProgress();
+    } catch (error) {
       result.innerHTML = "";
       status.className = "check-status fail";
-      status.textContent = `Ошибка: ${e.message}`;
+      status.textContent = `Ошибка: ${error.message}`;
     } finally {
       if (checkDb) checkDb.close();
     }
@@ -720,24 +829,80 @@ async function renderSqlPractice(dayId, toggleBtn) {
 
   schemaBtn.addEventListener("click", () => {
     try {
-      status.textContent = "";
-      status.className = "check-status";
       renderSchema(db, result);
-    } catch (e) {
+      status.className = "check-status";
+      status.textContent = "";
+    } catch (error) {
       status.className = "check-status fail";
-      status.textContent = `Ошибка: ${e.message}`;
+      status.textContent = `Ошибка: ${error.message}`;
     }
   });
 
   resetBtn.addEventListener("click", async () => {
     db.close();
-    db = await buildSqlDb(dayId);
+    db = await buildDb(dayId);
     result.innerHTML = "";
     status.className = "check-status";
-    status.textContent = "База дня сброшена к начальному состоянию.";
+    status.textContent = "База дня сброшена.";
   });
 
   loadTask();
+}
+
+async function renderHybridPractice(dayId, toggleBtn) {
+  const panel = document.getElementById("practice-panel");
+  panel.innerHTML = `
+    <div class="practice-cockpit">
+      <div class="cockpit-head">
+        <div>
+          <p class="eyebrow">Практический тренажер</p>
+          <h2>День ${dayId}: Theory + SQL</h2>
+        </div>
+        <div class="cockpit-chips" id="cockpit-chips"></div>
+      </div>
+
+      <div class="practice-switch" role="tablist" aria-label="Переключение режима практики">
+        <button class="switch-btn active" data-view="theory" type="button">Теория (квиз)</button>
+        <button class="switch-btn" data-view="sql" type="button">SQL лайвкодинг</button>
+      </div>
+
+      <section class="practice-view active" id="view-theory"></section>
+      <section class="practice-view" id="view-sql"></section>
+    </div>
+  `;
+
+  const chips = panel.querySelector("#cockpit-chips");
+  const theoryView = panel.querySelector("#view-theory");
+  const sqlView = panel.querySelector("#view-sql");
+  const switchButtons = panel.querySelectorAll(".switch-btn");
+
+  function refreshDayCompletion() {
+    const quizStats = getQuizStats(dayId);
+    const sqlStats = getSqlStats(dayId);
+
+    chips.innerHTML = `
+      <span class="chip">Теория: ${quizStats.correct}/${quizStats.total}</span>
+      <span class="chip">SQL: ${sqlStats.solved}/${sqlStats.total}</span>
+      <span class="chip ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "chip-ok" : ""}">Статус: ${quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total ? "Готов" : "В процессе"}</span>
+    `;
+
+    if (quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total) {
+      setDayCompleted(dayId, toggleBtn);
+    }
+  }
+
+  switchButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const view = btn.getAttribute("data-view");
+      switchButtons.forEach((b) => b.classList.toggle("active", b === btn));
+      theoryView.classList.toggle("active", view === "theory");
+      sqlView.classList.toggle("active", view === "sql");
+    });
+  });
+
+  renderQuizInto(dayId, theoryView, refreshDayCompletion);
+  await renderSqlInto(dayId, sqlView, refreshDayCompletion);
+  refreshDayCompletion();
 }
 
 async function renderDay() {
@@ -753,31 +918,30 @@ async function renderDay() {
   }
 
   const progress = loadProgress();
-  const updateToggleLabel = () => {
+  const updateToggle = () => {
     toggle.textContent = progress[dayId] ? "Убрать отметку о прохождении" : "Отметить день пройденным";
   };
-  updateToggleLabel();
+  updateToggle();
 
   toggle.addEventListener("click", () => {
     const p = loadProgress();
     p[dayId] = !p[dayId];
     saveProgress(p);
     progress[dayId] = p[dayId];
-    updateToggleLabel();
+    updateToggle();
   });
 
   try {
     const res = await fetch(`content/day${dayId}.md`);
     if (!res.ok) throw new Error("Не удалось загрузить контент дня");
     const md = await res.text();
-    renderMarkdownContent(content, toc, md);
-  } catch (e) {
-    content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(e.message)}</p>`;
+    renderMarkdown(content, toc, md);
+  } catch (error) {
+    content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(error.message)}</p>`;
   }
 
   buildDayPagination(dayId);
-  if (day.mode === "quiz") renderQuiz(dayId, toggle);
-  if (day.mode === "sql") await renderSqlPractice(dayId, toggle);
+  await renderHybridPractice(dayId, toggle);
 }
 
 function main() {
