@@ -2156,6 +2156,23 @@ function buildDayPagination(dayId, view = "theory") {
   wrap.innerHTML = `${prev ? `<a class="btn ghost" href="day${prev.id}.html${suffix}">← День ${prev.id}</a>` : "<span></span>"}${next ? `<a class="btn primary" href="day${next.id}.html${suffix}">День ${next.id} →</a>` : `<a class="btn primary" href="index.html">К модулям</a>`}`;
 }
 
+function scrollToCurrentHash(retries = 10) {
+  const rawHash = window.location.hash || "";
+  if (!rawHash || rawHash === "#") return;
+  const targetId = decodeURIComponent(rawHash.slice(1));
+  if (!targetId) return;
+
+  const target = document.getElementById(targetId);
+  if (target) {
+    target.scrollIntoView({ behavior: "auto", block: "start" });
+    return;
+  }
+
+  if (retries > 0) {
+    window.setTimeout(() => scrollToCurrentHash(retries - 1), 60);
+  }
+}
+
 function renderMarkdown(contentEl, tocEl, markdownText) {
   marked.setOptions({ gfm: true, breaks: false });
   document.body.classList.remove("day-focus-mode");
@@ -2804,6 +2821,7 @@ async function renderDay() {
     if (!res.ok) throw new Error("Не удалось загрузить контент дня");
     const md = await res.text();
     renderMarkdown(content, toc, md);
+    scrollToCurrentHash();
   } catch (error) {
     content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(error.message)}</p>`;
   }
@@ -2837,6 +2855,7 @@ async function renderTeamProcessesTheoryPage() {
     if (!res.ok) throw new Error("Не удалось загрузить урок по процессам");
     const md = await res.text();
     renderMarkdown(content, toc, md);
+    scrollToCurrentHash();
   } catch (error) {
     content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(error.message)}</p>`;
   }
