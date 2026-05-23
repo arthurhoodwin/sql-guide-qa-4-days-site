@@ -1,6 +1,7 @@
 ﻿const STORAGE_KEY = "vk-qa-day-progress-v1";
 const THEORY_QUIZ_STATE_KEY = "vk-qa-theory-quiz-state-v2";
 const SQL_QUIZ_STATE_KEY = "vk-qa-sql-quiz-state-v1";
+const BEHAVIORAL_QUIZ_STATE_KEY = "vk-qa-behavioral-quiz-state-v1";
 const SQL_TASK_STATE_KEY = "vk-qa-sql-task-state-v1";
 const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
 
@@ -39,6 +40,15 @@ const TRACKS = [
       1: "SELECT/WHERE/ORDER BY/LIMIT на базовых таблицах",
       2: "JOIN/GROUP BY/агрегации на интервью задачах",
       3: "Контрольные SQL задачи и лайвкодинг под собес"
+    }
+  },
+  {
+    id: "behavioral",
+    label: "Поведенческий собес",
+    cardSubtitleByDay: {
+      1: "Самопрезентация, мотивация, карьерная логика",
+      2: "Конфликты, обратная связь, командное взаимодействие",
+      3: "Сложные кейсы, pressure-вопросы, финальная репетиция"
     }
   }
 ];
@@ -739,6 +749,226 @@ const SQL_QUIZ_BANK = {
   ]
 };
 
+const BEHAVIORAL_QUIZ_BANK = {
+  1: [
+    {
+      id: "bd1_q1",
+      question: "Как лучше всего начать ответ на вопрос «Расскажи о себе»?",
+      options: [
+        "Коротко: текущий уровень -> ключевой опыт -> почему интересна роль",
+        "С подробной истории со школы",
+        "С перечисления всех хобби",
+        "С критики прошлой компании"
+      ],
+      correct: 0,
+      explain: "Структурный и короткий заход показывает зрелую коммуникацию."
+    },
+    {
+      id: "bd1_q2",
+      question: "Что важно показать в мотивации «Почему именно эта компания?»",
+      options: [
+        "Связь между целями компании и твоим профессиональным ростом",
+        "Только размер зарплаты",
+        "Что просто откликнулся на все вакансии",
+        "Что не рассматривал другие варианты"
+      ],
+      correct: 0,
+      explain: "Интервьюер ожидает осознанную мотивацию, а не случайный отклик."
+    },
+    {
+      id: "bd1_q3",
+      question: "Как лучше говорить о слабых сторонах?",
+      options: [
+        "Честно + что делаешь для улучшения + прогресс",
+        "Сказать, что слабых сторон нет",
+        "Перевести тему на сильные стороны",
+        "Критиковать команду за прошлые неудачи"
+      ],
+      correct: 0,
+      explain: "Нужна зрелость и самоанализ, а не «идеальный» ответ."
+    },
+    {
+      id: "bd1_q4",
+      question: "Какую структуру использовать в поведенческих ответах?",
+      options: ["STAR (Situation-Task-Action-Result)", "SQL", "BDD", "TDD"],
+      correct: 0,
+      explain: "STAR — базовый и понятный формат для собеседований."
+    },
+    {
+      id: "bd1_q5",
+      question: "Что лучше делать, если вопрос сформулирован размыто?",
+      options: [
+        "Уточнить контекст и критерий, о чем именно хотят услышать",
+        "Сразу отвечать наугад",
+        "Сказать, что вопрос плохой",
+        "Пропустить вопрос"
+      ],
+      correct: 0,
+      explain: "Уточнение снижает риск уйти в нерелевантный ответ."
+    },
+    {
+      id: "bd1_q6",
+      question: "Как лучше завершать поведенческий кейс в ответе?",
+      options: [
+        "Зафиксировать итог, метрику/результат и урок",
+        "Оставить без результата",
+        "Сказать «ну как-то так»",
+        "Перейти к другой теме"
+      ],
+      correct: 0,
+      explain: "Итог и результат делают ответ убедительным."
+    }
+  ],
+  2: [
+    {
+      id: "bd2_q1",
+      question: "Если в команде конфликт приоритета багов, что лучше сделать QA?",
+      options: [
+        "Обсудить влияние на пользователя/бизнес и договориться на фактах",
+        "Настоять без аргументов",
+        "Игнорировать конфликт",
+        "Решить в одиночку без команды"
+      ],
+      correct: 0,
+      explain: "На собесе ценят конфликт-менеджмент через факты и риски."
+    },
+    {
+      id: "bd2_q2",
+      question: "Как корректно дать обратную связь разработчику по дефекту?",
+      options: [
+        "Факты, воспроизводимость, влияние и спокойная коммуникация",
+        "Оценочные формулировки и эмоции",
+        "Публичная критика в чате",
+        "Без деталей, только «почини»"
+      ],
+      correct: 0,
+      explain: "Фокус на фактах ускоряет фиксы и снижает напряжение."
+    },
+    {
+      id: "bd2_q3",
+      question: "Что делать, если пропустил баг и он ушел в прод?",
+      options: [
+        "Признать, разобрать root cause и предложить preventive меры",
+        "Скрыть факт",
+        "Свалить ответственность на других",
+        "Сказать, что это не важно"
+      ],
+      correct: 0,
+      explain: "Зрелость = ответственность + системные улучшения."
+    },
+    {
+      id: "bd2_q4",
+      question: "Как лучше отвечать на вопрос про работу в команде?",
+      options: [
+        "Показать конкретный кейс взаимодействия и результат",
+        "Сказать только «я командный игрок»",
+        "Перечислить инструменты без кейса",
+        "Говорить только о себе без роли команды"
+      ],
+      correct: 0,
+      explain: "Нужны примеры, а не абстрактные утверждения."
+    },
+    {
+      id: "bd2_q5",
+      question: "Как аргументировать решение «резать тест-скоуп» при дедлайне?",
+      options: [
+        "Через риск-бейзд подход и прозрачную фиксацию остаточных рисков",
+        "Потому что не успеваю",
+        "Потому что так проще",
+        "Не объяснять решение"
+      ],
+      correct: 0,
+      explain: "Интервьюеру важна управляемость рисков и коммуникация."
+    },
+    {
+      id: "bd2_q6",
+      question: "Что лучше делать, если не согласен с решением лидов?",
+      options: [
+        "Предложить альтернативу с аргументами и компромиссами",
+        "Спорить до победы",
+        "Молчать всегда",
+        "Саботировать решение"
+      ],
+      correct: 0,
+      explain: "Конструктивная аргументация — сильный поведенческий сигнал."
+    }
+  ],
+  3: [
+    {
+      id: "bd3_q1",
+      question: "Как отвечать на провокационный вопрос под давлением?",
+      options: [
+        "Сохранять структуру, уточнить контекст и отвечать спокойно",
+        "Обороняться агрессивно",
+        "Молчать",
+        "Сразу менять тему"
+      ],
+      correct: 0,
+      explain: "Собеседование оценивает стрессоустойчивость и ясность мышления."
+    },
+    {
+      id: "bd3_q2",
+      question: "Как лучше отвечать на «Твой самый большой провал?»",
+      options: [
+        "Кейс -> ошибка -> вывод -> что изменил в процессе",
+        "Сказать «провалов не было»",
+        "Обвинить коллег",
+        "Уйти от ответа"
+      ],
+      correct: 0,
+      explain: "Рефлексия и рост важнее «идеальности»."
+    },
+    {
+      id: "bd3_q3",
+      question: "Что лучше показать в ответе про достижение?",
+      options: [
+        "Измеримый результат и личный вклад в него",
+        "Только название проекта",
+        "Только срок работы",
+        "Без конкретики"
+      ],
+      correct: 0,
+      explain: "Метрика и вклад делают достижение достоверным."
+    },
+    {
+      id: "bd3_q4",
+      question: "Как действовать, если на вопрос нет точного ответа?",
+      options: [
+        "Честно обозначить это и дать обоснованную гипотезу",
+        "Импровизировать как факт",
+        "Сказать «не знаю» и молчать",
+        "Попросить другой вопрос сразу"
+      ],
+      correct: 0,
+      explain: "Прозрачность и логика ценятся выше угадывания."
+    },
+    {
+      id: "bd3_q5",
+      question: "Что лучше спросить интервьюера в конце?",
+      options: [
+        "Ожидания от роли, критерии успеха, процессы команды",
+        "Только про отпуск",
+        "Ничего не спрашивать",
+        "Только про сложность задач без контекста"
+      ],
+      correct: 0,
+      explain: "Хорошие вопросы показывают интерес и зрелость."
+    },
+    {
+      id: "bd3_q6",
+      question: "Какой формат финальной самопрезентации наиболее рабочий?",
+      options: [
+        "Коротко, структурно, с релевантностью к роли QA",
+        "Длинный монолог без структуры",
+        "Только перечень технологий",
+        "Только личная история"
+      ],
+      correct: 0,
+      explain: "На финале важны ясность и релевантность к вакансии."
+    }
+  ]
+};
+
 const SQL_SEEDS = {
   1: `
     DROP TABLE IF EXISTS products;
@@ -1191,12 +1421,15 @@ function renderIndex() {
   const progress = loadProgress();
   const theoryGrid = document.getElementById("theory-grid");
   const sqlGrid = document.getElementById("sql-grid");
+  const behavioralGrid = document.getElementById("behavioral-grid");
   const done = Object.values(progress).filter(Boolean).length;
   const theoryTrack = getTrack("theory");
   const sqlTrack = getTrack("sql");
+  const behavioralTrack = getTrack("behavioral");
 
   theoryGrid.innerHTML = DAYS.map((d) => buildDayCard(d, theoryTrack, progress)).join("");
   sqlGrid.innerHTML = DAYS.map((d) => buildDayCard(d, sqlTrack, progress)).join("");
+  if (behavioralGrid) behavioralGrid.innerHTML = DAYS.map((d) => buildDayCard(d, behavioralTrack, progress)).join("");
 
   const text = document.getElementById("overall-progress");
   const fill = document.getElementById("progress-fill");
@@ -1218,7 +1451,8 @@ function buildDayPagination(dayId, view = "theory") {
   const index = DAYS.findIndex((d) => d.id === dayId);
   const prev = index > 0 ? DAYS[index - 1] : null;
   const next = index < DAYS.length - 1 ? DAYS[index + 1] : null;
-  const suffix = `?view=${view === "sql" ? "sql" : "theory"}`;
+  const safeView = view === "sql" || view === "behavioral" ? view : "theory";
+  const suffix = `?view=${safeView}`;
   wrap.innerHTML = `${prev ? `<a class="btn ghost" href="day${prev.id}.html${suffix}">← День ${prev.id}</a>` : "<span></span>"}${next ? `<a class="btn primary" href="day${next.id}.html${suffix}">День ${next.id} →</a>` : `<a class="btn primary" href="index.html">К модулям</a>`}`;
 }
 
@@ -1535,7 +1769,7 @@ async function renderSqlInto(dayId, container, onProgress) {
 }
 
 function contentPath(trackId, dayId) {
-  const safeTrack = trackId === "sql" ? "sql" : "theory";
+  const safeTrack = trackId === "sql" || trackId === "behavioral" ? trackId : "theory";
   return `content/${safeTrack}-day${dayId}.md`;
 }
 
@@ -1621,6 +1855,44 @@ async function renderSqlPractice(dayId, toggleBtn) {
   refresh();
 }
 
+async function renderBehavioralPractice(dayId, toggleBtn) {
+  const panel = document.getElementById("practice-panel");
+  panel.innerHTML = `
+    <div class="practice-cockpit">
+      <div class="cockpit-head">
+        <div>
+          <p class="eyebrow">Практический тренажер</p>
+          <h2>Поведенческий собес: День ${dayId}</h2>
+        </div>
+        <div class="cockpit-chips" id="cockpit-chips"></div>
+      </div>
+      <section class="practice-view active" id="behavioral-quiz-view"></section>
+    </div>
+  `;
+
+  const chips = panel.querySelector("#cockpit-chips");
+  const quizView = panel.querySelector("#behavioral-quiz-view");
+
+  const refresh = () => {
+    const stats = getQuizStats(dayId, BEHAVIORAL_QUIZ_BANK, BEHAVIORAL_QUIZ_STATE_KEY);
+
+    chips.innerHTML = `
+      <span class="chip">Квиз: ${stats.correct}/${stats.total}</span>
+      <span class="chip ${stats.correct === stats.total ? "chip-ok" : ""}">Статус: ${stats.correct === stats.total ? "Готов" : "В процессе"}</span>
+    `;
+
+    if (stats.total > 0 && stats.correct === stats.total) setModuleCompleted(dayId, "behavioral", toggleBtn);
+  };
+
+  renderQuizInto(dayId, quizView, {
+    bank: BEHAVIORAL_QUIZ_BANK,
+    stateKey: BEHAVIORAL_QUIZ_STATE_KEY,
+    title: "Поведенческий квиз",
+    onProgress: refresh
+  });
+  refresh();
+}
+
 async function renderDay() {
   const dayId = Number(document.body.dataset.day);
   const day = DAY_MAP[dayId];
@@ -1628,7 +1900,8 @@ async function renderDay() {
   const toc = document.getElementById("toc");
   const toggle = document.getElementById("toggle-complete");
   const params = new URLSearchParams(window.location.search);
-  const activeTrack = params.get("view") === "sql" ? "sql" : "theory";
+  const view = params.get("view");
+  const activeTrack = view === "sql" || view === "behavioral" ? view : "theory";
 
   if (!day) {
     content.innerHTML = "<p>День не найден.</p>";
@@ -1663,6 +1936,7 @@ async function renderDay() {
 
   buildDayPagination(dayId, activeTrack);
   if (activeTrack === "sql") await renderSqlPractice(dayId, toggle);
+  else if (activeTrack === "behavioral") await renderBehavioralPractice(dayId, toggle);
   else await renderTheoryPractice(dayId, toggle);
 }
 
