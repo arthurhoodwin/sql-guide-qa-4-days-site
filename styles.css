@@ -1075,6 +1075,10 @@ body.day-focus-mode .toc-wrap {
 .history-list {
   display: grid;
   gap: 0.52rem;
+  min-height: 0;
+  overflow-y: auto;
+  max-height: 100%;
+  padding-right: 0.2rem;
 }
 
 .history-item {
@@ -1324,12 +1328,27 @@ body.day-focus-mode .toc-wrap {
   display: grid;
   grid-template-columns: minmax(0, 1.45fr) minmax(290px, 0.95fr);
   gap: 0.72rem;
-  align-items: start;
+  align-items: stretch;
+  min-height: 680px;
 }
 
 .sandbox3-side {
   display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
   gap: 0.72rem;
+  min-height: 0;
+}
+
+.sandbox3-editor {
+  display: grid;
+  align-content: start;
+  min-height: 0;
+}
+
+.sandbox3-history {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
 }
 
 .sandbox3-headline h1 {
@@ -1377,6 +1396,29 @@ body.day-focus-mode .toc-wrap {
 .sandbox3-editor .sandbox-sql {
   min-height: 220px;
   margin-bottom: 0.45rem;
+}
+
+.sql-autocomplete-hint {
+  min-height: 1rem;
+  margin: -0.2rem 0 0.45rem;
+  font-size: 0.84rem;
+  color: #5c6f84;
+  user-select: none;
+}
+
+.sql-autocomplete-hint.visible {
+  color: #1a4f7e;
+  font-weight: 700;
+}
+
+.schema-block + .schema-block {
+  margin-top: 0.72rem;
+}
+
+.schema-block h3 {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  color: #163a57;
 }
 
 .sandbox3-editor .workbench-actions {
@@ -1590,6 +1632,15 @@ body.day-focus-mode .toc-wrap {
 
   .sandbox3-workspace {
     grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .sandbox3-side {
+    grid-template-rows: auto auto;
+  }
+
+  .history-list {
+    max-height: 360px;
   }
 
   .sandbox3-bank-filters {

@@ -300,6 +300,15 @@ const TASK_BANK = [
 
 let sqlPromise = null;
 let db = null;
+const SQL_KEYWORDS = [
+  "SELECT", "FROM", "WHERE", "GROUP", "BY", "ORDER", "HAVING", "LIMIT", "OFFSET",
+  "JOIN", "LEFT", "RIGHT", "INNER", "OUTER", "ON", "AS", "DISTINCT", "COUNT",
+  "SUM", "AVG", "MIN", "MAX", "CASE", "WHEN", "THEN", "ELSE", "END", "AND", "OR",
+  "NOT", "IN", "EXISTS", "LIKE", "BETWEEN", "IS", "NULL", "UNION", "ALL", "WITH",
+  "INSERT", "INTO", "VALUES", "UPDATE", "SET", "DELETE", "CREATE", "TABLE", "DROP",
+  "ALTER", "ADD", "PRIMARY", "KEY", "FOREIGN", "REFERENCES", "CHECK", "DEFAULT",
+  "VIEW", "INDEX", "IF"
+];
 
 function loadJson(key, fallback) {
   try {
@@ -451,6 +460,25 @@ function runSql(targetDb, sql) {
   };
 }
 
+function quoteIdentifier(name) {
+  return `"${String(name).replace(/"/g, "\"\"")}"`;
+}
+
+function getSchemaSnapshot(targetDb) {
+  const tablesRs = targetDb.exec("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%' ORDER BY name");
+  const tableNames = (tablesRs[0]?.values || []).map((row) => String(row[0]));
+  return tableNames.map((tableName) => {
+    const infoRs = targetDb.exec(`PRAGMA table_info(${quoteIdentifier(tableName)})`);
+    const columns = (infoRs[0]?.values || []).map((row) => ({
+      name: String(row[1]),
+      type: String(row[2] || "TEXT"),
+      notNull: Number(row[3]) === 1,
+      pk: Number(row[5]) === 1
+    }));
+    return { tableName, columns };
+  });
+}
+
 function normalizeResult(result) {
   if (!result) return { columns: [], rows: [] };
   return {
@@ -490,6 +518,43 @@ function renderResult(host, runData) {
         <tbody>${rows.length ? rows.map((r) => `<tr>${r.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`).join("") : `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`}</tbody>
       </table>
     </div>
+  `;
+}
+
+function renderSchema(host, schema) {
+  if (!schema.length) {
+    host.innerHTML = "<p class='sql-message'>В выбранном датасете нет таблиц.</p>";
+    return;
+  }
+  host.innerHTML = `
+    <p class="sql-message">Структура базы данных</p>
+    ${schema.map((table) => `
+      <section class="schema-block">
+        <h3>${escapeHtml(table.tableName)}</h3>
+        <div class="result-scroll">
+          <table class="result-table">
+            <thead>
+              <tr>
+                <th>column</th>
+                <th>type</th>
+                <th>not null</th>
+                <th>pk</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${table.columns.map((col) => `
+                <tr>
+                  <td>${escapeHtml(col.name)}</td>
+                  <td>${escapeHtml(col.type)}</td>
+                  <td>${col.notNull ? "yes" : "no"}</td>
+                  <td>${col.pk ? "yes" : "no"}</td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    `).join("")}
   `;
 }
 
@@ -576,10 +641,12 @@ async function main() {
   const deleteDatasetBtn = document.getElementById("delete-dataset");
   const resetDbBtn = document.getElementById("reset-db");
   const runBtn = document.getElementById("run-sql");
+  const showSchemaBtn = document.getElementById("show-schema");
   const clearHistoryBtn = document.getElementById("clear-history");
   const status = document.getElementById("sandbox-status");
   const result = document.getElementById("sandbox-result");
   const sqlInput = document.getElementById("sandbox-sql");
+  const autocompleteHint = document.getElementById("sql-autocomplete-hint");
   const historyHost = document.getElementById("history-list");
   const datasetLockHint = document.getElementById("dataset-lock-hint");
 
@@ -604,6 +671,8 @@ async function main() {
   let activeDataset = state.dataset;
   let activeTaskId = state.activeTaskId || "";
   let progress = loadProgress();
+  let autocompleteWords = [];
+  let activeAutocomplete = null;
 
   function setStatus(text, kind = "") {
     status.className = `check-status${kind ? ` ${kind}` : ""}`;
@@ -624,6 +693,84 @@ async function main() {
     return TASK_BANK.find((task) => task.id === activeTaskId) || null;
   }
 
+  function refreshAutocompleteWords() {
+    const words = new Set(SQL_KEYWORDS);
+    if (db) {
+      getSchemaSnapshot(db).forEach((table) => {
+        words.add(table.tableName);
+        table.columns.forEach((col) => words.add(col.name));
+      });
+    }
+    autocompleteWords = Array.from(words);
+  }
+
+  function clearAutocompleteHint() {
+    activeAutocomplete = null;
+    autocompleteHint.textContent = "";
+    autocompleteHint.classList.remove("visible");
+  }
+
+  function getTokenAtCaret(text, caretPos) {
+    const left = text.slice(0, caretPos);
+    const match = left.match(/([A-Za-z_][A-Za-z0-9_]*)$/);
+    if (!match) return null;
+    const token = match[1];
+    return {
+      token,
+      start: caretPos - token.length,
+      end: caretPos
+    };
+  }
+
+  function pickAutocompleteWord(token) {
+    if (!token) return null;
+    const normalized = token.toLowerCase();
+    const candidates = autocompleteWords
+      .filter((word) => word.toLowerCase().startsWith(normalized) && word.toLowerCase() !== normalized)
+      .sort((a, b) => a.length - b.length || a.localeCompare(b, "ru-RU"));
+    return candidates[0] || null;
+  }
+
+  function updateAutocompleteHint() {
+    const tokenInfo = getTokenAtCaret(sqlInput.value, sqlInput.selectionStart);
+    if (!tokenInfo) {
+      clearAutocompleteHint();
+      return;
+    }
+    const suggestion = pickAutocompleteWord(tokenInfo.token);
+    if (!suggestion) {
+      clearAutocompleteHint();
+      return;
+    }
+    activeAutocomplete = {
+      start: tokenInfo.start,
+      end: tokenInfo.end,
+      suggestion
+    };
+    autocompleteHint.textContent = `Tab: ${suggestion}`;
+    autocompleteHint.classList.add("visible");
+  }
+
+  function acceptAutocompleteSuggestion() {
+    if (!activeAutocomplete) return false;
+    const { start, end, suggestion } = activeAutocomplete;
+    const currentToken = sqlInput.value.slice(start, end);
+    if (!currentToken || !suggestion.toLowerCase().startsWith(currentToken.toLowerCase())) {
+      clearAutocompleteHint();
+      return false;
+    }
+    const suffix = suggestion.slice(currentToken.length);
+    const before = sqlInput.value.slice(0, end);
+    const after = sqlInput.value.slice(end);
+    sqlInput.value = `${before}${suffix}${after}`;
+    const newCaret = end + suffix.length;
+    sqlInput.selectionStart = newCaret;
+    sqlInput.selectionEnd = newCaret;
+    persist();
+    updateAutocompleteHint();
+    return true;
+  }
+
   function renderDatasetSelectors() {
     const library = getDatasetLibrary();
     const ids = Object.keys(library);
@@ -642,6 +789,7 @@ async function main() {
     if (task) {
       activeDataset = task.dataset;
       await initDb(activeDataset, getDatasetLibrary());
+      refreshAutocompleteWords();
       setStatus(`Задача выбрана. Подключен датасет '${getDatasetLibrary()[activeDataset]?.label || activeDataset}'.`, "ok");
     } else {
       setStatus("Включен свободный режим.");
@@ -671,6 +819,7 @@ async function main() {
     try {
       const runData = runSql(db, sqlInput.value);
       renderResult(result, runData);
+      refreshAutocompleteWords();
       let message = "Код выполнен.";
       const task = getActiveTask();
       if (task) {
@@ -715,9 +864,12 @@ async function main() {
   taskLevelFilter.value = state.taskLevelFilter || "all";
   renderDatasetSelectors();
   await initDb(activeDataset, getDatasetLibrary());
+  refreshAutocompleteWords();
+  updateAutocompleteHint();
   renderHistory(historyHost, (item) => {
     activeDataset = item.dataset;
     sqlInput.value = item.sql;
+    updateAutocompleteHint();
     renderAll();
     persist();
     setStatus("Запрос из истории вставлен.");
@@ -727,6 +879,8 @@ async function main() {
   loadDatasetBtn.addEventListener("click", async () => {
     activeDataset = datasetSelect.value;
     await initDb(activeDataset, getDatasetLibrary());
+    refreshAutocompleteWords();
+    updateAutocompleteHint();
     renderAll();
     setStatus("Датасет перезагружен.", "ok");
     persist();
@@ -744,6 +898,8 @@ async function main() {
     renderDatasetSelectors();
     activeDataset = datasetSelect.value;
     await initDb(activeDataset, getDatasetLibrary());
+    refreshAutocompleteWords();
+    updateAutocompleteHint();
     renderAll();
     setStatus("Кастомный датасет удален.", "ok");
     persist();
@@ -751,17 +907,38 @@ async function main() {
 
   resetDbBtn.addEventListener("click", async () => {
     await initDb(activeDataset, getDatasetLibrary());
+    refreshAutocompleteWords();
+    updateAutocompleteHint();
     setStatus("БД сброшена в исходное состояние датасета.");
   });
 
   runBtn.addEventListener("click", executeSql);
+  showSchemaBtn.addEventListener("click", () => {
+    try {
+      renderSchema(result, getSchemaSnapshot(db));
+      setStatus("Структура БД показана.", "ok");
+    } catch (error) {
+      setStatus(`Ошибка чтения структуры БД: ${error.message}`, "fail");
+    }
+  });
   sqlInput.addEventListener("keydown", (e) => {
+    if (e.key === "Tab" && !e.ctrlKey && !e.metaKey && !e.altKey) {
+      if (acceptAutocompleteSuggestion()) {
+        e.preventDefault();
+        return;
+      }
+    }
     if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
       e.preventDefault();
       executeSql();
     }
   });
-  sqlInput.addEventListener("input", persist);
+  sqlInput.addEventListener("input", () => {
+    persist();
+    updateAutocompleteHint();
+  });
+  sqlInput.addEventListener("click", updateAutocompleteHint);
+  sqlInput.addEventListener("keyup", updateAutocompleteHint);
 
   taskSelect.addEventListener("change", () => {
     applyTaskSelection(taskSelect.value || "");
@@ -863,6 +1040,8 @@ async function main() {
       saveJson(CUSTOM_DATASETS_KEY, custom);
       renderDatasetSelectors();
       renderAll();
+      refreshAutocompleteWords();
+      updateAutocompleteHint();
       setStatus(`Кастомный датасет '${id}' сохранен.`, "ok");
     } catch (error) {
       setStatus(`Ошибка SQL-скрипта датасета: ${error.message}`, "fail");
@@ -907,6 +1086,8 @@ async function main() {
       saveJson(CUSTOM_DATASETS_KEY, custom);
       renderDatasetSelectors();
       renderAll();
+      refreshAutocompleteWords();
+      updateAutocompleteHint();
       setStatus(`Импортировано датасетов: ${imported}.`, "ok");
     } catch (error) {
       setStatus(`Ошибка импорта: ${error.message}`, "fail");

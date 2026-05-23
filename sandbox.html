@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260523d5" />
+  <link rel="stylesheet" href="styles.css?v=20260523d6" />
   <script src="https://cdn.jsdelivr.net/npm/sql.js@1.11.0/dist/sql-wasm.js"></script>
 </head>
 <body data-page="sandbox">
@@ -38,9 +38,11 @@
         </div>
 
         <textarea id="sandbox-sql" class="sandbox-sql" spellcheck="false" placeholder="Пиши SQL здесь... (Ctrl/Cmd + Enter — выполнить)"></textarea>
+        <div id="sql-autocomplete-hint" class="sql-autocomplete-hint"></div>
         <div class="workbench-actions">
           <button class="btn primary" id="run-sql" type="button">Запустить код</button>
           <button class="btn ghost" id="reset-db" type="button">Сбросить БД</button>
+          <button class="btn ghost" id="show-schema" type="button">Показать структуру БД</button>
         </div>
 
         <div id="sandbox-status" class="check-status"></div>
@@ -123,7 +125,7 @@
 
   </main>
 
-  <script src="sandbox.js?v=20260523s5"></script>
+  <script src="sandbox.js?v=20260523s8"></script>
 </body>
 </html>
 
