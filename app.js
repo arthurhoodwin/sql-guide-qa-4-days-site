@@ -1947,6 +1947,15 @@ function performLessonSearch(index, query) {
     }));
 }
 
+function formatSearchPathTail(sectionPath) {
+  const parts = String(sectionPath || "")
+    .split("→")
+    .map((part) => part.trim())
+    .filter(Boolean);
+  if (parts.length <= 2) return parts.join(" → ");
+  return `${parts[parts.length - 2]} → ${parts[parts.length - 1]}`;
+}
+
 function setupLessonSearch() {
   if (lessonSearchUiBound) return;
   const input = document.getElementById("lesson-search-input");
@@ -1975,7 +1984,7 @@ function setupLessonSearch() {
     results.innerHTML = hits.map((hit) => `
       <article class="search-hit">
         <div class="search-hit-top">
-          <strong>${escapeHtml(hit.sourceTitle)} → ${escapeHtml(hit.sectionPath)}</strong>
+          <strong>${escapeHtml(formatSearchPathTail(hit.sectionPath))}</strong>
           <span class="search-hit-score">релевантность: ${hit.score}</span>
         </div>
         <p>${escapeHtml(hit.snippet || hit.body)}</p>
