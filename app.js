@@ -1350,8 +1350,27 @@ function normalizeTrackId(trackId) {
   return trackId === "sql" || trackId === "behavioral" ? trackId : "theory";
 }
 
+function parseLessonFromHref(href) {
+  if (!href) return null;
+  const safeHref = String(href);
+  const dayMatch = safeHref.match(/day([1-3])\.html/i);
+  if (!dayMatch) return null;
+  const dayId = Number(dayMatch[1]);
+  let trackId = "theory";
+  try {
+    const url = new URL(safeHref, window.location.href);
+    trackId = normalizeTrackId(url.searchParams.get("view"));
+  } catch {
+    const rawView = (safeHref.match(/[?&]view=([^&#]+)/i)?.[1] || "").toLowerCase();
+    trackId = normalizeTrackId(rawView);
+  }
+  return { dayId, trackId };
+}
+
 function loadLastOpenedLesson() {
   const raw = loadJson(LAST_OPENED_LESSON_KEY, {});
+  const legacyFromHref = parseLessonFromHref(raw?.href || raw?.url || raw?.link || raw);
+  if (legacyFromHref) return legacyFromHref;
   const dayId = Number(raw.dayId);
   return {
     dayId: DAY_MAP[dayId] ? dayId : 1,
@@ -1363,6 +1382,17 @@ function saveLastOpenedLesson(dayId, trackId) {
   saveJson(LAST_OPENED_LESSON_KEY, {
     dayId: DAY_MAP[dayId] ? dayId : 1,
     trackId: normalizeTrackId(trackId)
+  });
+}
+
+function wireLastLessonTracking(scope = document) {
+  scope.querySelectorAll("a[href*='day']").forEach((link) => {
+    if (link.dataset.lastLessonBound === "1") return;
+    link.dataset.lastLessonBound = "1";
+    link.addEventListener("click", () => {
+      const lesson = parseLessonFromHref(link.getAttribute("href") || link.href);
+      if (lesson) saveLastOpenedLesson(lesson.dayId, lesson.trackId);
+    });
   });
 }
 
@@ -1480,6 +1510,8 @@ function renderIndex() {
       renderIndex();
     });
   });
+
+  wireLastLessonTracking(document);
 }
 
 function buildDayPagination(dayId, view = "theory") {
