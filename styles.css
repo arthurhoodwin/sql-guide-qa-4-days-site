@@ -1349,6 +1349,8 @@ body.day-focus-mode .toc-wrap {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
+  height: clamp(420px, 68vh, 620px);
+  overflow: hidden;
 }
 
 .sandbox3-headline h1 {
@@ -1637,6 +1639,11 @@ body.day-focus-mode .toc-wrap {
 
   .sandbox3-side {
     grid-template-rows: auto auto;
+  }
+
+  .sandbox3-history {
+    height: auto;
+    max-height: 420px;
   }
 
   .history-list {
