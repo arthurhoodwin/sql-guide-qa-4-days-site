@@ -27,7 +27,7 @@
       .join('');
   }
 
-  function applyFilters() {
+  function applyFilters(resetIndex = false) {
     const topic = topicSelect.value;
     const q = searchInput.value.trim().toLowerCase();
 
@@ -38,7 +38,7 @@
       return topicOk && queryOk;
     });
 
-    if (index >= filtered.length) index = 0;
+    if (resetIndex || index >= filtered.length) index = 0;
     flipped = false;
     updateCount();
     renderCard();
@@ -91,8 +91,10 @@
     cardEl.classList.toggle('flipped', flipped);
   }
 
-  topicSelect.addEventListener('change', applyFilters);
-  searchInput.addEventListener('input', applyFilters);
+  topicSelect.addEventListener('change', () => {
+    applyFilters(true);
+  });
+  searchInput.addEventListener('input', () => applyFilters(true));
   nextBtn.addEventListener('click', next);
   prevBtn.addEventListener('click', prev);
   randomBtn.addEventListener('click', randomCard);

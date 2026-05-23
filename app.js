@@ -1266,7 +1266,7 @@ async function renderSqlInto(dayId, container, onProgress) {
     const task = tasks[active];
     title.textContent = task.title;
     prompt.textContent = task.prompt;
-    input.value = allDrafts[String(dayId)][task.id] || task.starter;
+    input.value = allDrafts[String(dayId)][task.id] || "";
     status.textContent = "";
     status.className = "check-status";
     result.innerHTML = "";
