@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260523d3" />
+  <link rel="stylesheet" href="styles.css?v=20260523d4" />
   <script src="https://cdn.jsdelivr.net/npm/sql.js@1.11.0/dist/sql-wasm.js"></script>
 </head>
 <body data-page="sandbox">
@@ -19,72 +19,67 @@
     <span class="chip">Свободная практика SQL</span>
   </header>
 
-  <main class="shell sandbox2-layout">
-    <section class="panel sandbox2-main">
-      <div class="sandbox-head">
+  <main class="shell sandbox3-layout">
+    <section class="panel sandbox3-active-task">
+      <div class="sandbox3-headline">
         <h1>SQL-песочница</h1>
-        <p>Выбери датасет или загрузи свой, запусти запрос и смотри результат сразу.</p>
+        <p>Выбери задачу из банка или работай в свободном режиме.</p>
       </div>
 
-      <div class="sandbox2-row">
-        <label class="field-label" for="dataset">Текущий датасет</label>
-        <div class="sandbox2-controls">
-          <select id="dataset" class="field-input"></select>
-          <button class="btn ghost" id="load-dataset" type="button">Загрузить</button>
-          <button class="btn ghost" id="delete-dataset" type="button">Удалить кастомный</button>
+      <div class="sandbox3-task-top">
+        <label class="field-label" for="task-select">Текущая задача</label>
+        <div class="sandbox3-controls">
+          <select id="task-select" class="field-input"></select>
+          <button class="btn ghost" id="pick-task" type="button">Выбрать задачу</button>
+          <button class="btn primary" id="check-task" type="button">Проверить решение</button>
+          <button class="btn ghost" id="reset-task-progress" type="button">Сбросить прогресс задачи</button>
         </div>
       </div>
 
-      <div class="sandbox2-controls wrap">
-        <button class="btn ghost" id="show-schema" type="button">Схема БД</button>
-        <button class="btn ghost" id="preview-table" type="button">Превью таблицы</button>
-        <select id="table-picker" class="field-input table-picker"></select>
-        <button class="btn ghost" id="run-explain" type="button">EXPLAIN</button>
-        <button class="btn ghost" id="format-sql" type="button">Форматировать SQL</button>
-        <button class="btn ghost" id="reset-db" type="button">Сброс БД</button>
-        <button class="btn ghost" id="reset-sql" type="button">Очистить SQL</button>
-        <button class="btn ghost" id="clear-history" type="button">Очистить историю</button>
+      <article class="sandbox3-task-card" id="active-task-card">
+        <h2>Свободный режим</h2>
+        <p>Без активной задачи: можешь писать любые запросы на выбранном датасете.</p>
+        <div class="sandbox3-task-meta">
+          <span class="chip" id="active-task-dataset">Датасет: не выбран</span>
+          <span class="chip" id="active-task-level">Уровень: —</span>
+          <span class="chip" id="active-task-state">Статус: —</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel sandbox3-editor">
+      <div class="sandbox3-row">
+        <label class="field-label" for="dataset">Датасет</label>
+        <div class="sandbox3-controls">
+          <select id="dataset" class="field-input"></select>
+          <button class="btn ghost" id="load-dataset" type="button">Загрузить датасет</button>
+          <button class="btn ghost" id="delete-dataset" type="button">Удалить кастомный датасет</button>
+        </div>
       </div>
 
-      <section class="snippet-bank" id="snippet-bank"></section>
+      <div class="sandbox3-controls wrap">
+        <button class="btn ghost" id="show-schema" type="button" title="Показать состав таблиц и колонок">Показать схему БД</button>
+        <button class="btn ghost" id="preview-table" type="button" title="Показать первые 20 строк таблицы">Показать 20 строк таблицы</button>
+        <select id="table-picker" class="field-input table-picker"></select>
+        <button class="btn ghost" id="run-explain" type="button" title="Показать план выполнения запроса">План запроса (EXPLAIN)</button>
+        <button class="btn ghost" id="format-sql" type="button">Форматировать SQL</button>
+        <button class="btn ghost" id="reset-db" type="button">Сбросить БД</button>
+        <button class="btn ghost" id="reset-sql" type="button">Очистить SQL</button>
+      </div>
 
       <textarea id="sandbox-sql" class="sandbox-sql" spellcheck="false" placeholder="Пиши SQL здесь... (Ctrl/Cmd + Enter — выполнить)"></textarea>
       <div class="workbench-actions">
-        <button class="btn primary" id="run-sql" type="button">Run SQL</button>
+        <button class="btn primary" id="run-sql" type="button">Выполнить SQL</button>
       </div>
 
       <div id="sandbox-status" class="check-status"></div>
       <div id="sandbox-result" class="sql-result"></div>
     </section>
 
-    <section class="panel sandbox2-side">
-      <h2>Добавить новый датасет</h2>
-      <p class="sandbox2-note">Вставь SQL-скрипт и сохрани как отдельный датасет.</p>
-
-      <label class="field-label" for="new-dataset-id">ID датасета (латиница/цифры/_)</label>
-      <input id="new-dataset-id" class="field-input" placeholder="например: fintech" />
-
-      <label class="field-label" for="new-dataset-name">Название</label>
-      <input id="new-dataset-name" class="field-input" placeholder="например: FinTech кейс" />
-
-      <label class="field-label" for="new-dataset-sql">SQL-скрипт инициализации</label>
-      <textarea id="new-dataset-sql" class="field-text" placeholder="CREATE TABLE ...; INSERT INTO ...;"></textarea>
-
-      <div class="workbench-actions">
-        <button class="btn primary" id="save-dataset" type="button">Сохранить датасет</button>
-        <button class="btn ghost" id="import-datasets" type="button">Импорт JSON</button>
-        <button class="btn ghost" id="export-datasets" type="button">Экспорт JSON</button>
-      </div>
-      <input id="import-datasets-file" type="file" accept="application/json" hidden />
-
-      <h3>История запусков</h3>
-      <div id="history-list" class="history-list"></div>
-    </section>
-
-    <section class="panel sandbox2-tasks">
-      <div class="sandbox2-task-head">
-        <h2>Банк задач (доп. практика)</h2>
-        <div class="sandbox2-controls">
+    <section class="panel sandbox3-bank">
+      <div class="sandbox3-bank-head">
+        <h2>Банк задач</h2>
+        <div class="sandbox3-controls">
           <select id="task-dataset-filter" class="field-input"></select>
           <select id="task-level-filter" class="field-input">
             <option value="all">Любой уровень</option>
@@ -97,9 +92,41 @@
       </div>
       <div id="task-bank-list" class="task-bank-list"></div>
     </section>
+
+    <section class="panel sandbox3-datasets">
+      <details>
+        <summary>Управление кастомными датасетами</summary>
+        <div class="sandbox3-dataset-form">
+          <p class="sandbox3-note">Нужно только для свободной практики: можешь добавить свой SQL-скрипт и работать с ним.</p>
+
+          <label class="field-label" for="new-dataset-id">ID датасета (латиница/цифры/_)</label>
+          <input id="new-dataset-id" class="field-input" placeholder="например: fintech" />
+
+          <label class="field-label" for="new-dataset-name">Название</label>
+          <input id="new-dataset-name" class="field-input" placeholder="например: FinTech кейс" />
+
+          <label class="field-label" for="new-dataset-sql">SQL-скрипт инициализации</label>
+          <textarea id="new-dataset-sql" class="field-text" placeholder="CREATE TABLE ...; INSERT INTO ...;"></textarea>
+
+          <div class="workbench-actions">
+            <button class="btn primary" id="save-dataset" type="button">Сохранить датасет</button>
+            <button class="btn ghost" id="import-datasets" type="button">Импорт JSON</button>
+            <button class="btn ghost" id="export-datasets" type="button">Экспорт JSON</button>
+          </div>
+          <input id="import-datasets-file" type="file" accept="application/json" hidden />
+        </div>
+      </details>
+    </section>
+
+    <section class="panel sandbox3-history">
+      <div class="sandbox3-bank-head">
+        <h2>История запусков</h2>
+        <button class="btn ghost" id="clear-history" type="button">Очистить историю</button>
+      </div>
+      <div id="history-list" class="history-list"></div>
+    </section>
   </main>
 
-  <script src="sandbox.js?v=20260523s3"></script>
+  <script src="sandbox.js?v=20260523s4"></script>
 </body>
 </html>
-
