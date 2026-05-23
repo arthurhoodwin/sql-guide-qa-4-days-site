@@ -4,6 +4,7 @@ const SQL_QUIZ_STATE_KEY = "vk-qa-sql-quiz-state-v1";
 const BEHAVIORAL_QUIZ_STATE_KEY = "vk-qa-behavioral-quiz-state-v1";
 const SQL_TASK_STATE_KEY = "vk-qa-sql-task-state-v1";
 const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
+const LAST_OPENED_LESSON_KEY = "vk-qa-last-opened-lesson-v1";
 
 const DAYS = [
   {
@@ -1345,6 +1346,26 @@ function getTrack(trackId) {
   return TRACKS.find((track) => track.id === trackId) || TRACKS[0];
 }
 
+function normalizeTrackId(trackId) {
+  return trackId === "sql" || trackId === "behavioral" ? trackId : "theory";
+}
+
+function loadLastOpenedLesson() {
+  const raw = loadJson(LAST_OPENED_LESSON_KEY, {});
+  const dayId = Number(raw.dayId);
+  return {
+    dayId: DAY_MAP[dayId] ? dayId : 1,
+    trackId: normalizeTrackId(raw.trackId)
+  };
+}
+
+function saveLastOpenedLesson(dayId, trackId) {
+  saveJson(LAST_OPENED_LESSON_KEY, {
+    dayId: DAY_MAP[dayId] ? dayId : 1,
+    trackId: normalizeTrackId(trackId)
+  });
+}
+
 function loadProgress() {
   const data = loadJson(STORAGE_KEY, {});
   const p = {};
@@ -1419,6 +1440,7 @@ function buildDayCard(day, track, progress) {
 
 function renderIndex() {
   const progress = loadProgress();
+  const lastLesson = loadLastOpenedLesson();
   const theoryGrid = document.getElementById("theory-grid");
   const sqlGrid = document.getElementById("sql-grid");
   const behavioralGrid = document.getElementById("behavioral-grid");
@@ -1435,6 +1457,20 @@ function renderIndex() {
   const fill = document.getElementById("progress-fill");
   text.textContent = `${done} из ${TOTAL_MODULES} модулей отмечено как пройдено`;
   fill.style.width = `${(done / TOTAL_MODULES) * 100}%`;
+
+  const continueBtn = document.getElementById("continue-prep-btn");
+  if (continueBtn) {
+    continueBtn.textContent = "Продолжить подготовку";
+    continueBtn.href = `day${lastLesson.dayId}.html?view=${lastLesson.trackId}`;
+  }
+
+  document.querySelectorAll("[data-track-link]").forEach((link) => {
+    const meta = (link.getAttribute("data-track-link") || "").split("-");
+    const trackId = normalizeTrackId(meta[0]);
+    const dayId = Number(meta[1]);
+    const isDone = Boolean(progress[moduleKey(trackId, dayId)]);
+    link.classList.toggle("track-done", isDone);
+  });
 
   document.querySelectorAll("[data-module-toggle]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -2073,13 +2109,14 @@ async function renderDay() {
   const toc = document.getElementById("toc");
   const toggle = document.getElementById("toggle-complete");
   const params = new URLSearchParams(window.location.search);
-  const view = params.get("view");
-  const activeTrack = view === "sql" || view === "behavioral" ? view : "theory";
+  const activeTrack = normalizeTrackId(params.get("view"));
 
   if (!day) {
     content.innerHTML = "<p>День не найден.</p>";
     return;
   }
+
+  saveLastOpenedLesson(dayId, activeTrack);
 
   const updateToggle = () => {
     const progress = loadProgress();

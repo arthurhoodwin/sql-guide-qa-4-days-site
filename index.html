@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260523d3" />
+  <link rel="stylesheet" href="styles.css?v=20260523d8" />
 </head>
 <body data-page="index">
   <div class="bg-shape bg-shape-1"></div>
@@ -18,28 +18,28 @@
     <h1>3-дневный спринт к техничке QA в ВК</h1>
     <p class="lead">Фокус на 3 дня: повторение всей теории + полный прогон SQL лайвкодинга с практическим тренажером.</p>
     <div class="hero-actions">
-      <a class="btn primary" href="day1.html?view=theory">Начать подготовку</a>
+      <a class="btn primary" id="continue-prep-btn" href="day1.html?view=theory">Продолжить подготовку</a>
       <a class="btn ghost" href="sandbox.html">SQL-песочница</a>
       <a class="btn ghost" href="quizlets.html">QA-квизлеты</a>
     </div>
     <div class="hero-split-links">
       <div class="hero-track-row">
         <span>Теория:</span>
-        <a href="day1.html?view=theory">День 1</a>
-        <a href="day2.html?view=theory">День 2</a>
-        <a href="day3.html?view=theory">День 3</a>
+        <a data-track-link="theory-1" href="day1.html?view=theory">День 1</a>
+        <a data-track-link="theory-2" href="day2.html?view=theory">День 2</a>
+        <a data-track-link="theory-3" href="day3.html?view=theory">День 3</a>
       </div>
       <div class="hero-track-row">
         <span>SQL:</span>
-        <a href="day1.html?view=sql">День 1</a>
-        <a href="day2.html?view=sql">День 2</a>
-        <a href="day3.html?view=sql">День 3</a>
+        <a data-track-link="sql-1" href="day1.html?view=sql">День 1</a>
+        <a data-track-link="sql-2" href="day2.html?view=sql">День 2</a>
+        <a data-track-link="sql-3" href="day3.html?view=sql">День 3</a>
       </div>
       <div class="hero-track-row">
         <span>Поведенческий:</span>
-        <a href="day1.html?view=behavioral">День 1</a>
-        <a href="day2.html?view=behavioral">День 2</a>
-        <a href="day3.html?view=behavioral">День 3</a>
+        <a data-track-link="behavioral-1" href="day1.html?view=behavioral">День 1</a>
+        <a data-track-link="behavioral-2" href="day2.html?view=behavioral">День 2</a>
+        <a data-track-link="behavioral-3" href="day3.html?view=behavioral">День 3</a>
       </div>
     </div>
   </header>
@@ -79,7 +79,7 @@
   </main>
 
   <footer class="shell footer">Интенсив: 3 дня до технички QA в ВК</footer>
-  <script src="app.js?v=20260523ux2"></script>
+  <script src="app.js?v=20260523ux3"></script>
 </body>
 </html>
 
