@@ -1820,20 +1820,11 @@ function parseMarkdownSectionsForSearch(markdownText, source) {
     const sectionTitle = currentH3 || currentH2 || source.title;
     const sectionPath = currentH3 ? `${currentH2} → ${currentH3}` : currentH2;
     const anchorId = currentH3Id || currentH2Id;
-    const topHeadingRaw = String(currentH2 || "").trim();
-    const subHeadingRaw = String(currentH3 || "").trim();
     sections.push({
       sourceTitle: source.title,
       href: `${source.href}${anchorId ? `#${anchorId}` : ""}`,
       sectionTitle,
       sectionPath,
-      headingLevel: subHeadingRaw ? 2 : 1,
-      topHeadingRaw,
-      subHeadingRaw,
-      topHeadingSearch: normalizeSearchText(topHeadingRaw),
-      subHeadingSearch: normalizeSearchText(subHeadingRaw),
-      topHeadingRawLower: topHeadingRaw.toLowerCase(),
-      subHeadingRawLower: subHeadingRaw.toLowerCase(),
       body: cleaned,
       headingSearch: normalizeSearchText(`${sectionTitle} ${sectionPath}`)
     });
@@ -1898,20 +1889,6 @@ function scoreSearchSection(section, rawQuery, expandedTokens) {
   let score = 0;
   let hits = 0;
   const normalizedQuery = normalizeSearchText(rawQuery);
-  const rawQueryLower = String(rawQuery || "").trim().toLowerCase();
-
-  const hasStrongTopRawMatch = Boolean(rawQueryLower && section.topHeadingRawLower.includes(rawQueryLower));
-  const hasStrongSubRawMatch = Boolean(rawQueryLower && section.subHeadingRawLower.includes(rawQueryLower));
-  const hasTopNormalizedMatch = Boolean(normalizedQuery && section.topHeadingSearch.includes(normalizedQuery));
-  const hasSubNormalizedMatch = Boolean(normalizedQuery && section.subHeadingSearch.includes(normalizedQuery));
-
-  // Приоритет поиска: сначала заголовки 1-го уровня, затем ниже.
-  if (hasStrongTopRawMatch) score += 1400;
-  else if (hasTopNormalizedMatch) score += 1000;
-  if (!hasStrongTopRawMatch && !hasTopNormalizedMatch) {
-    if (hasStrongSubRawMatch) score += 700;
-    else if (hasSubNormalizedMatch) score += 500;
-  }
 
   if (normalizedQuery && section.searchText.includes(normalizedQuery)) score += 10;
 
@@ -1933,10 +1910,8 @@ function scoreSearchSection(section, rawQuery, expandedTokens) {
     }
   });
 
-  const hasHeadingMatch = hasStrongTopRawMatch || hasTopNormalizedMatch || hasStrongSubRawMatch || hasSubNormalizedMatch;
-  if (hits === 0 && !(normalizedQuery && section.searchText.includes(normalizedQuery)) && !hasHeadingMatch) return 0;
+  if (hits === 0 && !(normalizedQuery && section.searchText.includes(normalizedQuery))) return 0;
   if (section.headingSearch.includes(normalizedQuery)) score += 6;
-  if (section.headingLevel === 1) score += 60;
   return score;
 }
 
