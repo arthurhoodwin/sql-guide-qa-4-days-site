@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260523d1" />
+  <link rel="stylesheet" href="styles.css?v=20260523d2" />
   <script src="https://cdn.jsdelivr.net/npm/sql.js@1.11.0/dist/sql-wasm.js"></script>
 </head>
 <body data-page="sandbox">
@@ -22,21 +22,51 @@
   <main class="shell sandbox-layout">
     <section class="panel sandbox-side">
       <h2>Кастомная задача</h2>
-      <label class="field-label">Название</label>
+      <label class="field-label" for="custom-title">Название</label>
       <input id="custom-title" class="field-input" placeholder="Например: Топ 3 товара по выручке" />
-      <label class="field-label">Условие</label>
+
+      <label class="field-label" for="custom-text">Условие</label>
       <textarea id="custom-text" class="field-text" placeholder="Опиши задачу своими словами..."></textarea>
+
+      <label class="field-label" for="custom-expected">Эталонный SQL для автопроверки</label>
+      <textarea id="custom-expected" class="field-text" placeholder="Например: SELECT ..."></textarea>
+
+      <label class="field-label" for="task-dataset">Датасет задачи</label>
+      <select id="task-dataset" class="field-input">
+        <option value="shop">Магазин</option>
+        <option value="users">Пользователи и заказы</option>
+        <option value="qa">QA-кейс</option>
+        <option value="support">Support-кейс</option>
+      </select>
+
+      <label class="inline-check">
+        <input id="task-ignore-order" type="checkbox" checked />
+        <span>Игнорировать порядок строк при проверке</span>
+      </label>
+
       <div class="workbench-actions">
-        <button class="btn ghost" id="save-task" type="button">Сохранить задачу</button>
+        <button class="btn primary" id="save-task" type="button">Сохранить задачу</button>
+        <button class="btn ghost" id="check-current-task" type="button">Проверить по эталону</button>
       </div>
+
+      <div class="workbench-actions">
+        <button class="btn ghost" id="export-tasks" type="button">Экспорт задач</button>
+        <button class="btn ghost" id="import-tasks" type="button">Импорт задач</button>
+        <button class="btn ghost" id="clear-tasks" type="button">Очистить все</button>
+      </div>
+      <input id="import-file" type="file" accept="application/json" hidden />
+
       <h3>Мои задачи</h3>
       <div id="saved-tasks" class="saved-tasks"></div>
+
+      <h3>История запусков</h3>
+      <div id="history-list" class="history-list"></div>
     </section>
 
     <section class="panel sandbox-main">
       <div class="sandbox-head">
-        <h1>SQL Песочница</h1>
-        <p>Выбери датасет, решай свои задачи, запускай SQL и проверяй результат.</p>
+        <h1>SQL Песочница Pro</h1>
+        <p>Лайвкодинг как на собесе: запросы, EXPLAIN, история, автопроверка, шаблоны и датасеты.</p>
       </div>
 
       <div class="sandbox-toolbar">
@@ -45,22 +75,33 @@
           <option value="shop">Магазин (products/orders)</option>
           <option value="users">Пользователи и заказы (users/orders)</option>
           <option value="qa">QA кейс (orders/order_items)</option>
+          <option value="support">Support кейс (tickets/comments/agents)</option>
         </select>
         <button class="btn ghost" id="load-dataset" type="button">Загрузить датасет</button>
-        <button class="btn ghost" id="show-schema" type="button">Показать схему</button>
+        <button class="btn ghost" id="show-schema" type="button">Схема БД</button>
+        <button class="btn ghost" id="preview-table" type="button">Превью таблицы</button>
+        <select id="table-picker" class="table-picker"></select>
       </div>
 
-      <textarea id="sandbox-sql" class="sandbox-sql" spellcheck="false" placeholder="Пиши SQL здесь..."></textarea>
+      <div class="sandbox-toolbar">
+        <button class="btn ghost" id="run-explain" type="button">EXPLAIN</button>
+        <button class="btn ghost" id="format-sql" type="button">Форматировать SQL</button>
+        <button class="btn ghost" id="reset-db" type="button">Сбросить БД</button>
+        <button class="btn ghost" id="reset-sql" type="button">Очистить SQL</button>
+      </div>
+
+      <section class="snippet-bank" id="snippet-bank"></section>
+
+      <textarea id="sandbox-sql" class="sandbox-sql" spellcheck="false" placeholder="Пиши SQL здесь... (Ctrl/Cmd + Enter — выполнить)"></textarea>
       <div class="workbench-actions">
         <button class="btn primary" id="run-sql" type="button">Run SQL</button>
-        <button class="btn ghost" id="reset-sql" type="button">Очистить SQL</button>
       </div>
       <div id="sandbox-status" class="check-status"></div>
       <div id="sandbox-result" class="sql-result"></div>
     </section>
   </main>
 
-  <script src="sandbox.js"></script>
+  <script src="sandbox.js?v=20260523s2"></script>
 </body>
 </html>
 

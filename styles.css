@@ -390,6 +390,18 @@ p {
   background: #f4f9ff;
 }
 
+#toc a.toc-sub {
+  padding-left: 0.9rem;
+  font-size: 0.88rem;
+  color: #3c556f;
+}
+
+#toc a.active {
+  border-color: #89b7df;
+  background: #eaf4ff;
+  color: #173a57;
+}
+
 .markdown {
   min-height: 56vh;
   padding: 1.2rem 1.25rem;
@@ -502,6 +514,125 @@ p {
   border: 0;
   border-top: 1px solid #dce5ef;
   margin: 1.2rem 0;
+}
+
+.reading-layout {
+  display: grid;
+  gap: 0.82rem;
+}
+
+.reading-toolbar {
+  padding: 0.78rem 0.84rem;
+  display: grid;
+  gap: 0.62rem;
+  border: 1px solid #d5deea;
+  background: linear-gradient(180deg, #f9fcff 0%, #f2f8ff 100%);
+}
+
+.reading-toolbar-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.reading-toolbar-main strong {
+  color: #10314c;
+  font-size: 0.97rem;
+}
+
+.reading-toolbar-main span {
+  color: #3e546b;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.reading-toolbar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.46rem;
+}
+
+.reading-progress {
+  height: 8px;
+  border-radius: 999px;
+  overflow: hidden;
+  border: 1px solid #d0daea;
+  background: #e8eef7;
+}
+
+.reading-progress span {
+  display: block;
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #157f7f, #31a3a3);
+  transition: width 0.18s ease;
+}
+
+.reading-sections {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.theory-section {
+  padding: 0.9rem;
+  border: 1px solid #d8e2ee;
+  background: #ffffff;
+}
+
+.theory-section-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.6rem;
+  margin-bottom: 0.48rem;
+}
+
+.theory-section-head h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 1.24rem;
+  line-height: 1.26;
+}
+
+.theory-section-body > :first-child {
+  margin-top: 0;
+}
+
+.theory-section-body > :last-child {
+  margin-bottom: 0;
+}
+
+.theory-section.collapsed .theory-section-body {
+  display: none;
+}
+
+.theory-intro {
+  border: 1px dashed #cad8e8;
+  background: #f7fbff;
+}
+
+.theory-intro-title {
+  margin: 0 0 0.42rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #42617d;
+}
+
+.section-toggle {
+  white-space: nowrap;
+}
+
+body.day-focus-mode .day-layout {
+  grid-template-columns: 1fr;
+}
+
+body.day-focus-mode .toc-wrap {
+  display: none;
 }
 
 .practice-wrap {
@@ -826,6 +957,19 @@ p {
   color: #1d364f;
 }
 
+.inline-check {
+  margin-top: 0.48rem;
+  display: flex;
+  gap: 0.45rem;
+  align-items: flex-start;
+  color: #2e475f;
+  font-size: 0.9rem;
+}
+
+.inline-check input {
+  margin-top: 0.18rem;
+}
+
 .field-input,
 .field-text,
 .sandbox-sql,
@@ -865,6 +1009,21 @@ p {
   gap: 0.5rem;
 }
 
+.table-picker {
+  min-width: 170px;
+}
+
+.snippet-bank {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.42rem;
+  margin: 0.2rem 0 0.7rem;
+  padding: 0.6rem;
+  border: 1px dashed #cad7e5;
+  border-radius: 10px;
+  background: #f7fbff;
+}
+
 .sandbox-sql {
   min-height: 250px;
   resize: vertical;
@@ -884,6 +1043,12 @@ p {
   padding: 0.6rem;
 }
 
+.saved-task-active {
+  border-color: #77b8ad;
+  box-shadow: inset 0 0 0 1px #77b8ad;
+  background: #eefbf8;
+}
+
 .saved-task h4 {
   margin: 0 0 0.2rem;
 }
@@ -898,6 +1063,55 @@ p {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+}
+
+.saved-task-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.38rem;
+  margin-bottom: 0.35rem;
+}
+
+.history-list {
+  display: grid;
+  gap: 0.52rem;
+}
+
+.history-item {
+  border: 1px solid #d7e1ec;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 0.58rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.history-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  align-items: center;
+  color: #42576d;
+  font-size: 0.84rem;
+}
+
+.history-item p {
+  margin: 0;
+  color: #29435d;
+  font-size: 0.9rem;
+}
+
+.history-item code {
+  display: block;
+  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-size: 0.8rem;
+  padding: 0.34rem 0.44rem;
+  border-radius: 8px;
+  border: 1px solid #d6e0ec;
+  background: #f4f8fc;
+  color: #1e3750;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .quizlets-layout {

@@ -1458,18 +1458,191 @@ function buildDayPagination(dayId, view = "theory") {
 
 function renderMarkdown(contentEl, tocEl, markdownText) {
   marked.setOptions({ gfm: true, breaks: false });
-  contentEl.innerHTML = marked.parse(markdownText);
-  const headers = contentEl.querySelectorAll("h2, h3");
-  tocEl.innerHTML = "";
+  document.body.classList.remove("day-focus-mode");
+
+  const raw = document.createElement("div");
+  raw.innerHTML = marked.parse(markdownText);
+  const estimatedWordCount = raw.textContent.trim().split(/\s+/).filter(Boolean).length;
+
+  const usedIds = new Set();
+  const uniqueId = (text, fallbackPrefix = "section") => {
+    const base = slugify(text || fallbackPrefix) || `${fallbackPrefix}-${Math.random().toString(36).slice(2, 8)}`;
+    let id = base;
+    let seq = 2;
+    while (usedIds.has(id)) {
+      id = `${base}-${seq}`;
+      seq += 1;
+    }
+    usedIds.add(id);
+    return id;
+  };
+
+  const headers = raw.querySelectorAll("h2, h3");
   headers.forEach((header) => {
-    const id = slugify(header.textContent || "section") || `section-${Math.random().toString(36).slice(2, 8)}`;
-    header.id = id;
+    if (!header.id) header.id = uniqueId(header.textContent || "section");
+  });
+
+  tocEl.innerHTML = "";
+  const tocLinks = new Map();
+  headers.forEach((header) => {
     const link = document.createElement("a");
-    link.href = `#${id}`;
+    link.href = `#${header.id}`;
     link.textContent = header.textContent || "Раздел";
+    link.className = header.tagName.toLowerCase() === "h3" ? "toc-sub" : "toc-main";
     tocEl.appendChild(link);
+    tocLinks.set(header.id, link);
   });
   if (!headers.length) tocEl.innerHTML = "<p>Разделы не найдены</p>";
+
+  const wrapper = document.createElement("div");
+  wrapper.className = "reading-layout";
+  wrapper.innerHTML = `
+    <section class="panel reading-toolbar">
+      <div class="reading-toolbar-main">
+        <strong>Режим чтения</strong>
+        <span id="reading-meta"></span>
+      </div>
+      <div class="reading-toolbar-actions">
+        <button class="btn ghost" data-reading-action="toggle-focus" type="button">Фокус</button>
+        <button class="btn ghost" data-reading-action="collapse-all" type="button">Свернуть разделы</button>
+        <button class="btn ghost" data-reading-action="expand-all" type="button">Развернуть</button>
+      </div>
+      <div class="reading-progress"><span id="reading-progress-fill"></span></div>
+    </section>
+  `;
+
+  const sectionsHost = document.createElement("div");
+  sectionsHost.className = "reading-sections";
+
+  const introSection = document.createElement("section");
+  introSection.className = "panel theory-section theory-intro";
+  introSection.innerHTML = `<div class="theory-section-body"></div>`;
+  const introBody = introSection.querySelector(".theory-section-body");
+  let hasIntroContent = false;
+  let sectionIndex = 0;
+  let currentBody = introBody;
+
+  Array.from(raw.childNodes).forEach((node) => {
+    if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() === "h2") {
+      sectionIndex += 1;
+      const section = document.createElement("section");
+      section.className = "panel theory-section";
+      section.setAttribute("data-reading-section", String(sectionIndex));
+      const title = node.textContent || `Раздел ${sectionIndex}`;
+      const headingId = node.id || uniqueId(title, "section");
+      section.innerHTML = `
+        <header class="theory-section-head">
+          <h2 id="${escapeHtml(headingId)}">${escapeHtml(title)}</h2>
+          <button class="btn ghost section-toggle" data-role="section-toggle" type="button">Свернуть</button>
+        </header>
+        <div class="theory-section-body"></div>
+      `;
+      sectionsHost.appendChild(section);
+      currentBody = section.querySelector(".theory-section-body");
+      return;
+    }
+
+    if (currentBody === introBody) hasIntroContent = hasIntroContent || (node.textContent || "").trim().length > 0;
+    currentBody.appendChild(node);
+  });
+
+  if (hasIntroContent) {
+    const introTitle = document.createElement("p");
+    introTitle.className = "theory-intro-title";
+    introTitle.textContent = "Введение";
+    introSection.insertBefore(introTitle, introBody);
+    sectionsHost.prepend(introSection);
+  }
+
+  if (!sectionsHost.children.length) {
+    const fallback = document.createElement("section");
+    fallback.className = "panel theory-section";
+    fallback.innerHTML = `<div class="theory-section-body">${raw.innerHTML}</div>`;
+    sectionsHost.appendChild(fallback);
+  }
+
+  wrapper.appendChild(sectionsHost);
+  contentEl.innerHTML = "";
+  contentEl.appendChild(wrapper);
+
+  const meta = wrapper.querySelector("#reading-meta");
+  const progressFill = wrapper.querySelector("#reading-progress-fill");
+  const sectionNodes = Array.from(wrapper.querySelectorAll(".theory-section[data-reading-section]"));
+  const totalSections = sectionNodes.length;
+  const readMinutes = Math.max(1, Math.round(estimatedWordCount / 180));
+
+  const updateMeta = (activeSection = 1) => {
+    const safeActive = Math.min(Math.max(activeSection, 1), Math.max(totalSections, 1));
+    meta.textContent = `Раздел ${safeActive}/${Math.max(totalSections, 1)} • ~${readMinutes} мин`;
+  };
+  updateMeta(1);
+
+  wrapper.querySelectorAll("[data-role='section-toggle']").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const section = btn.closest(".theory-section");
+      section.classList.toggle("collapsed");
+      btn.textContent = section.classList.contains("collapsed") ? "Развернуть" : "Свернуть";
+    });
+  });
+
+  wrapper.querySelectorAll("[data-reading-action]").forEach((btn) => {
+    const action = btn.getAttribute("data-reading-action");
+    btn.addEventListener("click", () => {
+      if (action === "toggle-focus") {
+        document.body.classList.toggle("day-focus-mode");
+        btn.classList.toggle("toggle-active");
+      }
+      if (action === "collapse-all") {
+        wrapper.querySelectorAll(".theory-section").forEach((section) => {
+          section.classList.add("collapsed");
+          const toggle = section.querySelector(".section-toggle");
+          if (toggle) toggle.textContent = "Развернуть";
+        });
+      }
+      if (action === "expand-all") {
+        wrapper.querySelectorAll(".theory-section").forEach((section) => {
+          section.classList.remove("collapsed");
+          const toggle = section.querySelector(".section-toggle");
+          if (toggle) toggle.textContent = "Свернуть";
+        });
+      }
+    });
+  });
+
+  const syncScrollProgress = () => {
+    const top = contentEl.offsetTop - 24;
+    const bottom = top + contentEl.scrollHeight - window.innerHeight;
+    if (bottom <= top) {
+      progressFill.style.width = "100%";
+      return;
+    }
+    const pct = ((window.scrollY - top) / (bottom - top)) * 100;
+    const normalized = Math.max(0, Math.min(100, pct));
+    progressFill.style.width = `${normalized}%`;
+  };
+  syncScrollProgress();
+  window.addEventListener("scroll", syncScrollProgress, { passive: true });
+
+  if (sectionNodes.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        const h2 = entry.target.querySelector("h2[id]");
+        if (!h2) return;
+        const link = tocLinks.get(h2.id);
+        if (link) link.classList.toggle("active", entry.isIntersecting);
+      });
+
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.target.getBoundingClientRect().top - b.target.getBoundingClientRect().top)[0];
+      if (visible) {
+        const idx = Number(visible.target.getAttribute("data-reading-section") || "1");
+        updateMeta(idx);
+      }
+    }, { rootMargin: "-25% 0px -55% 0px", threshold: 0.1 });
+
+    sectionNodes.forEach((section) => observer.observe(section));
+  }
 }
 
 function getQuizStats(dayId, bank, stateKey) {
