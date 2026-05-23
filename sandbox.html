@@ -30,7 +30,6 @@
         <label class="field-label" for="task-select">Текущая задача</label>
         <div class="sandbox3-controls">
           <select id="task-select" class="field-input"></select>
-          <button class="btn ghost" id="pick-task" type="button">Выбрать задачу</button>
           <button class="btn primary" id="check-task" type="button">Проверить решение</button>
           <button class="btn ghost" id="reset-task-progress" type="button">Сбросить прогресс задачи</button>
         </div>
@@ -52,24 +51,16 @@
         <label class="field-label" for="dataset">Датасет</label>
         <div class="sandbox3-controls">
           <select id="dataset" class="field-input"></select>
-          <button class="btn ghost" id="load-dataset" type="button">Загрузить датасет</button>
+          <button class="btn ghost" id="load-dataset" type="button">Перезагрузить датасет</button>
           <button class="btn ghost" id="delete-dataset" type="button">Удалить кастомный датасет</button>
         </div>
-      </div>
-
-      <div class="sandbox3-controls wrap">
-        <button class="btn ghost" id="show-schema" type="button" title="Показать состав таблиц и колонок">Показать схему БД</button>
-        <button class="btn ghost" id="preview-table" type="button" title="Показать первые 20 строк таблицы">Показать 20 строк таблицы</button>
-        <select id="table-picker" class="field-input table-picker"></select>
-        <button class="btn ghost" id="run-explain" type="button" title="Показать план выполнения запроса">План запроса (EXPLAIN)</button>
-        <button class="btn ghost" id="format-sql" type="button">Форматировать SQL</button>
-        <button class="btn ghost" id="reset-db" type="button">Сбросить БД</button>
-        <button class="btn ghost" id="reset-sql" type="button">Очистить SQL</button>
+        <p class="sandbox3-note" id="dataset-lock-hint" hidden>Для активной задачи датасет фиксируется автоматически.</p>
       </div>
 
       <textarea id="sandbox-sql" class="sandbox-sql" spellcheck="false" placeholder="Пиши SQL здесь... (Ctrl/Cmd + Enter — выполнить)"></textarea>
       <div class="workbench-actions">
-        <button class="btn primary" id="run-sql" type="button">Выполнить SQL</button>
+        <button class="btn primary" id="run-sql" type="button">Запустить код</button>
+        <button class="btn ghost" id="reset-db" type="button">Сбросить БД</button>
       </div>
 
       <div id="sandbox-status" class="check-status"></div>
