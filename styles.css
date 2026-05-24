@@ -1496,6 +1496,12 @@ body.day-focus-mode .toc-wrap {
   border-radius: 9px;
 }
 
+#task-select option.task-option-done {
+  color: #0a7a54;
+  font-weight: 700;
+  background: #e9faf3;
+}
+
 .sandbox3-task-top {
   margin-top: 0.3rem;
 }
