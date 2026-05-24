@@ -591,7 +591,26 @@ function renderTaskSelect(selectEl, activeTaskId) {
   selectEl.value = activeTaskId || "";
 }
 
-function renderTaskCard(cardEl, task, done, datasetLabel) {
+function stringifyPreviewCell(value) {
+  if (value === null || value === undefined) return "NULL";
+  if (typeof value === "number") return Number.isFinite(value) ? String(value) : "NaN";
+  return String(value);
+}
+
+function formatTaskOutputHint(hint) {
+  if (!hint) return "";
+  const cols = hint.columns.length ? hint.columns.join(", ") : "нет колонок";
+  const sample = hint.sampleRows.length
+    ? hint.sampleRows.map((row) => `(${row.map(stringifyPreviewCell).join(", ")})`).join("; ")
+    : "пустой результат";
+  return `
+    <div class="task-output-box">
+      <p class="task-output-hint"><strong>Ожидаемые колонки:</strong> ${escapeHtml(cols)}</p>
+      <p class="task-output-example"><strong>Пример вывода:</strong> ${escapeHtml(sample)}</p>
+    </div>
+  `;
+}
+function renderTaskCard(cardEl, task, done, datasetLabel, outputHints) {
   if (!task) {
     cardEl.innerHTML = `
       <h2>Свободный режим</h2>
@@ -604,9 +623,11 @@ function renderTaskCard(cardEl, task, done, datasetLabel) {
     `;
     return;
   }
+  const hintHtml = formatTaskOutputHint(outputHints?.[task.id]);
   cardEl.innerHTML = `
     <h2>${escapeHtml(task.title)}</h2>
     <p>${escapeHtml(task.prompt)}</p>
+    ${hintHtml}
     <div class="sandbox3-task-meta">
       <span class="chip">Датасет: ${escapeHtml(datasetLabel)}</span>
       <span class="chip">Уровень: ${escapeHtml(task.level.toUpperCase())}</span>
@@ -615,7 +636,7 @@ function renderTaskCard(cardEl, task, done, datasetLabel) {
   `;
 }
 
-function renderTaskBank(host, filters, progress, library) {
+function renderTaskBank(host, filters, progress, library, outputHints) {
   const tasks = TASK_BANK.filter((task) => (filters.dataset === "all" || task.dataset === filters.dataset) && (filters.level === "all" || task.level === filters.level));
   if (!tasks.length) {
     host.innerHTML = "<p class='sql-message'>По фильтрам задач нет.</p>";
@@ -630,6 +651,7 @@ function renderTaskBank(host, filters, progress, library) {
       </div>
       <h3>${escapeHtml(task.title)}</h3>
       <p>${escapeHtml(task.prompt)}</p>
+      ${formatTaskOutputHint(outputHints?.[task.id])}
       <div class="saved-task-actions"><button class="btn ghost" data-pick-task="${task.id}" type="button">Решать задачу</button></div>
     </article>
   `).join("");
@@ -673,6 +695,7 @@ async function main() {
   let progress = loadProgress();
   let autocompleteWords = [];
   let activeAutocomplete = null;
+  let taskOutputHints = {};
 
   function setStatus(text, kind = "") {
     status.className = `check-status${kind ? ` ${kind}` : ""}`;
@@ -704,6 +727,29 @@ async function main() {
     autocompleteWords = Array.from(words);
   }
 
+  
+  async function buildTaskOutputHints(library) {
+    const hints = {};
+    for (const task of TASK_BANK) {
+      const dataset = library[task.dataset];
+      if (!dataset) continue;
+      let previewDb = null;
+      try {
+        previewDb = await createDbFromSeed(dataset.seed || "");
+        const runData = runSql(previewDb, task.solutionSql || "");
+        const result = runData.lastResult || { columns: [], values: [] };
+        hints[task.id] = {
+          columns: Array.isArray(result.columns) ? result.columns.map((c) => String(c)) : [],
+          sampleRows: Array.isArray(result.values) ? result.values.slice(0, 2) : []
+        };
+      } catch {
+        hints[task.id] = { columns: [], sampleRows: [] };
+      } finally {
+        if (previewDb) previewDb.close();
+      }
+    }
+    taskOutputHints = hints;
+  }
   function clearAutocompleteHint() {
     activeAutocomplete = null;
     autocompleteHint.textContent = "";
@@ -807,8 +853,8 @@ async function main() {
     deleteDatasetBtn.hidden = taskMode;
     datasetLockHint.hidden = !taskMode;
     renderTaskSelect(taskSelect, activeTaskId);
-    renderTaskCard(activeTaskCard, activeTask, Boolean(progress[activeTaskId]), library[activeDataset]?.label || activeDataset);
-    renderTaskBank(taskBankHost, { dataset: taskDatasetFilter.value, level: taskLevelFilter.value }, progress, library);
+    renderTaskCard(activeTaskCard, activeTask, Boolean(progress[activeTaskId]), library[activeDataset]?.label || activeDataset, taskOutputHints);
+    renderTaskBank(taskBankHost, { dataset: taskDatasetFilter.value, level: taskLevelFilter.value }, progress, library, taskOutputHints);
     taskBankHost.querySelectorAll("[data-pick-task]").forEach((btn) => {
       btn.addEventListener("click", () => applyTaskSelection(btn.getAttribute("data-pick-task")));
     });
@@ -862,6 +908,7 @@ async function main() {
   sqlInput.value = state.sql || "";
   taskLevelFilter.value = state.taskLevelFilter || "all";
   renderDatasetSelectors();
+  await buildTaskOutputHints(getDatasetLibrary());
   await initDb(activeDataset, getDatasetLibrary());
   refreshAutocompleteWords();
   updateAutocompleteHint();
@@ -895,6 +942,7 @@ async function main() {
     delete custom[id];
     saveJson(CUSTOM_DATASETS_KEY, custom);
     renderDatasetSelectors();
+    await buildTaskOutputHints(getDatasetLibrary());
     activeDataset = datasetSelect.value;
     await initDb(activeDataset, getDatasetLibrary());
     refreshAutocompleteWords();
@@ -1037,6 +1085,7 @@ async function main() {
       const custom = loadJson(CUSTOM_DATASETS_KEY, {});
       custom[id] = { label, seed };
       saveJson(CUSTOM_DATASETS_KEY, custom);
+      await buildTaskOutputHints(getDatasetLibrary());
       renderDatasetSelectors();
       renderAll();
       refreshAutocompleteWords();
@@ -1083,6 +1132,7 @@ async function main() {
         imported += 1;
       }
       saveJson(CUSTOM_DATASETS_KEY, custom);
+      await buildTaskOutputHints(getDatasetLibrary());
       renderDatasetSelectors();
       renderAll();
       refreshAutocompleteWords();

@@ -442,7 +442,7 @@ p {
 .topbar {
   position: sticky;
   top: 0;
-  z-index: 30;
+  z-index: 120;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1190,7 +1190,8 @@ body.day-focus-mode .toc-wrap {
 }
 
 .history-list {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.52rem;
   min-height: 0;
   overflow-y: auto;
@@ -1199,6 +1200,7 @@ body.day-focus-mode .toc-wrap {
 }
 
 .history-item {
+  flex: 0 0 auto;
   border: 1px solid #d7e1ec;
   border-radius: 10px;
   background: #ffffff;
@@ -1580,6 +1582,27 @@ body.day-focus-mode .toc-wrap {
 .task-bank-card p {
   font-size: 0.92rem;
   line-height: 1.42;
+}
+
+.task-output-box {
+  border: 1px dashed #c8d8ea;
+  border-radius: 9px;
+  background: #f8fbff;
+  padding: 0.45rem 0.55rem;
+  margin: 0.22rem 0 0.36rem;
+}
+
+.task-output-hint,
+.task-output-example {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.38;
+  color: #24435f;
+}
+
+.task-output-example {
+  margin-top: 0.16rem;
+  color: #37506b;
 }
 
 .quizlets-layout {

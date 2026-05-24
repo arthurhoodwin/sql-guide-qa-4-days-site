@@ -1323,7 +1323,7 @@ const SQL_TASKS = {
     {
       id: "d1_t1",
       title: "SELECT + WHERE",
-      prompt: "Выведи product_name и price только для товаров дороже 10000.",
+      prompt: "Выведи колонки: product_name, price. Условие: только товары с price > 10000. Пример строки результата: ('Laptop', 90000).",
       starter: "SELECT product_name, price\nFROM products\nWHERE price > 0;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой SELECT-результат." };
@@ -1336,7 +1336,7 @@ const SQL_TASKS = {
     {
       id: "d1_t2",
       title: "ORDER BY + LIMIT",
-      prompt: "Покажи топ-2 самых дорогих товара (по убыванию цены).",
+      prompt: "Выведи колонки: product_name, price. Нужны ровно 2 строки: два самых дорогих товара, сортировка по price DESC. Пример 1-й строки: ('Laptop', 90000).",
       starter: "SELECT product_name, price\nFROM products\nORDER BY price ASC\nLIMIT 2;",
       validate: ({ lastResult }) => {
         if (!lastResult || lastResult.values.length !== 2) return { ok: false, message: "Нужно ровно 2 строки." };
@@ -1351,7 +1351,7 @@ const SQL_TASKS = {
     {
       id: "d1_t3",
       title: "DISTINCT + ORDER BY",
-      prompt: "Выведи уникальные category в алфавитном порядке.",
+      prompt: "Выведи колонку: category. Только уникальные значения, сортировка по category ASC. Пример результата: Accessories / Electronics / Peripherals.",
       starter: "SELECT category\nFROM products\nORDER BY category DESC;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
@@ -1365,7 +1365,7 @@ const SQL_TASKS = {
     {
       id: "d1_t4",
       title: "GROUP BY + COUNT",
-      prompt: "Выведи category и количество товаров в категории (items_count), отсортируй по items_count убыванию.",
+      prompt: "Выведи колонки: category, items_count. items_count = COUNT(*) по категории. Сортировка: items_count DESC (при равенстве category ASC). Пример строки: ('Electronics', 2).",
       starter: "SELECT category, COUNT(*) AS items_count\nFROM products\nGROUP BY category\nORDER BY items_count ASC;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
@@ -1384,7 +1384,7 @@ const SQL_TASKS = {
     {
       id: "d1_t5",
       title: "WHERE + ORDER BY",
-      prompt: "Выведи product_name и price для категории 'Периферия' с ценой < 5000, отсортируй по цене убыванию.",
+      prompt: "Выведи колонки: product_name, price. Фильтр: category = 'Периферия' и price < 5000. Сортировка: price DESC. Пример строки: ('Keyboard', 3500).",
       starter: "SELECT product_name, price\nFROM products\nWHERE category = 'Периферия'\nORDER BY price ASC;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
@@ -1405,7 +1405,7 @@ const SQL_TASKS = {
     {
       id: "d2_t1",
       title: "LEFT JOIN: пользователи без заказов",
-      prompt: "Найди пользователей, у которых нет заказов.",
+      prompt: "Выведи колонки: user_id, username. Нужны пользователи без заказов. Сортировка по user_id ASC. Пример строки: (4, 'oleg').",
       starter: "SELECT u.user_id, u.username\nFROM users u\nLEFT JOIN orders o ON u.user_id = o.user_id\nWHERE o.order_id IS NULL;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается минимум один пользователь." };
@@ -1421,7 +1421,7 @@ const SQL_TASKS = {
     {
       id: "d2_t2",
       title: "GROUP BY: сумма paid заказов",
-      prompt: "Выведи user_id и total_paid по статусу paid, отсортируй по total_paid убыванию.",
+      prompt: "Выведи колонки: user_id, total_paid. total_paid = SUM(amount) только для status='paid'. Сортировка: total_paid DESC. Пример строки: (1, 7500).",
       starter: "SELECT user_id, SUM(amount) AS total_paid\nFROM orders\nWHERE status = 'paid'\nGROUP BY user_id\nORDER BY total_paid ASC;",
       validate: ({ lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
@@ -1436,7 +1436,7 @@ const SQL_TASKS = {
     {
       id: "d2_t3",
       title: "LEFT JOIN + COUNT",
-      prompt: "Выведи всех пользователей и количество их заказов (orders_count), включая тех, у кого 0 заказов. Сортировка по user_id.",
+      prompt: "Выведи колонки: user_id, orders_count. Включи всех пользователей (даже с 0 заказов). Сортировка: user_id ASC. Пример строки: (4, 0).",
       starter: "SELECT u.user_id, COUNT(*) AS orders_count\nFROM users u\nLEFT JOIN orders o ON u.user_id = o.user_id\nGROUP BY u.user_id;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается результат с пользователями." };
@@ -1456,7 +1456,7 @@ const SQL_TASKS = {
     {
       id: "d2_t4",
       title: "JOIN + GROUP BY по городу",
-      prompt: "Выведи city и сумму paid заказов (total_paid) по городам, отсортируй по total_paid убыванию.",
+      prompt: "Выведи колонки: city, total_paid. total_paid = SUM(amount) только для status='paid'. Сортировка: total_paid DESC. Пример строки: ('Moscow', 8300).",
       starter: "SELECT u.city, SUM(o.amount) AS total_paid\nFROM users u\nJOIN orders o ON u.user_id = o.user_id\nGROUP BY u.city\nORDER BY total_paid ASC;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой агрегированный результат." };
@@ -1477,7 +1477,7 @@ const SQL_TASKS = {
     {
       id: "d2_t5",
       title: "HAVING: paid и cancelled",
-      prompt: "Найди user_id пользователей, у которых есть и paid, и cancelled заказы.",
+      prompt: "Выведи колонку: user_id. Нужны пользователи, у которых одновременно есть paid и cancelled заказы. Сортировка: user_id ASC. Пример строки: (2).",
       starter: "SELECT user_id\nFROM orders\nGROUP BY user_id\nHAVING SUM(CASE WHEN status = 'paid' THEN 1 ELSE 0 END) > 0;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается минимум один user_id." };
@@ -1500,7 +1500,7 @@ const SQL_TASKS = {
     {
       id: "d3_t1",
       title: "Проверка целостности totals",
-      prompt: "Найди заказы, где total_amount не совпадает с суммой order_items.",
+      prompt: "Выведи колонки: order_id, total_amount, calc_total. Нужны заказы, где total_amount != SUM(quantity * unit_price). Пример строки: (4, 4500, 4000).",
       starter: "SELECT o.order_id, o.total_amount, SUM(oi.quantity * oi.unit_price) AS calc_total\nFROM orders o\nLEFT JOIN order_items oi ON o.order_id = oi.order_id\nGROUP BY o.order_id;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
@@ -1523,7 +1523,7 @@ const SQL_TASKS = {
     {
       id: "d3_t2",
       title: "N-й максимум",
-      prompt: "Выведи второй по сумме заказ (order_id, total_amount).",
+      prompt: "Выведи колонки: order_id, total_amount. Нужна ровно 1 строка: второй максимум по total_amount. Пример результата: (2, 30000).",
       starter: "SELECT order_id, total_amount\nFROM orders\nORDER BY total_amount DESC\nLIMIT 1 OFFSET 0;",
       validate: ({ lastResult }) => {
         if (!lastResult || lastResult.values.length !== 1) return { ok: false, message: "Ожидается ровно 1 строка." };
@@ -1539,7 +1539,7 @@ const SQL_TASKS = {
     {
       id: "d3_t3",
       title: "TOP-2 по calc_total",
-      prompt: "Посчитай calc_total = SUM(quantity * unit_price) по каждому заказу и выведи топ-2 заказа по calc_total (убывание).",
+      prompt: "Выведи колонки: order_id, calc_total, где calc_total = SUM(quantity * unit_price). Нужны топ-2 строки по calc_total DESC. Пример 1-й строки: (1, 51000).",
       starter: "SELECT oi.order_id, SUM(oi.quantity * oi.unit_price) AS calc_total\nFROM order_items oi\nGROUP BY oi.order_id\nORDER BY calc_total ASC\nLIMIT 2;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || lastResult.values.length !== 2) return { ok: false, message: "Нужно вернуть ровно 2 строки." };
@@ -1559,7 +1559,7 @@ const SQL_TASKS = {
     {
       id: "d3_t4",
       title: "AVG по заказам",
-      prompt: "Выведи order_id и avg_item_price = AVG(unit_price) только для заказов, где avg_item_price > 2000. Сортировка по avg_item_price убыванию.",
+      prompt: "Выведи колонки: order_id, avg_item_price (AVG(unit_price)). Оставь только avg_item_price > 2000. Сортировка: avg_item_price DESC. Пример строки: (2, 30000).",
       starter: "SELECT order_id, AVG(unit_price) AS avg_item_price\nFROM order_items\nGROUP BY order_id\nORDER BY avg_item_price ASC;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой результат." };
@@ -1579,7 +1579,7 @@ const SQL_TASKS = {
     {
       id: "d3_t5",
       title: "Заказы с 2+ позициями",
-      prompt: "Найди order_id заказов, у которых 2 и более строк в order_items.",
+      prompt: "Выведи колонку: order_id. Нужны заказы, где COUNT(*) по order_items >= 2. Сортировка: order_id ASC. Пример результата: 1, 4.",
       starter: "SELECT order_id\nFROM order_items\nGROUP BY order_id\nHAVING COUNT(*) > 2;",
       validate: ({ db, lastResult }) => {
         if (!lastResult || !lastResult.values.length) return { ok: false, message: "Ожидается непустой список order_id." };
