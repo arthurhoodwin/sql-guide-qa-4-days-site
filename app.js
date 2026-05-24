@@ -4,6 +4,7 @@ const SQL_QUIZ_STATE_KEY = "vk-qa-sql-quiz-state-v1";
 const BEHAVIORAL_QUIZ_STATE_KEY = "vk-qa-behavioral-quiz-state-v1";
 const SQL_TASK_STATE_KEY = "vk-qa-sql-task-state-v1";
 const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
+const SQL_HINT_STATE_KEY = "vk-qa-sql-hints-v1";
 const LAST_OPENED_LESSON_KEY = "vk-qa-last-opened-lesson-v1";
 const TEAM_PROCESS_QUIZ_STATE_KEY = "vk-qa-team-process-quiz-state-v1";
 const EXTRA_PROGRESS_KEY = "vk-qa-extra-progress-v1";
@@ -2892,22 +2893,68 @@ function buildLessonSqlHints(task) {
 }
 
 function renderHintsListHtml(hints) {
+  return renderProgressiveHintsHtml(hints, "lesson-hints", 0);
+}
+
+function renderProgressiveHintsHtml(hints, hintKey, revealed = 0) {
+  const total = hints.length;
+  const safeRevealed = Math.max(0, Math.min(total, Number(revealed) || 0));
   return `
     <details class="task-hints" open>
-      <summary>Подсказки (5 шагов)</summary>
-      <ol>
-        ${hints.map((hint) => `<li>${escapeHtml(hint)}</li>`).join("")}
-      </ol>
+      <summary>Подсказки (пошагово)</summary>
+      <div class="hint-widget" data-hint-widget data-hint-key="${escapeHtml(hintKey)}" data-hint-total="${total}">
+        <p class="task-hints-progress">Открыто: <span data-hint-progress>${safeRevealed}</span>/${total}</p>
+        <ol class="task-hints-list">
+          ${hints.map((hint, idx) => `<li class="task-hint-item ${idx < safeRevealed ? "" : "is-hidden"}">${escapeHtml(hint)}</li>`).join("")}
+        </ol>
+        <div class="task-hints-actions">
+          <button class="btn ghost" type="button" data-hint-action="next">Показать следующую</button>
+          <button class="btn ghost" type="button" data-hint-action="reset">Скрыть все</button>
+        </div>
+      </div>
     </details>
   `;
+}
+
+function bindHintWidget(scope, onChange) {
+  if (!scope) return;
+  const widget = scope.querySelector("[data-hint-widget]");
+  if (!widget || widget.dataset.hintBound === "1") return;
+  widget.dataset.hintBound = "1";
+
+  const total = Number(widget.getAttribute("data-hint-total")) || 0;
+  const progressEl = widget.querySelector("[data-hint-progress]");
+  const items = Array.from(widget.querySelectorAll(".task-hint-item"));
+  const sync = () => {
+    const revealed = items.filter((it) => !it.classList.contains("is-hidden")).length;
+    if (progressEl) progressEl.textContent = String(revealed);
+    const nextBtn = widget.querySelector("[data-hint-action='next']");
+    if (nextBtn) nextBtn.disabled = revealed >= total;
+    if (typeof onChange === "function") onChange(revealed, total, widget.getAttribute("data-hint-key") || "");
+  };
+
+  widget.querySelector("[data-hint-action='next']")?.addEventListener("click", () => {
+    const hidden = items.find((it) => it.classList.contains("is-hidden"));
+    if (hidden) hidden.classList.remove("is-hidden");
+    sync();
+  });
+
+  widget.querySelector("[data-hint-action='reset']")?.addEventListener("click", () => {
+    items.forEach((it) => it.classList.add("is-hidden"));
+    sync();
+  });
+
+  sync();
 }
 
 async function renderSqlInto(dayId, container, onProgress) {
   const tasks = SQL_TASKS[dayId] || [];
   const allState = loadJson(SQL_TASK_STATE_KEY, {});
   const allDrafts = loadJson(SQL_DRAFT_KEY, {});
+  const allHintState = loadJson(SQL_HINT_STATE_KEY, {});
   if (!allState[String(dayId)]) allState[String(dayId)] = {};
   if (!allDrafts[String(dayId)]) allDrafts[String(dayId)] = {};
+  if (!allHintState[String(dayId)]) allHintState[String(dayId)] = {};
 
   let active = 0;
   let db = await buildDb(dayId);
@@ -2948,6 +2995,17 @@ async function renderSqlInto(dayId, container, onProgress) {
   const status = container.querySelector("#check-status");
   const result = container.querySelector("#sql-result");
 
+  function getHintReveal(taskId) {
+    return Math.max(0, Number(allHintState[String(dayId)][taskId] || 0));
+  }
+
+  function setHintReveal(taskId, value) {
+    const task = tasks.find((item) => item.id === taskId);
+    const limit = task ? buildLessonSqlHints(task).length : 5;
+    allHintState[String(dayId)][taskId] = Math.max(0, Math.min(limit, Number(value) || 0));
+    saveJson(SQL_HINT_STATE_KEY, allHintState);
+  }
+
   function redrawTaskList() {
     list.innerHTML = tasks.map((task, index) => {
       const solved = Boolean(allState[String(dayId)][task.id]);
@@ -2971,7 +3029,9 @@ async function renderSqlInto(dayId, container, onProgress) {
     const task = tasks[active];
     title.textContent = task.title;
     prompt.textContent = task.prompt;
-    hintsBox.innerHTML = renderHintsListHtml(buildLessonSqlHints(task));
+    const hints = buildLessonSqlHints(task);
+    hintsBox.innerHTML = renderProgressiveHintsHtml(hints, `lesson:${dayId}:${task.id}`, getHintReveal(task.id));
+    bindHintWidget(hintsBox, (revealed) => setHintReveal(task.id, revealed));
     input.value = allDrafts[String(dayId)][task.id] || "";
     status.textContent = "";
     status.className = "check-status";

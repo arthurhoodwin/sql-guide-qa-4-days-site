@@ -1720,6 +1720,31 @@ body.day-focus-mode .toc-wrap {
   font-size: 0.9rem;
 }
 
+.task-hints-list {
+  margin: 0.16rem 0 0.06rem 1rem;
+  padding: 0;
+  display: grid;
+  gap: 0.28rem;
+}
+
+.task-hint-item.is-hidden {
+  display: none;
+}
+
+.task-hints-progress {
+  margin: 0.1rem 0 0.22rem;
+  color: #4b6278;
+  font-size: 0.84rem;
+  font-weight: 700;
+}
+
+.task-hints-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.32rem;
+}
+
 .quizlets-layout {
   display: grid;
   gap: 0.9rem;

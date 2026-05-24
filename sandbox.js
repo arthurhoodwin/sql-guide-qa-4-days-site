@@ -2,6 +2,7 @@ const CUSTOM_DATASETS_KEY = "vk-qa-sandbox-custom-datasets-v3";
 const HISTORY_KEY = "vk-qa-sandbox-history-v4";
 const STATE_KEY = "vk-qa-sandbox-state-v4";
 const TASK_PROGRESS_KEY = "vk-qa-sandbox-task-progress-v2";
+const TASK_HINT_PROGRESS_KEY = "vk-qa-sandbox-task-hints-v1";
 
 const BUILTIN_DATASETS = {
   shop: {
@@ -1719,17 +1720,56 @@ function buildTaskHints(task, outputHint) {
   ];
 }
 
-function formatTaskHints(task, outputHint) {
+function formatTaskHints(task, outputHint, revealed = 0, hintKey = "") {
   const hints = buildTaskHints(task, outputHint);
+  const safeRevealed = Math.max(0, Math.min(hints.length, Number(revealed) || 0));
   return `
     <details class="task-hints">
-      <summary>Подсказки (5)</summary>
-      <ol>${hints.map((hint) => `<li>${escapeHtml(hint)}</li>`).join("")}</ol>
+      <summary>Hints (step-by-step)</summary>
+      <div class="hint-widget" data-hint-widget data-hint-key="${escapeHtml(hintKey)}" data-hint-total="${hints.length}">
+        <p class="task-hints-progress">Hints opened: <span data-hint-progress>${safeRevealed}</span>/${hints.length}</p>
+        <ol class="task-hints-list">
+          ${hints.map((hint, idx) => `<li class="task-hint-item ${idx < safeRevealed ? "" : "is-hidden"}">${escapeHtml(hint)}</li>`).join("")}
+        </ol>
+        <div class="task-hints-actions">
+          <button class="btn ghost" type="button" data-hint-action="next">Show next hint</button>
+          <button class="btn ghost" type="button" data-hint-action="reset">Hide all hints</button>
+        </div>
+      </div>
     </details>
   `;
 }
 
-function renderTaskCard(cardEl, task, done, datasetLabel, outputHints) {
+function bindHintWidgets(scope, onChange) {
+  if (!scope) return;
+  scope.querySelectorAll("[data-hint-widget]").forEach((widget) => {
+    if (widget.dataset.hintBound === "1") return;
+    widget.dataset.hintBound = "1";
+    const total = Number(widget.getAttribute("data-hint-total")) || 0;
+    const key = widget.getAttribute("data-hint-key") || "";
+    const progressEl = widget.querySelector("[data-hint-progress]");
+    const items = Array.from(widget.querySelectorAll(".task-hint-item"));
+    const sync = () => {
+      const revealed = items.filter((it) => !it.classList.contains("is-hidden")).length;
+      if (progressEl) progressEl.textContent = String(revealed);
+      const nextBtn = widget.querySelector("[data-hint-action='next']");
+      if (nextBtn) nextBtn.disabled = revealed >= total;
+      if (typeof onChange === "function") onChange(key, revealed, total);
+    };
+    widget.querySelector("[data-hint-action='next']")?.addEventListener("click", () => {
+      const hidden = items.find((it) => it.classList.contains("is-hidden"));
+      if (hidden) hidden.classList.remove("is-hidden");
+      sync();
+    });
+    widget.querySelector("[data-hint-action='reset']")?.addEventListener("click", () => {
+      items.forEach((it) => it.classList.add("is-hidden"));
+      sync();
+    });
+    sync();
+  });
+}
+
+function renderTaskCard(cardEl, task, done, datasetLabel, outputHints, activeHintProgress) {
   if (!task) {
     cardEl.innerHTML = `
       <h2>Свободный режим</h2>
@@ -1743,7 +1783,7 @@ function renderTaskCard(cardEl, task, done, datasetLabel, outputHints) {
     return;
   }
   const hintHtml = formatTaskOutputHint(outputHints?.[task.id]);
-  const hintsBox = formatTaskHints(task, outputHints?.[task.id]);
+  const hintsBox = formatTaskHints(task, outputHints?.[task.id], Number(activeHintProgress?.[task.id] || 0), `active:${task.id}`);
   cardEl.innerHTML = `
     <h2>${escapeHtml(task.title)}</h2>
     <p>${escapeHtml(task.prompt)}</p>
@@ -1757,7 +1797,7 @@ function renderTaskCard(cardEl, task, done, datasetLabel, outputHints) {
   `;
 }
 
-function renderTaskBank(host, filters, progress, library, outputHints) {
+function renderTaskBank(host, filters, progress, library, outputHints, bankHintProgress) {
   const tasks = TASK_BANK.filter((task) => (filters.dataset === "all" || task.dataset === filters.dataset) && (filters.level === "all" || task.level === filters.level));
   if (!tasks.length) {
     host.innerHTML = "<p class='sql-message'>По фильтрам задач нет.</p>";
@@ -1773,7 +1813,7 @@ function renderTaskBank(host, filters, progress, library, outputHints) {
       <h3>${escapeHtml(task.title)}</h3>
       <p>${escapeHtml(task.prompt)}</p>
       ${formatTaskOutputHint(outputHints?.[task.id])}
-      ${formatTaskHints(task, outputHints?.[task.id])}
+      ${formatTaskHints(task, outputHints?.[task.id], Number(bankHintProgress?.[task.id] || 0), `bank:${task.id}`)}
       <div class="saved-task-actions"><button class="btn ghost" data-pick-task="${task.id}" type="button">Решать задачу</button></div>
     </article>
   `).join("");
@@ -1816,6 +1856,8 @@ async function main() {
   let activeDataset = state.dataset;
   let activeTaskId = state.activeTaskId || "";
   let progress = loadProgress();
+  let activeHintProgress = loadJson(TASK_HINT_PROGRESS_KEY, {});
+  let bankHintProgress = {};
   let autocompleteWords = [];
   let activeAutocomplete = null;
   let taskOutputHints = {};
@@ -2010,9 +2052,20 @@ async function main() {
     deleteDatasetBtn.hidden = taskMode;
     datasetLockHint.hidden = !taskMode;
     renderTaskSelect(taskSelect, activeTaskId, progress);
-    renderTaskCard(activeTaskCard, activeTask, Boolean(progress[activeTaskId]), library[activeDataset]?.label || activeDataset, taskOutputHints);
+    renderTaskCard(activeTaskCard, activeTask, Boolean(progress[activeTaskId]), library[activeDataset]?.label || activeDataset, taskOutputHints, activeHintProgress);
     renderTaskAnalytics(taskAnalyticsHost, progress, activeDataset);
-    renderTaskBank(taskBankHost, { dataset: taskDatasetFilter.value, level: taskLevelFilter.value }, progress, library, taskOutputHints);
+    renderTaskBank(taskBankHost, { dataset: taskDatasetFilter.value, level: taskLevelFilter.value }, progress, library, taskOutputHints, bankHintProgress);
+    bindHintWidgets(activeTaskCard, (key, revealed) => {
+      if (!key.startsWith("active:")) return;
+      const taskId = key.slice("active:".length);
+      activeHintProgress[taskId] = revealed;
+      saveJson(TASK_HINT_PROGRESS_KEY, activeHintProgress);
+    });
+    bindHintWidgets(taskBankHost, (key, revealed) => {
+      if (!key.startsWith("bank:")) return;
+      const taskId = key.slice("bank:".length);
+      bankHintProgress[taskId] = revealed;
+    });
     taskBankHost.querySelectorAll("[data-pick-task]").forEach((btn) => {
       btn.addEventListener("click", () => applyTaskSelection(btn.getAttribute("data-pick-task")));
     });
