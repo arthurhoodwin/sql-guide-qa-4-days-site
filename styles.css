@@ -457,7 +457,8 @@ body[data-page="sandbox"] .topbar,
 body[data-page="quizlets"] .topbar,
 body[data-page="day"] .topbar,
 body[data-page="team-processes"] .topbar,
-body[data-page="team-processes-quiz"] .topbar {
+body[data-page="team-processes-quiz"] .topbar,
+body[data-page="legend"] .topbar {
   margin-top: 0.72rem;
   margin-bottom: 0.62rem;
   padding: 0.62rem 0.72rem;

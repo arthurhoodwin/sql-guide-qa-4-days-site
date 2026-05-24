@@ -68,7 +68,8 @@ const LESSON_SEARCH_SOURCES = [
   { id: "behavioral-1", title: "Поведенческий • День 1", path: "content/behavioral-day1.md", href: "day1.html?view=behavioral" },
   { id: "behavioral-2", title: "Поведенческий • День 2", path: "content/behavioral-day2.md", href: "day2.html?view=behavioral" },
   { id: "behavioral-3", title: "Поведенческий • День 3", path: "content/behavioral-day3.md", href: "day3.html?view=behavioral" },
-  { id: "team-process", title: "Процессы в команде • Теория", path: "content/team-processes-deep.md", href: "team-processes.html" }
+  { id: "team-process", title: "Процессы в команде • Теория", path: "content/team-processes-deep.md", href: "team-processes.html" },
+  { id: "legend-main", title: "Моя легенда • Полный QA-кейс", path: "content/arthur-legend.md", href: "legend.html" }
 ];
 
 const SEARCH_SYNONYM_GROUPS = [
@@ -1693,7 +1694,8 @@ function loadExtraProgress() {
   const raw = loadJson(EXTRA_PROGRESS_KEY, {});
   return {
     teamTheoryDone: Boolean(raw.teamTheoryDone),
-    teamQuizDone: Boolean(raw.teamQuizDone)
+    teamQuizDone: Boolean(raw.teamQuizDone),
+    legendDone: Boolean(raw.legendDone)
   };
 }
 
@@ -2152,6 +2154,7 @@ function renderIndex() {
   const sqlGrid = document.getElementById("sql-grid");
   const behavioralGrid = document.getElementById("behavioral-grid");
   const teamProcessGrid = document.getElementById("team-process-grid");
+  const legendGrid = document.getElementById("legend-grid");
   const done = Object.values(progress).filter(Boolean).length;
   const theoryTrack = getTrack("theory");
   const sqlTrack = getTrack("sql");
@@ -2207,6 +2210,20 @@ function renderIndex() {
         <div class="day-actions">
           <a class="btn primary" href="team-processes-quiz.html">Открыть квиз</a>
           <span class="status ${extra.teamQuizDone ? "status-done" : ""}">${extra.teamQuizDone ? "Пройдено" : "В процессе"}</span>
+        </div>
+      </article>
+    `;
+  }
+
+  if (legendGrid) {
+    legendGrid.innerHTML = `
+      <article class="panel day-card">
+        <div class="day-badge">Legend</div>
+        <h3 class="day-title">Артур Чеккуев: полный QA-кейс для собеседования</h3>
+        <p class="day-sub">Суперподробная версия: опыт, стек, процессы, релизы, баги, STAR-истории, короткие/длинные ответы, сложные вопросы и готовые формулировки.</p>
+        <div class="day-actions">
+          <a class="btn primary" href="legend.html">Открыть легенду</a>
+          <span class="status ${extra.legendDone ? "status-done" : ""}">${extra.legendDone ? "Пройдено" : "В процессе"}</span>
         </div>
       </article>
     `;
@@ -2956,12 +2973,43 @@ function renderTeamProcessesQuizPage() {
   document.title = "Процессы в команде — квиз";
 }
 
+async function renderLegendPage() {
+  const content = document.getElementById("content");
+  const toc = document.getElementById("toc");
+  const toggle = document.getElementById("toggle-complete");
+
+  const updateToggle = () => {
+    const state = loadExtraProgress();
+    toggle.textContent = state.legendDone ? "Убрать отметку (легенда)" : "Отметить легенду изученной";
+  };
+  updateToggle();
+
+  toggle.addEventListener("click", () => {
+    const state = loadExtraProgress();
+    saveExtraProgress({ legendDone: !state.legendDone });
+    updateToggle();
+  });
+
+  try {
+    const res = await fetch("content/arthur-legend.md");
+    if (!res.ok) throw new Error("Не удалось загрузить раздел с легендой");
+    const md = await res.text();
+    renderMarkdown(content, toc, md);
+    scrollToCurrentHash();
+  } catch (error) {
+    content.innerHTML = `<p>Ошибка загрузки: ${escapeHtml(error.message)}</p>`;
+  }
+
+  document.title = "Моя легенда — QA-кейс для собеседования";
+}
+
 function main() {
   const page = document.body.dataset.page;
   if (page === "index") renderIndex();
   if (page === "day") renderDay();
   if (page === "team-processes") renderTeamProcessesTheoryPage();
   if (page === "team-processes-quiz") renderTeamProcessesQuizPage();
+  if (page === "legend") renderLegendPage();
 }
 
 main();
