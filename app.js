@@ -2301,22 +2301,36 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading-layout";
   wrapper.innerHTML = `
-    <section class="panel reading-toolbar">
-      <div class="reading-toolbar-main">
-        <strong>Режим чтения</strong>
-        <span id="reading-meta"></span>
-      </div>
-      <div class="reading-toolbar-actions">
-        <button class="btn ghost" data-reading-action="toggle-focus" type="button">Фокус</button>
-        <button class="btn ghost" data-reading-action="collapse-all" type="button">Свернуть разделы</button>
-        <button class="btn ghost" data-reading-action="expand-all" type="button">Развернуть</button>
-      </div>
-      <div class="reading-progress"><span id="reading-progress-fill"></span></div>
-    </section>
+    <div class="reading-main">
+      <section class="panel reading-toolbar">
+        <div class="reading-toolbar-main">
+          <strong>Режим чтения</strong>
+        </div>
+        <div class="reading-toolbar-actions">
+          <button class="btn ghost" data-reading-action="toggle-focus" type="button">Фокус</button>
+          <button class="btn ghost" data-reading-action="collapse-all" type="button">Свернуть разделы</button>
+          <button class="btn ghost" data-reading-action="expand-all" type="button">Развернуть</button>
+        </div>
+      </section>
+      <div class="reading-sections-slot"></div>
+    </div>
+    <aside class="panel reading-side-meter">
+      <p class="reading-side-title">Прогресс чтения</p>
+      <p class="reading-side-meta" id="reading-meta"></p>
+      <div class="reading-progress reading-progress-side"><span id="reading-progress-fill"></span></div>
+      <p class="reading-side-note">Панель закреплена: прогресс и текущий раздел всегда перед глазами.</p>
+    </aside>
   `;
 
   const sectionsHost = document.createElement("div");
   sectionsHost.className = "reading-sections";
+
+  const sectionsSlot = wrapper.querySelector(".reading-sections-slot");
+  if (sectionsSlot) {
+    sectionsSlot.appendChild(sectionsHost);
+  } else {
+    wrapper.appendChild(sectionsHost);
+  }
 
   const introSection = document.createElement("section");
   introSection.className = "panel theory-section theory-intro";
@@ -2365,7 +2379,6 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
     sectionsHost.appendChild(fallback);
   }
 
-  wrapper.appendChild(sectionsHost);
   contentEl.innerHTML = "";
   contentEl.appendChild(wrapper);
 
