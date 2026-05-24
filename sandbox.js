@@ -1684,6 +1684,51 @@ function formatTaskOutputHint(hint) {
     </div>
   `;
 }
+
+function extractTaskColumns(prompt) {
+  const match = String(prompt || "").match(/колонки?\s*[:]\s*([^\.]+)/i);
+  if (!match) return [];
+  return match[1]
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function detectTaskClauses(task) {
+  const src = `${task.title || ""} ${task.prompt || ""} ${task.solutionSql || ""}`.toUpperCase();
+  const clauses = [];
+  ["WHERE", "JOIN", "GROUP BY", "HAVING", "ORDER BY", "LIMIT", "DISTINCT", "WITH"].forEach((part) => {
+    if (src.includes(part)) clauses.push(part);
+  });
+  return clauses.length ? clauses : ["SELECT", "FROM"];
+}
+
+function buildTaskHints(task, outputHint) {
+  const columns = extractTaskColumns(task.prompt);
+  const columnText = columns.length ? columns.join(", ") : "только поля, которые указаны в условии";
+  const clauses = detectTaskClauses(task).join(" -> ");
+  const sampleRow = outputHint?.sampleRows?.[0]
+    ? `Пример одной строки: (${outputHint.sampleRows[0].map(stringifyPreviewCell).join(", ")}).`
+    : "Если результат пустой, проверь фильтры и JOIN-условия.";
+  return [
+    `Сначала собери минимальный SELECT: верни ${columnText}, без лишних вычислений.`,
+    `Строи запрос по этапам: FROM/таблицы -> ${clauses}.`,
+    `После каждого шага запускай SQL и проверяй, как меняется количество строк.`,
+    sampleRow,
+    "Перед финальной проверкой сверяй: названия колонок, порядок сортировки, отсутствие дублей и корректность NULL."
+  ];
+}
+
+function formatTaskHints(task, outputHint) {
+  const hints = buildTaskHints(task, outputHint);
+  return `
+    <details class="task-hints">
+      <summary>Подсказки (5)</summary>
+      <ol>${hints.map((hint) => `<li>${escapeHtml(hint)}</li>`).join("")}</ol>
+    </details>
+  `;
+}
+
 function renderTaskCard(cardEl, task, done, datasetLabel, outputHints) {
   if (!task) {
     cardEl.innerHTML = `
@@ -1698,10 +1743,12 @@ function renderTaskCard(cardEl, task, done, datasetLabel, outputHints) {
     return;
   }
   const hintHtml = formatTaskOutputHint(outputHints?.[task.id]);
+  const hintsBox = formatTaskHints(task, outputHints?.[task.id]);
   cardEl.innerHTML = `
     <h2>${escapeHtml(task.title)}</h2>
     <p>${escapeHtml(task.prompt)}</p>
     ${hintHtml}
+    ${hintsBox}
     <div class="sandbox3-task-meta">
       <span class="chip">Датасет: ${escapeHtml(datasetLabel)}</span>
       <span class="chip">Уровень: ${escapeHtml(task.level.toUpperCase())}</span>
@@ -1726,6 +1773,7 @@ function renderTaskBank(host, filters, progress, library, outputHints) {
       <h3>${escapeHtml(task.title)}</h3>
       <p>${escapeHtml(task.prompt)}</p>
       ${formatTaskOutputHint(outputHints?.[task.id])}
+      ${formatTaskHints(task, outputHints?.[task.id])}
       <div class="saved-task-actions"><button class="btn ghost" data-pick-task="${task.id}" type="button">Решать задачу</button></div>
     </article>
   `).join("");
@@ -1750,6 +1798,7 @@ async function main() {
   const checkTaskBtn = document.getElementById("check-task");
   const resetTaskProgressBtn = document.getElementById("reset-task-progress");
   const activeTaskCard = document.getElementById("active-task-card");
+  const taskAnalyticsHost = document.getElementById("task-analytics");
   const taskDatasetFilter = document.getElementById("task-dataset-filter");
   const taskLevelFilter = document.getElementById("task-level-filter");
   const taskRandomBtn = document.getElementById("task-random");
@@ -1788,6 +1837,30 @@ async function main() {
 
   function getActiveTask() {
     return TASK_BANK.find((task) => task.id === activeTaskId) || null;
+  }
+
+  function renderTaskAnalytics(host, progressMap, activeDatasetId) {
+    if (!host) return;
+    const doneTotal = TASK_BANK.filter((task) => Boolean(progressMap[task.id])).length;
+    const total = TASK_BANK.length;
+    const pct = total ? Math.round((doneTotal / total) * 100) : 0;
+    const levels = ["easy", "medium", "hard"].map((level) => {
+      const items = TASK_BANK.filter((task) => task.level === level);
+      const done = items.filter((task) => Boolean(progressMap[task.id])).length;
+      return `${level.toUpperCase()}: ${done}/${items.length}`;
+    });
+    const datasetItems = TASK_BANK.filter((task) => task.dataset === activeDatasetId);
+    const datasetDone = datasetItems.filter((task) => Boolean(progressMap[task.id])).length;
+    const datasetPct = datasetItems.length ? Math.round((datasetDone / datasetItems.length) * 100) : 0;
+    host.innerHTML = `
+      <div class="task-analytics-grid">
+        <span class="chip">Всего выполнено: ${doneTotal}/${total} (${pct}%)</span>
+        <span class="chip">По датасету: ${datasetDone}/${datasetItems.length} (${datasetPct}%)</span>
+        <span class="chip">${levels[0]}</span>
+        <span class="chip">${levels[1]}</span>
+        <span class="chip">${levels[2]}</span>
+      </div>
+    `;
   }
 
   function refreshAutocompleteWords() {
@@ -1938,6 +2011,7 @@ async function main() {
     datasetLockHint.hidden = !taskMode;
     renderTaskSelect(taskSelect, activeTaskId, progress);
     renderTaskCard(activeTaskCard, activeTask, Boolean(progress[activeTaskId]), library[activeDataset]?.label || activeDataset, taskOutputHints);
+    renderTaskAnalytics(taskAnalyticsHost, progress, activeDataset);
     renderTaskBank(taskBankHost, { dataset: taskDatasetFilter.value, level: taskLevelFilter.value }, progress, library, taskOutputHints);
     taskBankHost.querySelectorAll("[data-pick-task]").forEach((btn) => {
       btn.addEventListener("click", () => applyTaskSelection(btn.getAttribute("data-pick-task")));

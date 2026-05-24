@@ -7,6 +7,7 @@ const SQL_DRAFT_KEY = "vk-qa-sql-draft-v1";
 const LAST_OPENED_LESSON_KEY = "vk-qa-last-opened-lesson-v1";
 const TEAM_PROCESS_QUIZ_STATE_KEY = "vk-qa-team-process-quiz-state-v1";
 const EXTRA_PROGRESS_KEY = "vk-qa-extra-progress-v1";
+const QUIZ_ANALYTICS_KEY = "vk-qa-quiz-analytics-v1";
 
 const DAYS = [
   {
@@ -1707,6 +1708,52 @@ function saveExtraProgress(nextState) {
   });
 }
 
+function loadQuizAnalytics() {
+  return loadJson(QUIZ_ANALYTICS_KEY, {});
+}
+
+function saveQuizAnalytics(nextState) {
+  saveJson(QUIZ_ANALYTICS_KEY, nextState);
+}
+
+function ensureQuizAnalyticsPath(state, stateKey, dayId, qid) {
+  if (!state[stateKey]) state[stateKey] = {};
+  if (!state[stateKey][String(dayId)]) state[stateKey][String(dayId)] = {};
+  if (!state[stateKey][String(dayId)][qid]) {
+    state[stateKey][String(dayId)][qid] = { attempts: 0, correctAttempts: 0, lastAt: 0 };
+  }
+  return state[stateKey][String(dayId)][qid];
+}
+
+function recordQuizAttempt(stateKey, dayId, question, pickedIndex) {
+  const analytics = loadQuizAnalytics();
+  const metric = ensureQuizAnalyticsPath(analytics, stateKey, dayId, question.id);
+  metric.attempts += 1;
+  if (pickedIndex === question.correct) metric.correctAttempts += 1;
+  metric.lastAt = Date.now();
+  saveQuizAnalytics(analytics);
+}
+
+function computeQuizLearningStats(dayId, questions, stateKey) {
+  const analytics = loadQuizAnalytics();
+  const dayState = (analytics[stateKey] && analytics[stateKey][String(dayId)]) || {};
+  const aggregates = questions.reduce((acc, q) => {
+    const row = dayState[q.id] || { attempts: 0, correctAttempts: 0 };
+    acc.attempts += row.attempts || 0;
+    acc.correctAttempts += row.correctAttempts || 0;
+    return acc;
+  }, { attempts: 0, correctAttempts: 0 });
+  const strictScore = questions.length
+    ? Math.round((aggregates.correctAttempts / Math.max(aggregates.attempts, questions.length)) * 100)
+    : 0;
+  const avgAttempts = questions.length ? (aggregates.attempts / questions.length) : 0;
+  return {
+    attempts: aggregates.attempts,
+    strictScore,
+    avgAttempts: Math.round(avgAttempts * 10) / 10
+  };
+}
+
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -2149,13 +2196,14 @@ function buildDayCard(day, track, progress) {
 function renderIndex() {
   const progress = loadProgress();
   const extra = loadExtraProgress();
+  const analytics = buildProgressAnalytics(progress, extra);
   const lastLesson = loadLastOpenedLesson();
   const theoryGrid = document.getElementById("theory-grid");
   const sqlGrid = document.getElementById("sql-grid");
   const behavioralGrid = document.getElementById("behavioral-grid");
   const teamProcessGrid = document.getElementById("team-process-grid");
   const legendGrid = document.getElementById("legend-grid");
-  const done = Object.values(progress).filter(Boolean).length;
+  const done = analytics.doneModules;
   const theoryTrack = getTrack("theory");
   const sqlTrack = getTrack("sql");
   const behavioralTrack = getTrack("behavioral");
@@ -2168,6 +2216,36 @@ function renderIndex() {
   const fill = document.getElementById("progress-fill");
   text.textContent = `${done} из ${TOTAL_MODULES} модулей отмечено как пройдено`;
   fill.style.width = `${(done / TOTAL_MODULES) * 100}%`;
+  const analyticsHost = document.getElementById("progress-analytics");
+  if (analyticsHost) {
+    analyticsHost.innerHTML = `
+      <article class="progress-metric">
+        <h3>Индекс готовности</h3>
+        <p class="metric-value">${analytics.readiness}%</p>
+        <p class="metric-sub">Сводный индекс по модулям, квизам и SQL-задачам.</p>
+      </article>
+      <article class="progress-metric">
+        <h3>Теория</h3>
+        <p class="metric-value">${analytics.theory.correct}/${analytics.theory.total}</p>
+        <p class="metric-sub">Точность по отвеченным: ${analytics.theoryAcc}%</p>
+      </article>
+      <article class="progress-metric">
+        <h3>SQL</h3>
+        <p class="metric-value">Квиз ${analytics.sqlQuiz.correct}/${analytics.sqlQuiz.total}</p>
+        <p class="metric-sub">Задачи: ${analytics.sqlTasks.solved}/${analytics.sqlTasks.total} (${analytics.sqlTaskPct}%)</p>
+      </article>
+      <article class="progress-metric">
+        <h3>Поведенческий</h3>
+        <p class="metric-value">${analytics.behavioral.correct}/${analytics.behavioral.total}</p>
+        <p class="metric-sub">Точность по отвеченным: ${analytics.behavioralAcc}%</p>
+      </article>
+      <article class="progress-metric">
+        <h3>Процессы/легенда</h3>
+        <p class="metric-value">${analytics.extraDone}/3</p>
+        <p class="metric-sub">Квиз по процессам: ${analytics.teamQuiz.correct}/${analytics.teamQuiz.total}</p>
+      </article>
+    `;
+  }
 
   const continueBtn = document.getElementById("continue-prep-btn");
   if (continueBtn) {
@@ -2474,6 +2552,68 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
   }
 }
 
+function aggregateQuizBankStats(bank, stateKey) {
+  const dayIds = Object.keys(bank).map((id) => Number(id)).filter((id) => Number.isFinite(id));
+  return dayIds.reduce((acc, dayId) => {
+    const s = getQuizStats(dayId, bank, stateKey);
+    acc.total += s.total;
+    acc.answered += s.answered;
+    acc.correct += s.correct;
+    return acc;
+  }, { total: 0, answered: 0, correct: 0 });
+}
+
+function aggregateSqlTaskStats() {
+  const state = loadJson(SQL_TASK_STATE_KEY, {});
+  let total = 0;
+  let solved = 0;
+  Object.keys(SQL_TASKS).forEach((dayId) => {
+    const tasks = SQL_TASKS[dayId] || [];
+    const solvedMap = state[String(dayId)] || {};
+    total += tasks.length;
+    solved += tasks.filter((task) => Boolean(solvedMap[task.id])).length;
+  });
+  return { total, solved };
+}
+
+function buildProgressAnalytics(progress, extra) {
+  const doneModules = Object.values(progress).filter(Boolean).length;
+  const theory = aggregateQuizBankStats(QUIZ_BANK, THEORY_QUIZ_STATE_KEY);
+  const sqlQuiz = aggregateQuizBankStats(SQL_QUIZ_BANK, SQL_QUIZ_STATE_KEY);
+  const behavioral = aggregateQuizBankStats(BEHAVIORAL_QUIZ_BANK, BEHAVIORAL_QUIZ_STATE_KEY);
+  const teamQuiz = aggregateQuizBankStats(TEAM_PROCESS_QUIZ_BANK, TEAM_PROCESS_QUIZ_STATE_KEY);
+  const sqlTasks = aggregateSqlTaskStats();
+
+  const theoryAcc = theory.answered ? Math.round((theory.correct / theory.answered) * 100) : 0;
+  const sqlAcc = sqlQuiz.answered ? Math.round((sqlQuiz.correct / sqlQuiz.answered) * 100) : 0;
+  const behavioralAcc = behavioral.answered ? Math.round((behavioral.correct / behavioral.answered) * 100) : 0;
+  const sqlTaskPct = sqlTasks.total ? Math.round((sqlTasks.solved / sqlTasks.total) * 100) : 0;
+  const modulePct = TOTAL_MODULES ? Math.round((doneModules / TOTAL_MODULES) * 100) : 0;
+  const readiness = Math.round(
+    modulePct * 0.35 +
+    theoryAcc * 0.2 +
+    sqlAcc * 0.2 +
+    sqlTaskPct * 0.15 +
+    behavioralAcc * 0.1
+  );
+
+  return {
+    doneModules,
+    modulePct,
+    theory,
+    sqlQuiz,
+    behavioral,
+    teamQuiz,
+    sqlTasks,
+    theoryAcc,
+    sqlAcc,
+    behavioralAcc,
+    sqlTaskPct,
+    readiness,
+    extraDone: [extra.teamTheoryDone, extra.teamQuizDone, extra.legendDone].filter(Boolean).length
+  };
+}
+
 function getQuizStats(dayId, bank, stateKey) {
   const questions = bank[dayId] || [];
   const state = loadJson(stateKey, {});
@@ -2490,6 +2630,86 @@ function getQuizStats(dayId, bank, stateKey) {
   return { total: questions.length, answered, correct };
 }
 
+function hardenDistractorText(text) {
+  const raw = String(text || "").trim();
+  const compact = raw.toLowerCase();
+  if (compact === "никогда") return "Применяется редко и только в исключительных сценариях";
+  if (compact === "они полностью одинаковы") return "Различаются в деталях, но часто путаются без контекста задачи";
+  if (compact === "это не важно") return "Это вторично и не влияет на базовый результат проверки";
+  if (compact.startsWith("только ")) return `${raw}, без учета соседних рисков и зависимостей`;
+  if (compact.includes("случайный")) return `${raw}, без риск-приоритизации`;
+  return raw;
+}
+
+function padOptionToLength(optionText, targetLength, seed) {
+  const pads = [
+    "в рамках типового QA-процесса",
+    "в контексте технического интервью",
+    "с учетом ограничений по времени",
+    "для стандартного продуктового сценария",
+    "без выхода за рамки задачи"
+  ];
+  let out = String(optionText || "").trim();
+  let cursor = 0;
+  while (out.length < targetLength && cursor < pads.length) {
+    const suffix = pads[(seed + cursor) % pads.length];
+    out = out.replace(/[.?!]$/, "");
+    out = `${out}, ${suffix}`;
+    cursor += 1;
+  }
+  return out;
+}
+
+function normalizeQuestionOptions(question) {
+  const base = question.options.map((opt, idx) => (idx === question.correct ? String(opt).trim() : hardenDistractorText(opt)));
+  const lengths = base.map((opt) => opt.length);
+  const correctLen = lengths[question.correct] || 0;
+  const sorted = [...lengths].sort((a, b) => b - a);
+  const secondMax = sorted[1] || sorted[0] || 0;
+  if (correctLen > secondMax + 22) {
+    const target = correctLen - 6;
+    return base.map((opt, idx) => (idx === question.correct ? opt : padOptionToLength(opt, target, idx)));
+  }
+  return base;
+}
+
+function getEnhancedQuizQuestions(dayId, bank) {
+  const base = bank[dayId] || [];
+  return base.map((question, idx) => {
+    const normalizedOptions = normalizeQuestionOptions(question);
+    return {
+      ...question,
+      options: normalizedOptions,
+      _orderSeed: idx
+    };
+  });
+}
+
+function computeQuizViewStats(questions, answers) {
+  const wrongIds = [];
+  let correct = 0;
+  let answered = 0;
+  questions.forEach((q) => {
+    const pick = answers[q.id];
+    if (typeof pick !== "number") return;
+    answered += 1;
+    if (pick === q.correct) correct += 1;
+    else wrongIds.push(q.id);
+  });
+
+  const accuracy = answered ? Math.round((correct / answered) * 100) : 0;
+  const completion = questions.length ? Math.round((answered / questions.length) * 100) : 0;
+  return {
+    total: questions.length,
+    answered,
+    correct,
+    wrongIds,
+    accuracy,
+    completion,
+    unanswered: Math.max(questions.length - answered, 0)
+  };
+}
+
 function getSqlTaskStats(dayId) {
   const tasks = SQL_TASKS[dayId] || [];
   const state = loadJson(SQL_TASK_STATE_KEY, {});
@@ -2500,11 +2720,12 @@ function getSqlTaskStats(dayId) {
 
 function renderQuizInto(dayId, container, options) {
   const { bank, stateKey, title, onProgress } = options;
-  const questions = bank[dayId] || [];
+  const questions = getEnhancedQuizQuestions(dayId, bank);
+  const orderedQuestions = shuffleArray(questions.map((q) => ({ ...q })));
   const allState = loadJson(stateKey, {});
   if (!allState[String(dayId)]) allState[String(dayId)] = {};
   const shuffledOptions = Object.fromEntries(
-    questions.map((q) => [
+    orderedQuestions.map((q) => [
       q.id,
       shuffleArray(q.options.map((opt, idx) => ({ text: opt, originalIndex: idx })))
     ])
@@ -2512,14 +2733,26 @@ function renderQuizInto(dayId, container, options) {
 
   function draw() {
     const answers = allState[String(dayId)];
-    const stats = getQuizStats(dayId, bank, stateKey);
+    const stats = computeQuizViewStats(orderedQuestions, answers);
+    const learningStats = computeQuizLearningStats(dayId, orderedQuestions, stateKey);
+    const weakPreview = stats.wrongIds
+      .slice(0, 5)
+      .map((qid) => orderedQuestions.findIndex((q) => q.id === qid) + 1)
+      .filter((num) => num > 0);
 
     container.innerHTML = `
       <div class="quiz-summary panel">
         <strong>${escapeHtml(title)}: ${stats.correct}/${stats.total} верно</strong>
         <span>Отвечено: ${stats.answered}/${stats.total}</span>
+        <span>Точность: ${stats.accuracy}%</span>
+        <span>Покрытие: ${stats.completion}%</span>
+        <span>Без ответа: ${stats.unanswered}</span>
+        <span>Попыток: ${learningStats.attempts}</span>
+        <span>Строгий score: ${learningStats.strictScore}%</span>
+        <span>Сред. попыток/вопрос: ${learningStats.avgAttempts}</span>
+        ${weakPreview.length ? `<span>Ошибочные: №${weakPreview.join(", ")}</span>` : "<span>Ошибочные: нет</span>"}
       </div>
-      ${questions.map((q, idx) => {
+      ${orderedQuestions.map((q, idx) => {
         const selected = answers[q.id];
         const isAnswered = typeof selected === "number";
         const isCorrect = isAnswered && selected === q.correct;
@@ -2541,6 +2774,8 @@ function renderQuizInto(dayId, container, options) {
       btn.addEventListener("click", () => {
         const qid = btn.getAttribute("data-qid");
         const opt = Number(btn.getAttribute("data-opt"));
+        const q = orderedQuestions.find((item) => item.id === qid);
+        if (q) recordQuizAttempt(stateKey, dayId, q, opt);
         allState[String(dayId)][qid] = opt;
         saveJson(stateKey, allState);
         draw();
@@ -2625,6 +2860,48 @@ function renderSchema(db, host) {
   host.innerHTML = `<p class='sql-message'>Схема текущей учебной БД</p>${blocks}`;
 }
 
+function extractPromptColumns(prompt) {
+  const match = String(prompt || "").match(/колонки:\s*([^\.]+)/i);
+  if (!match) return [];
+  return match[1]
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function detectSqlClauses(task) {
+  const source = `${task.title || ""} ${task.prompt || ""} ${task.starter || ""}`.toUpperCase();
+  const clauses = [];
+  ["WHERE", "JOIN", "GROUP BY", "HAVING", "ORDER BY", "LIMIT", "DISTINCT"].forEach((clause) => {
+    if (source.includes(clause)) clauses.push(clause);
+  });
+  return clauses.length ? clauses : ["SELECT", "FROM"];
+}
+
+function buildLessonSqlHints(task) {
+  const expectedColumns = extractPromptColumns(task.prompt);
+  const columnsText = expectedColumns.length ? expectedColumns.join(", ") : "ровно те колонки, которые указаны в условии";
+  const clauses = detectSqlClauses(task);
+  return [
+    `Сначала зафиксируй формат результата: выведи ${columnsText}. Только после этого думай про сортировку и фильтры.`,
+    `Разбери задачу по этапам: FROM/таблицы -> ${clauses.join(" -> ")} -> проверка числа строк.`,
+    "Проверь, что сортировка и лимит применены в нужном направлении (ASC/DESC и LIMIT/OFFSET без инверсии).",
+    "Сравни итог с примером из условия: названия колонок, порядок строк и отсутствие лишних записей.",
+    "Если не сходится, упрости запрос до базового SELECT, а потом добавляй условия по одному шагу."
+  ];
+}
+
+function renderHintsListHtml(hints) {
+  return `
+    <details class="task-hints" open>
+      <summary>Подсказки (5 шагов)</summary>
+      <ol>
+        ${hints.map((hint) => `<li>${escapeHtml(hint)}</li>`).join("")}
+      </ol>
+    </details>
+  `;
+}
+
 async function renderSqlInto(dayId, container, onProgress) {
   const tasks = SQL_TASKS[dayId] || [];
   const allState = loadJson(SQL_TASK_STATE_KEY, {});
@@ -2642,6 +2919,7 @@ async function renderSqlInto(dayId, container, onProgress) {
         <div class="task-meta">
           <h3 id="task-title"></h3>
           <p id="task-prompt"></p>
+          <div id="task-hints-box"></div>
           <p class="task-progress" id="task-progress"></p>
         </div>
         <textarea id="sql-input" spellcheck="false"></textarea>
@@ -2660,6 +2938,7 @@ async function renderSqlInto(dayId, container, onProgress) {
   const list = container.querySelector("#task-list");
   const title = container.querySelector("#task-title");
   const prompt = container.querySelector("#task-prompt");
+  const hintsBox = container.querySelector("#task-hints-box");
   const progressEl = container.querySelector("#task-progress");
   const input = container.querySelector("#sql-input");
   const runBtn = container.querySelector("#run-sql");
@@ -2692,6 +2971,7 @@ async function renderSqlInto(dayId, container, onProgress) {
     const task = tasks[active];
     title.textContent = task.title;
     prompt.textContent = task.prompt;
+    hintsBox.innerHTML = renderHintsListHtml(buildLessonSqlHints(task));
     input.value = allDrafts[String(dayId)][task.id] || "";
     status.textContent = "";
     status.className = "check-status";
@@ -2795,9 +3075,11 @@ async function renderTheoryPractice(dayId, toggleBtn) {
 
   const refresh = () => {
     const stats = getQuizStats(dayId, QUIZ_BANK, THEORY_QUIZ_STATE_KEY);
+    const accuracy = stats.answered ? Math.round((stats.correct / stats.answered) * 100) : 0;
 
     chips.innerHTML = `
       <span class="chip">Квиз: ${stats.correct}/${stats.total}</span>
+      <span class="chip">Точность: ${accuracy}%</span>
       <span class="chip ${stats.correct === stats.total ? "chip-ok" : ""}">Статус: ${stats.correct === stats.total ? "Готов" : "В процессе"}</span>
     `;
 
@@ -2836,11 +3118,15 @@ async function renderSqlPractice(dayId, toggleBtn) {
   const refresh = () => {
     const quizStats = getQuizStats(dayId, SQL_QUIZ_BANK, SQL_QUIZ_STATE_KEY);
     const sqlStats = getSqlTaskStats(dayId);
+    const quizAccuracy = quizStats.answered ? Math.round((quizStats.correct / quizStats.answered) * 100) : 0;
+    const taskPct = sqlStats.total ? Math.round((sqlStats.solved / sqlStats.total) * 100) : 0;
     const done = quizStats.correct === quizStats.total && sqlStats.solved === sqlStats.total;
 
     chips.innerHTML = `
       <span class="chip">SQL-квиз: ${quizStats.correct}/${quizStats.total}</span>
+      <span class="chip">Точность квиза: ${quizAccuracy}%</span>
       <span class="chip">SQL-задачи: ${sqlStats.solved}/${sqlStats.total}</span>
+      <span class="chip">Покрытие задач: ${taskPct}%</span>
       <span class="chip ${done ? "chip-ok" : ""}">Статус: ${done ? "Готов" : "В процессе"}</span>
     `;
 
@@ -2877,9 +3163,11 @@ async function renderBehavioralPractice(dayId, toggleBtn) {
 
   const refresh = () => {
     const stats = getQuizStats(dayId, BEHAVIORAL_QUIZ_BANK, BEHAVIORAL_QUIZ_STATE_KEY);
+    const accuracy = stats.answered ? Math.round((stats.correct / stats.answered) * 100) : 0;
 
     chips.innerHTML = `
       <span class="chip">Квиз: ${stats.correct}/${stats.total}</span>
+      <span class="chip">Точность: ${accuracy}%</span>
       <span class="chip ${stats.correct === stats.total ? "chip-ok" : ""}">Статус: ${stats.correct === stats.total ? "Готов" : "В процессе"}</span>
     `;
 
