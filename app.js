@@ -2318,7 +2318,6 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
       <p class="reading-side-title">Прогресс чтения</p>
       <p class="reading-side-meta" id="reading-meta"></p>
       <div class="reading-progress reading-progress-side"><span id="reading-progress-fill"></span></div>
-      <p class="reading-side-note">Панель закреплена: прогресс и текущий раздел всегда перед глазами.</p>
     </aside>
   `;
 
