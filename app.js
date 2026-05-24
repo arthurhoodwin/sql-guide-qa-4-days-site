@@ -2301,24 +2301,17 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading-layout";
   wrapper.innerHTML = `
-    <div class="reading-main">
-      <section class="panel reading-toolbar">
-        <div class="reading-toolbar-main">
-          <strong>Режим чтения</strong>
-        </div>
-        <div class="reading-toolbar-actions">
-          <button class="btn ghost" data-reading-action="toggle-focus" type="button">Фокус</button>
-          <button class="btn ghost" data-reading-action="collapse-all" type="button">Свернуть разделы</button>
-          <button class="btn ghost" data-reading-action="expand-all" type="button">Развернуть</button>
-        </div>
-      </section>
-      <div class="reading-sections-slot"></div>
-    </div>
-    <aside class="panel reading-side-meter">
-      <p class="reading-side-title">Прогресс чтения</p>
-      <p class="reading-side-meta" id="reading-meta"></p>
-      <div class="reading-progress reading-progress-side"><span id="reading-progress-fill"></span></div>
-    </aside>
+    <section class="panel reading-toolbar">
+      <div class="reading-toolbar-main">
+        <strong>Режим чтения</strong>
+      </div>
+      <div class="reading-toolbar-actions">
+        <button class="btn ghost" data-reading-action="toggle-focus" type="button">Фокус</button>
+        <button class="btn ghost" data-reading-action="collapse-all" type="button">Свернуть разделы</button>
+        <button class="btn ghost" data-reading-action="expand-all" type="button">Развернуть</button>
+      </div>
+    </section>
+    <div class="reading-sections-slot"></div>
   `;
 
   const sectionsHost = document.createElement("div");
@@ -2381,8 +2374,28 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
   contentEl.innerHTML = "";
   contentEl.appendChild(wrapper);
 
-  const meta = wrapper.querySelector("#reading-meta");
-  const progressFill = wrapper.querySelector("#reading-progress-fill");
+  const tocWrap = tocEl.closest(".toc-wrap");
+  let sideMeter = null;
+  let meta = null;
+  let progressFill = null;
+
+  if (tocWrap) {
+    tocWrap.querySelectorAll(".toc-reading-meter").forEach((el) => el.remove());
+    sideMeter = document.createElement("section");
+    sideMeter.className = "toc-reading-meter";
+    sideMeter.innerHTML = `
+      <p class="toc-reading-title">Прогресс чтения</p>
+      <p class="toc-reading-meta" id="toc-reading-meta"></p>
+      <div class="reading-progress"><span id="toc-reading-progress-fill"></span></div>
+    `;
+    tocWrap.insertBefore(sideMeter, tocEl);
+    meta = sideMeter.querySelector("#toc-reading-meta");
+    progressFill = sideMeter.querySelector("#toc-reading-progress-fill");
+  } else {
+    meta = document.createElement("span");
+    progressFill = document.createElement("span");
+  }
+
   const sectionNodes = Array.from(wrapper.querySelectorAll(".theory-section[data-reading-section]"));
   const totalSections = sectionNodes.length;
   const readMinutes = Math.max(1, Math.round(estimatedWordCount / 180));
