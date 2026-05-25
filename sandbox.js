@@ -1686,6 +1686,27 @@ function formatTaskOutputHint(hint) {
   `;
 }
 
+function formatExpectedRowsTable(columns, rows) {
+  const cols = Array.isArray(columns) ? columns : [];
+  const data = Array.isArray(rows) ? rows : [];
+  if (!cols.length) {
+    return "<p class='task-solution-note'>Не удалось построить превью эталонного результата.</p>";
+  }
+  return `
+    <div class="result-scroll task-solution-table">
+      <table class="result-table">
+        <thead><tr>${cols.map((c) => `<th>${escapeHtml(c)}</th>`).join("")}</tr></thead>
+        <tbody>
+          ${data.length
+            ? data.map((row) => `<tr>${row.map((v) => `<td>${escapeHtml(v === null ? "NULL" : v)}</td>`).join("")}</tr>`).join("")
+            : `<tr><td colspan="${cols.length}">Пустой результат</td></tr>`
+          }
+        </tbody>
+      </table>
+    </div>
+  `;
+}
+
 function extractTaskColumns(prompt) {
   const match = String(prompt || "").match(/колонки?\s*[:]\s*([^\.]+)/i);
   if (!match) return [];
@@ -1740,6 +1761,22 @@ function formatTaskHints(task, outputHint, revealed = 0, hintKey = "") {
   `;
 }
 
+function formatTaskReference(task, outputHint) {
+  if (!task) return "";
+  const columns = outputHint?.columns || [];
+  const rows = outputHint?.rows || [];
+  const rowsNote = rows.length ? `Строк в эталоне: ${rows.length}.` : "Строк в эталоне: 0.";
+  return `
+    <details class="task-solution">
+      <summary>Показать эталон (для самопроверки)</summary>
+      <p class="task-solution-note">${rowsNote}</p>
+      <pre class="task-solution-sql"><code>${escapeHtml((task.solutionSql || "").trim())}</code></pre>
+      <p class="task-solution-note"><strong>Ожидаемый результат:</strong></p>
+      ${formatExpectedRowsTable(columns, rows)}
+    </details>
+  `;
+}
+
 function bindHintWidgets(scope, onChange) {
   if (!scope) return;
   scope.querySelectorAll("[data-hint-widget]").forEach((widget) => {
@@ -1784,11 +1821,13 @@ function renderTaskCard(cardEl, task, done, datasetLabel, outputHints, activeHin
   }
   const hintHtml = formatTaskOutputHint(outputHints?.[task.id]);
   const hintsBox = formatTaskHints(task, outputHints?.[task.id], Number(activeHintProgress?.[task.id] || 0), `active:${task.id}`);
+  const referenceBox = formatTaskReference(task, outputHints?.[task.id]);
   cardEl.innerHTML = `
     <h2>${escapeHtml(task.title)}</h2>
     <p>${escapeHtml(task.prompt)}</p>
     ${hintHtml}
     ${hintsBox}
+    ${referenceBox}
     <div class="sandbox3-task-meta">
       <span class="chip">Датасет: ${escapeHtml(datasetLabel)}</span>
       <span class="chip">Уровень: ${escapeHtml(task.level.toUpperCase())}</span>
@@ -1934,10 +1973,11 @@ async function main() {
           const result = runData.lastResult || { columns: [], values: [] };
           hints[task.id] = {
             columns: Array.isArray(result.columns) ? result.columns.map((c) => String(c)) : [],
-            sampleRows: Array.isArray(result.values) ? result.values.slice(0, 2) : []
+            sampleRows: Array.isArray(result.values) ? result.values.slice(0, 2) : [],
+            rows: Array.isArray(result.values) ? result.values : []
           };
         } catch {
-          hints[task.id] = { columns: [], sampleRows: [] };
+          hints[task.id] = { columns: [], sampleRows: [], rows: [] };
         } finally {
           if (previewDb) previewDb.close();
         }

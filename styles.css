@@ -1745,6 +1745,42 @@ body.day-focus-mode .toc-wrap {
   margin-top: 0.32rem;
 }
 
+.task-solution {
+  margin-top: 0.45rem;
+  border: 1px solid #d5e2ef;
+  border-radius: 10px;
+  background: #fffdf7;
+  padding: 0.2rem 0.5rem 0.5rem;
+}
+
+.task-solution summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: #113652;
+  padding: 0.3rem 0;
+}
+
+.task-solution-note {
+  margin: 0.16rem 0 0.32rem;
+  color: #2a4863;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.task-solution-sql {
+  margin: 0 0 0.4rem;
+  padding: 0.5rem 0.58rem;
+  border-radius: 10px;
+  border: 1px solid #d9e1ea;
+  background: #f8fbff;
+  color: #1b3652;
+  overflow-x: auto;
+}
+
+.task-solution-table {
+  max-height: 260px;
+}
+
 .quizlets-layout {
   display: grid;
   gap: 0.9rem;
