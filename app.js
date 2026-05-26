@@ -2380,6 +2380,17 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
   const wrapper = document.createElement("div");
   wrapper.className = "reading-layout";
   wrapper.innerHTML = `
+    <section class="panel lesson-inline-search">
+      <div class="lesson-inline-search-head">
+        <strong>Поиск по текущему уроку</strong>
+      </div>
+      <div class="lesson-inline-search-controls">
+        <input type="search" id="lesson-inline-search-input" placeholder="Например: баг-репорт, 401, JOIN, Scrum" />
+        <button class="btn ghost" id="lesson-inline-search-clear" type="button">Очистить</button>
+      </div>
+      <p class="lesson-inline-search-status" id="lesson-inline-search-status">Введи запрос, чтобы найти подпункты внутри этого урока.</p>
+      <div class="lesson-inline-search-results" id="lesson-inline-search-results"></div>
+    </section>
     <section class="panel reading-toolbar">
       <div class="reading-toolbar-main">
         <strong>Режим чтения</strong>
@@ -2478,6 +2489,124 @@ function renderMarkdown(contentEl, tocEl, markdownText) {
   const sectionNodes = Array.from(wrapper.querySelectorAll(".theory-section[data-reading-section]"));
   const totalSections = sectionNodes.length;
   const readMinutes = Math.max(1, Math.round(estimatedWordCount / 180));
+
+  const buildInlineLessonIndex = () => {
+    const entries = [];
+    const headingNodes = Array.from(wrapper.querySelectorAll(".theory-section h2[id], .theory-section h3[id]"));
+    headingNodes.forEach((heading, idx) => {
+      const level = heading.tagName.toLowerCase();
+      const headingText = (heading.textContent || "").trim();
+      const sectionTitle = (heading.closest(".theory-section")?.querySelector(".theory-section-head h2")?.textContent || "").trim();
+      const headingBlock = level === "h3" ? `${sectionTitle} → ${headingText}` : headingText;
+      let body = "";
+      if (level === "h2") {
+        const sectionBody = heading.closest(".theory-section")?.querySelector(".theory-section-body");
+        body = (sectionBody?.textContent || "").trim();
+      } else {
+        const siblingTexts = [];
+        let cursor = heading.nextElementSibling;
+        while (cursor && !/^(h2|h3)$/i.test(cursor.tagName)) {
+          siblingTexts.push((cursor.textContent || "").trim());
+          cursor = cursor.nextElementSibling;
+        }
+        body = siblingTexts.join(" ").replace(/\s+/g, " ").trim();
+      }
+      const searchText = normalizeSearchText(`${headingBlock} ${body}`);
+      const tokenList = tokenizeSearch(searchText);
+      const tokenFreq = new Map();
+      tokenList.forEach((token) => tokenFreq.set(token, (tokenFreq.get(token) || 0) + 1));
+      const stemFreq = new Map();
+      tokenFreq.forEach((count, token) => {
+        const stem = stemSearchToken(token);
+        if (!stem) return;
+        stemFreq.set(stem, (stemFreq.get(stem) || 0) + count);
+      });
+      entries.push({
+        id: heading.id,
+        title: headingText || `Подпункт ${idx + 1}`,
+        sectionPath: headingBlock,
+        body,
+        searchText,
+        tokenSet: new Set(tokenList),
+        stemSet: new Set([...tokenList.map(stemSearchToken).filter(Boolean)]),
+        tokenFreq,
+        stemFreq,
+        headingSearch: normalizeSearchText(headingText),
+        sourceOrder: 0,
+        sectionOrder: idx + 1
+      });
+    });
+    return entries;
+  };
+
+  const inlineIndex = buildInlineLessonIndex();
+  const inlineInput = wrapper.querySelector("#lesson-inline-search-input");
+  const inlineClear = wrapper.querySelector("#lesson-inline-search-clear");
+  const inlineStatus = wrapper.querySelector("#lesson-inline-search-status");
+  const inlineResults = wrapper.querySelector("#lesson-inline-search-results");
+  let inlineTimer = null;
+
+  const renderInlineResults = (hits, query) => {
+    if (!inlineResults || !inlineStatus) return;
+    if (!query.trim()) {
+      inlineResults.innerHTML = "";
+      inlineStatus.textContent = "Введи запрос, чтобы найти подпункты внутри этого урока.";
+      return;
+    }
+    if (!hits.length) {
+      inlineResults.innerHTML = "";
+      inlineStatus.textContent = `По запросу "${query}" внутри урока ничего не найдено.`;
+      return;
+    }
+    inlineStatus.textContent = `Найдено подпунктов: ${hits.length}.`;
+    inlineResults.innerHTML = hits.slice(0, 8).map((hit) => `
+      <article class="lesson-inline-hit">
+        <div class="lesson-inline-hit-top">
+          <strong>${escapeHtml(formatSearchPathTail(hit.sectionPath))}</strong>
+          <span class="search-hit-score">релевантность: ${hit.score}</span>
+        </div>
+        <p>${escapeHtml(hit.snippet || hit.body || "Совпадение в заголовке подпункта.")}</p>
+        <a class="btn ghost" href="#${escapeHtml(hit.id)}">Открыть подпункт</a>
+      </article>
+    `).join("");
+  };
+
+  const runInlineSearch = () => {
+    if (!inlineInput) return;
+    const query = inlineInput.value.trim();
+    if (!query) {
+      renderInlineResults([], "");
+      return;
+    }
+    const hits = performLessonSearch(inlineIndex, query);
+    renderInlineResults(hits, query);
+  };
+
+  if (inlineInput) {
+    inlineInput.addEventListener("input", () => {
+      clearTimeout(inlineTimer);
+      inlineTimer = setTimeout(runInlineSearch, 110);
+    });
+  }
+  if (inlineClear && inlineInput) {
+    inlineClear.addEventListener("click", () => {
+      inlineInput.value = "";
+      renderInlineResults([], "");
+      inlineInput.focus();
+    });
+  }
+  if (inlineResults) {
+    inlineResults.addEventListener("click", (event) => {
+      const link = event.target.closest("a[href^='#']");
+      if (!link) return;
+      const targetId = decodeURIComponent((link.getAttribute("href") || "").slice(1));
+      const target = targetId ? document.getElementById(targetId) : null;
+      if (target) {
+        event.preventDefault();
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  }
 
   const updateMeta = (activeSection = 1) => {
     const safeActive = Math.min(Math.max(activeSection, 1), Math.max(totalSections, 1));

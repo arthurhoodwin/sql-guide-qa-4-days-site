@@ -680,6 +680,77 @@ body[data-page="legend"] .topbar {
   align-items: start;
 }
 
+.lesson-inline-search {
+  padding: 0.78rem 0.84rem;
+  border: 1px solid #d5deea;
+  background: linear-gradient(180deg, #fdfefe 0%, #f5f9fd 100%);
+}
+
+.lesson-inline-search-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.42rem;
+}
+
+.lesson-inline-search-head strong {
+  color: #123553;
+}
+
+.lesson-inline-search-controls {
+  margin-top: 0.55rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.lesson-inline-search-controls input {
+  flex: 1 1 320px;
+  min-width: 240px;
+  border: 1px solid #cfdae7;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #102a42;
+  padding: 0.56rem 0.62rem;
+  font: inherit;
+}
+
+.lesson-inline-search-status {
+  margin: 0.52rem 0 0;
+  color: #445a70;
+  font-size: 0.9rem;
+}
+
+.lesson-inline-search-results {
+  margin-top: 0.55rem;
+  display: grid;
+  gap: 0.46rem;
+}
+
+.lesson-inline-hit {
+  border: 1px solid #d7e1ec;
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 0.56rem 0.62rem;
+}
+
+.lesson-inline-hit-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.45rem;
+}
+
+.lesson-inline-hit-top strong {
+  color: #173a57;
+}
+
+.lesson-inline-hit p {
+  margin: 0.36rem 0 0.48rem;
+  color: #2a4560;
+  line-height: 1.45;
+}
+
 .reading-toolbar {
   padding: 0.78rem 0.84rem;
   display: grid;
